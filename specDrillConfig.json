@@ -1,0 +1,16 @@
+﻿{
+    "webdriver": {
+        "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
+        "browserDriversPath": "d:\\_specDrill\\DriverServer"
+    },
+    "maxWait": "60000",
+    "waitPollingFrequency": "200",
+    "engine": "webdriver" // webdriver, watin (not supported for now) ...
+
+    "homepages": [
+        {
+            "pageObjectType": "Test000Page",
+            "url": "file:///D:/_cloud/Dropbox/Projects/SpecDrill/SpecDrill/SomeTests/WebsiteMocks/Test000/login.html"
+        }
+    ]
+}
