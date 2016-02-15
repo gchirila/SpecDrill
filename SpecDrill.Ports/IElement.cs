@@ -40,10 +40,16 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         IElement FindSubElement(IElementLocator locator);
 
         /// <summary>
-        /// lose focus
+        /// Lose element focus
         /// </summary>
         /// <returns></returns>
         IElement Blur();
+
+        /// <summary>
+        /// Clears input
+        /// </summary>
+        /// <returns></returns>
+        IElement Clear();
 
         string Text { get; }
 

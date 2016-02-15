@@ -19,7 +19,8 @@ namespace SomeTests
 
             Wait.Until(() => virtualStoreLoginPage.IsLoadCompleted);
 
-            virtualStoreLoginPage.TxtUserName.SendKeys("cosmin");
+            virtualStoreLoginPage.TxtUserName.SendKeys("alina");
+            virtualStoreLoginPage.TxtUserName.Clear().SendKeys("cosmin");
             virtualStoreLoginPage.TxtPassword.SendKeys("abc123");
 
             virtualStoreLoginPage.DdlCountry.SelectByValue("md");

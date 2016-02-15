@@ -39,7 +39,7 @@ namespace SpecDrill.Tests
                                 [
                                     {
                                             ""pageObjectType"": ""Test000LoginPage"",
-                                            ""url"": ""file:///D:/_cloud/Dropbox/Projects/SpecDrill/SpecDrill/SomeTests/WebsiteMocks/Test000/login.html""
+                                            ""url"": ""../../../SomeTests/WebsiteMocks/Test000/login.html""
                                     }
                                 ]
                          }";

@@ -8,6 +8,7 @@ using SpecDrill.Adapters.WebDriver.ElementLocatorExtensions;
 using SpecDrill.Adapters.WebDriver.SeleniumExtensions;
 using SpecDrill.Infrastructure.Logging;
 using SpecDrill.SecondaryPorts.AutomationFramework;
+using SpecDrill.Infrastructure.Logging.Interfaces;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -15,12 +16,7 @@ namespace SpecDrill.Adapters.WebDriver
     {
         private IWebDriver seleniumDriver = null;
 
-        #region JavaScript Functions
-        // dispatches event on specified dom element;
-        // e.g. dispatch(document.getElementById('someId'), 
-        private readonly string sdDispatch =
-            @"var sdDispatch = function(el, evName) { var ev = document.createEvent('Event'); ev.initEvent(evName, true, false); el.dispatchEvent(ev);};";
-        #endregion
+        private ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserDriver>();
 
         public SeleniumBrowserDriver(IWebDriver seleniumDriver)
         {
@@ -86,7 +82,7 @@ namespace SpecDrill.Adapters.WebDriver
             }
             catch (Exception e)
             {
-                //TODO :log exception
+                Log.Error(e, "Error when executing JavaScript");
                 return false;
             }
         }

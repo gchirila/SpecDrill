@@ -146,5 +146,12 @@ namespace SpecDrill
         {
             this.rootElement.Hover();
         }
+
+        public IElement Clear()
+        {
+            this.Element.SendKeys(OpenQA.Selenium.Keys.Control + "A");
+            this.Element.SendKeys(OpenQA.Selenium.Keys.Delete);
+            return this;
+        }
     }
 }

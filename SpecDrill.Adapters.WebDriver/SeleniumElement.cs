@@ -103,6 +103,12 @@ namespace SpecDrill.Adapters.WebDriver
             this.browser.HoverOver(this);
         }
 
+        public IElement Clear()
+        {
+            this.Element.Clear();
+            return this;
+        }
+
         private IWebElement nativeElement = null; 
         public object NativeElement
         {
