@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E9223B33-98FC-4D5A-8C0E-E63011FD454E}</ProjectGuid>
+    <ProjectGuid>{A8F68C17-F756-4FFB-ADA4-4F69E25D4809}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpecDrill</RootNamespace>
-    <AssemblyName>SpecDrill</AssemblyName>
+    <RootNamespace>SpecDrill.Adapters.WebDriver</RootNamespace>
+    <AssemblyName>SpecDrill.Adapters.WebDriver</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,14 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\ReferenceAssemblies\v4.0\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\3rdPartyDependencies\newtonsoftJson\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,28 +37,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="WebDriver, Version=2.48.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="WebDriver">
       <HintPath>..\..\3rdPartyDependencies\webdriver\WebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDriver.Support">
+      <HintPath>..\..\3rdPartyDependencies\webdriver\WebDriver.Support.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomationScopes\BenchmarkScope.cs" />
-    <Compile Include="AutomationScopes\ImplicitWaitScope.cs" />
-    <Compile Include="Browser.cs" />
-    <Compile Include="Locator.cs" />
+    <Compile Include="ElementLocatorExtensions\IElementLocatorExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="WebElement.cs" />
-    <Compile Include="WebPage.cs" />
+    <Compile Include="SeleniumBrowserDriver.cs" />
+    <Compile Include="SeleniumBrowserFactory.cs" />
+    <Compile Include="SeleniumNavigationElement.cs" />
+    <Compile Include="SeleniumSelectElement.cs" />
+    <Compile Include="SeleniumElement.cs" />
+    <Compile Include="SeleniumElementLocator.cs" />
+    <Compile Include="SeleniumExtensions\ReadOnlyIWebElementCollectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpecDrill.Adapters.WebDriver\SpecDrill.Adapters.WebDriver.csproj">
-      <Project>{a8f68c17-f756-4ffb-ada4-4f69e25d4809}</Project>
-      <Name>SpecDrill.Adapters.WebDriver</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpecDrill.Infrastructure\SpecDrill.Infrastructure.csproj">
-      <Project>{9A59519A-1464-436E-B059-AF2BEEFFE96F}</Project>
+      <Project>{9a59519a-1464-436e-b059-af2beeffe96f}</Project>
       <Name>SpecDrill.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpecDrill.Ports\SpecDrill.SecondaryPorts.AutomationFramework.csproj">

@@ -12,10 +12,30 @@ namespace SomeTests
     [TestClass]
     public class SpecDrillTests : TestBase
     {
+        [TestMethod]
         public void ShouldOpenBrowserWhenHomepageIsOpened()
         {
-            var virtualStoreHomePage = Browser.Open<Test000Page>();
-            Assert.AreEqual("Virtual Store - Login", Browser.PageTitle);
+            var virtualStoreLoginPage = Browser.Open<Test000LoginPage>();
+
+            Wait.Until(() => virtualStoreLoginPage.IsLoadCompleted);
+
+            virtualStoreLoginPage.TxtUserName.SendKeys("cosmin");
+            virtualStoreLoginPage.TxtPassword.SendKeys("abc123");
+
+            virtualStoreLoginPage.DdlCountry.SelectByValue("md");
+            Assert.AreEqual("Moldova", virtualStoreLoginPage.DdlCountry.SelectedOptionText);
+
+            virtualStoreLoginPage.DdlCity.SelectByText("Chisinau");
+            Assert.AreEqual("Chisinau", virtualStoreLoginPage.DdlCity.SelectedOptionText);
+            
+            virtualStoreLoginPage.DdlCountry.SelectByIndex(1);
+            Assert.AreEqual("Romania", virtualStoreLoginPage.DdlCountry.SelectedOptionText);
+            
+            var homePage = virtualStoreLoginPage.BtnLogin.Click();
+            
+            Assert.AreEqual("Virtual Store - Home", Browser.PageTitle);
         }
+
+        //TODO: Create Hover tests on css hover menu with at least 2 levels
     }
 }

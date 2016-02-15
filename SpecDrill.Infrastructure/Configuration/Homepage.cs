@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace SpecDrill.Configuration
 {
-    class Homepage
+    public class Homepage
     {
+        public string PageObjectType
+        {
+            get;
+            set;
+        }
+
+        public string Url { get; set; }
     }
 }

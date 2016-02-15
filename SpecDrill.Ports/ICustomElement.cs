@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecDrill.Enums
+namespace SpecDrill.SecondaryPorts.AutomationFramework
 {
-    public enum BrowserNames
+    [Obsolete]
+    interface ICustomElement : IElement
     {
-        chrome,
-        ie,
-        firefox,
-        opera,
-        safari
+
     }
 }

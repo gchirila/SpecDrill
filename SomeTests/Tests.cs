@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpecDrill.Infrastructure.Configuration;
 
 namespace SpecDrill.Tests
 {
@@ -20,7 +21,7 @@ namespace SpecDrill.Tests
             Assert.AreEqual("chrome", configuration.WebDriver.BrowserDriver);
             Assert.AreEqual(12345, configuration.MaxWait);
             Assert.AreEqual(1, configuration.Homepages.Length);
-            Assert.AreEqual("Test000Page", configuration.Homepages[0].PageObjectType);
+            Assert.AreEqual("Test000LoginPage", configuration.Homepages[0].PageObjectType);
         }
 
         private static string JsonConfigurationFileContents
@@ -37,7 +38,7 @@ namespace SpecDrill.Tests
                                 ""homepages"": 
                                 [
                                     {
-                                            ""pageObjectType"": ""Test000Page"",
+                                            ""pageObjectType"": ""Test000LoginPage"",
                                             ""url"": ""file:///D:/_cloud/Dropbox/Projects/SpecDrill/SpecDrill/SomeTests/WebsiteMocks/Test000/login.html""
                                     }
                                 ]

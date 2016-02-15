@@ -5,12 +5,12 @@
     },
     "maxWait": "60000",
     "waitPollingFrequency": "200",
-    "engine": "webdriver" // webdriver, watin (not supported for now) ...
+    "engine": "webdriver", // webdriver, watin (not supported for now) ...
 
     "homepages": [
         {
-            "pageObjectType": "Test000Page",
-            "url": "file:///D:/_cloud/Dropbox/Projects/SpecDrill/SpecDrill/SomeTests/WebsiteMocks/Test000/login.html"
+            "pageObjectType": "Test000LoginPage",
+            "url": "../../../WebsiteMocks/Test000/login.html" // relative url path to executing assembly's location
         }
     ]
 }

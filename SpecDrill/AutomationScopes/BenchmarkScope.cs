@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using log4net;
+using SpecDrill.Infrastructure.Logging;
+using SpecDrill.Infrastructure.Logging.Interfaces;
 
 namespace SpecDrill.AutomationScopes
 {
     public class BenchmarkScope : IDisposable
     {
-         protected readonly ILog Log = LogManager.GetLogger(typeof(BenchmarkScope));
+         protected readonly ILogger Log = Infrastructure.Logging.Log.Get<BenchmarkScope>();
 
         private readonly Stopwatch stopwatch;
         private readonly string description;
