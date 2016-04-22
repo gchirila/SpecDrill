@@ -11,16 +11,16 @@ namespace SomeTests.PageObjects.Test000
 {
     public class Test000HomePage : WebPage
     {
-        public IElement TxtUserName { get; private set; }
-        public IElement TxtPassword { get; private set; }
+        public IElement LblUserName { get; private set; }
         public INavigationElement<Test000HomePage> BtnLogin { get; private set; }
+        public MenuListItemControl CtlMenu { get; private set; }
 
         public Test000HomePage(Browser browser)
             : base(browser, "Virtual Store - Home")
         {
-            this.TxtUserName = WebElement.Create(this.Browser, this, Locator.Create(By.Id, "userName"));
-            this.TxtPassword = WebElement.Create(this.Browser, this, Locator.Create(By.Id, "password"));
-            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this.Browser, this, Locator.Create(By.Id, "login"));
+            this.LblUserName = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "username"));
+            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this.Browser, this, ElementLocator.Create(By.Id, "login"));
+            this.CtlMenu = WebElement.CreateControl<MenuListItemControl>(this.Browser, this, ElementLocator.Create(By.Id, "menu"));
         }
     }
 }

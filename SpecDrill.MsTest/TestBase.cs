@@ -1,9 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SpecDrill.Adapters.WebDriver;
 using SpecDrill.Infrastructure.Configuration;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 
-namespace SpecDrill
+namespace SpecDrill.MsTest
 {
     public class TestBase
     {
@@ -14,7 +13,6 @@ namespace SpecDrill
         static TestBase()
         {
             
-
         }
 
         [TestInitialize]

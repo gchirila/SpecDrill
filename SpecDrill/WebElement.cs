@@ -26,5 +26,12 @@ namespace SpecDrill
         {
             return new SeleniumNavigationElement<T>(browser, parent, locator);
         }
+
+        public static T CreateControl<T>(IBrowser browser, IElement parent, IElementLocator elementLocator)
+            where T : WebControl
+        {
+
+            return Activator.CreateInstance(typeof(T), browser, parent, elementLocator) as T;
+        }
     }
 }

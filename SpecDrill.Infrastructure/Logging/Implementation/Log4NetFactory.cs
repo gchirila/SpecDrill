@@ -17,7 +17,7 @@ namespace SpecDrill.Infrastructure.Logging.Implementation
         {
             if (logger == null)
             {
-                XmlConfigurator.Configure();
+                //XmlConfigurator.Configure();
                 var log4NetLogger = LogManager.GetLogger(name);
                 logger = new Log4NetLogger(log4NetLogger);
             }

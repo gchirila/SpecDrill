@@ -2,6 +2,7 @@
 {
     public interface IPage : IElement
     {
-        bool IsPageLoaded { get; }
+        string Title { get; }
+        bool IsLoaded { get; }
     }
 }

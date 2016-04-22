@@ -25,9 +25,9 @@ namespace SpecDrill
 
         private readonly IBrowserDriver browserDriver;
 
-        private static readonly Stack<TimeSpan> timeoutHistory = new Stack<TimeSpan>(); 
+        private static readonly Stack<TimeSpan> timeoutHistory = new Stack<TimeSpan>();
 
-        public  Browser(Settings configuration)
+        public Browser(Settings configuration)
         {
             this.configuration = configuration;
 
@@ -38,7 +38,7 @@ namespace SpecDrill
             browserDriver = driverFactory.Create(browserName);
 
             var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.MaxWait == 0 ? 60000 : configuration.MaxWait);
-            
+
             // set initial browser driver timeout to configuration or 1 minute if not defined
             lock (timeoutHistory)
             {
@@ -48,20 +48,25 @@ namespace SpecDrill
         }
 
         public T Open<T>()
-            where T: IPage
+            where T : IPage
         {
-            var homePage = configuration.Homepages.FirstOrDefault(homepage => homepage.PageObjectType == typeof (T).Name);
+            var homePage = configuration.Homepages.FirstOrDefault(homepage => homepage.PageObjectType == typeof(T).Name);
             if (homePage != null)
             {
-                Action navigateToUrl = () => this.GoToUrl(string.Format("file:///{0}{1}",
-                    System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/')
-                    , homePage.Url));
+                
+                //Action navigateToUrl = () => this.GoToUrl(string.Format("file:///{0}{1}",
+                //    System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/')
+                //    , homePage.Url));
+                
+                Action navigateToUrl = homePage.IsFileSystemPath ?
+                    (Action)(() => this.GoToUrl(string.Format("file:///{0}{1}", System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'), homePage.Url)))
+                    : () => this.GoToUrl(homePage.Url);
 
                 navigateToUrl();
-                
+
                 var targetPage = this.CreatePage<T>();
 
-                Wait.WithRetry().Doing(navigateToUrl).Until(() => targetPage.IsPageLoaded);
+                Wait.WithRetry().Doing(navigateToUrl).Until(() => targetPage.IsLoaded);
 
                 return targetPage;
             }
@@ -70,7 +75,7 @@ namespace SpecDrill
         }
 
         public T CreatePage<T>()
-            where T: IPage
+            where T : IPage
         {
             return (T)Activator.CreateInstance(typeof(T), this);
         }
@@ -80,7 +85,8 @@ namespace SpecDrill
             browserDriver.GoToUrl(url);
         }
 
-        public string PageTitle {
+        public string PageTitle
+        {
             get { return browserDriver.Title; }
         }
 
@@ -107,6 +113,24 @@ namespace SpecDrill
         public IElement FindElement(IElementLocator locator)
         {
             return WebElement.Create(this, null, locator);
+        }
+
+        public IList<IElement> FindElements(IElementLocator locator)
+        {
+            var elements = this.browserDriver.FindElements(locator);
+
+            var elementCount = elements?.Count ?? 0;
+
+            var result = new List<IElement>();
+            if (elementCount > 0)
+            {
+                for (int i=0; i<elements.Count; i++)
+                {
+                    result.Add(WebElement.Create(this, null, locator.WithIndex(i + 1)));
+                }
+            }
+
+            return result;
         }
 
         public object FindNativeElement(IElementLocator locator)

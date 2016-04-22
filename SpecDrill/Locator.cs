@@ -3,7 +3,7 @@ using SpecDrill.SecondaryPorts.AutomationFramework;
 
 namespace SpecDrill
 {
-    public class Locator
+    public class ElementLocator
     {
         public static IElementLocator Create(By locatorKind, string locatorValue)
         {

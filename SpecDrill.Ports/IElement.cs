@@ -27,23 +27,17 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         void Click();
 
         /// <summary>
-        /// Text to send into textbox
+        /// Sends text to input
         /// </summary>
-        /// <param name="keys"></param>
-        void SendKeys(string keys);
+        /// <param name="keys">Text to send into textbox</param>
 
-        /// <summary>
-        /// find subelement
-        /// </summary>
-        /// <param name="locator"></param>
-        /// <returns></returns>
-        IElement FindSubElement(IElementLocator locator);
+        IElement SendKeys(string keys);
 
         /// <summary>
         /// Lose element focus
         /// </summary>
         /// <returns></returns>
-        IElement Blur();
+        void Blur();
 
         /// <summary>
         /// Clears input
@@ -53,8 +47,17 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
 
         string Text { get; }
 
+        /// <summary>
+        /// Gets html element attribute value
+        /// </summary>
+        /// <param name="attributeName">Element atribute's name</param>
+        /// <returns>attribute value, or null if attribute not present</returns>
         string GetAttribute(string attributeName);
 
         void Hover();
+
+        IElement Parent { get; }
+
+        IElementLocator Locator { get; }
     }
 }

@@ -9,8 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SomeTests</RootNamespace>
     <AssemblyName>SomeTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,11 +44,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TechTalk.SpecFlow, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.0.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoogleSearchTests.cs" />
+    <Compile Include="PageObjects\Test000\MenuControl.cs" />
+    <Compile Include="PageObjects\Test000\MenuListItemControl.cs" />
     <Compile Include="PageObjects\Test000\Test000HomePage.cs" />
     <Compile Include="PageObjects\Test000\Test000LoginPage.cs" />
+    <Compile Include="PageObjects\Test001\Test001CalculatorPage.cs" />
+    <Compile Include="PageObjects\Test002\GoogleSearchResultsPage.cs" />
+    <Compile Include="PageObjects\Test002\GoogleSearchPage.cs" />
     <Compile Include="SpecDrillTests.cs" />
+    <Compile Include="SpecFlow\Features\SpecFlowFeature1.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SpecFlowFeature1.feature</DependentUpon>
+    </Compile>
+    <Compile Include="SpecFlow\Tests\SpecFlowFeature1Steps.cs" />
     <Compile Include="TestBaseTests.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -56,9 +75,17 @@
       <Project>{9a59519a-1464-436e-b059-af2beeffe96f}</Project>
       <Name>SpecDrill.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpecDrill.MsTest\SpecDrill.MsTest.csproj">
+      <Project>{405307ed-862c-4a6f-97a8-67edfc9f3d0f}</Project>
+      <Name>SpecDrill.MsTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpecDrill.Ports\SpecDrill.SecondaryPorts.AutomationFramework.csproj">
       <Project>{AD2DB2CA-0C02-4A57-A92C-5A6F76A5E2FC}</Project>
       <Name>SpecDrill.SecondaryPorts.AutomationFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpecDrill.SpecFlow\SpecDrill.SpecFlow.csproj">
+      <Project>{a2df5cda-1556-4f7f-91a5-0678964fb65b}</Project>
+      <Name>SpecDrill.SpecFlow</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpecDrill\SpecDrill.csproj">
       <Project>{e9223b33-98fc-4d5a-8c0e-e63011fd454e}</Project>
@@ -71,8 +98,27 @@
   <ItemGroup>
     <Content Include="WebsiteMocks\Test000\home.html" />
     <Content Include="WebsiteMocks\Test000\login.html" />
+    <Content Include="WebsiteMocks\Test001\calculator.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CustomElements\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="SpecFlow\Features\SpecFlowFeature1.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>SpecFlowFeature1.feature.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

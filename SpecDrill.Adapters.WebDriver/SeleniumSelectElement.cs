@@ -10,10 +10,10 @@ namespace SpecDrill.Adapters.WebDriver
 {
     public class SeleniumSelectElement : SeleniumElement, ISelectElement
     {
-        protected static ILogger Log = Infrastructure.Logging.Log.Get<SeleniumSelectElement>();
+        //protected static ILogger Log = Infrastructure.Logging.Log.Get<SeleniumSelectElement>();
 
-        protected IBrowser browser;
-        protected IElementLocator locator;
+        //protected IBrowser browser;
+        //protected IElementLocator locator;
         public SeleniumSelectElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
         {
             this.browser = browser;

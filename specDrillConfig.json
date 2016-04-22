@@ -1,16 +1,27 @@
 ﻿{
     "webdriver": {
-        "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-        "browserDriversPath": "d:\\_specDrill\\DriverServer"
+        "browserDriver": "firefox", // chrome, ie, firefox, opera, safari
+        "browserDriversPath": "C:\\Your Browser Drivers Path"//"d:\\_specDrill\\DriverServer"
     },
     "maxWait": "60000",
     "waitPollingFrequency": "200",
     "engine": "webdriver", // webdriver, watin (not supported for now) ...
 
     "homepages": [
-        {
-            "pageObjectType": "Test000LoginPage",
-            "url": "../../../WebsiteMocks/Test000/login.html" // relative url path to executing assembly's location
-        }
+      {
+        "pageObjectType": "Test000LoginPage",
+        "url": "../../../WebsiteMocks/Test000/login.html", // relative url path to executing assembly's location
+        "isFileSystemPath": true
+      },
+      {
+        "pageObjectType": "Test001CalculatorPage",
+        "url": "../../../WebsiteMocks/Test001/calculator.html", // relative url path to executing assembly's location
+        "isFileSystemPath": true
+      },
+      {
+        "pageObjectType": "GoogleSearchPage",
+        "url": "http://www.google.com", // relative url path to executing assembly's location
+        "isFileSystemPath": false
+      }
     ]
 }

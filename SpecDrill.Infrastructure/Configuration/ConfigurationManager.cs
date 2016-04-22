@@ -31,7 +31,7 @@ namespace SpecDrill.Infrastructure.Configuration
 
                 var log4NetConfig = new FileInfo(log4netConfigFilePath);
 
-                XmlConfigurator.ConfigureAndWatch(log4NetConfig);
+                XmlConfigurator.Configure(log4NetConfig);
 
                 var jsonConfigurationFilePath = configurationPaths.Item2;
                 

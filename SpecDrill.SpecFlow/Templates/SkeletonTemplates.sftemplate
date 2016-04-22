@@ -1,0 +1,25 @@
+﻿?>>>CSharp/StepDefinitionClass
+using System;
+using TechTalk.SpecFlow;
+using SpecDrill.SpecFlow.MsTest;
+
+namespace {namespace}
+{
+    [Binding]
+    public class {className} : SpecFlowTestBase
+    {
+{bindings}
+    }
+}
+>>>CSharp/StepDefinitionRegex
+[{attribute}(@"{regex}")]
+public void {methodName}({parameters})
+{
+    ScenarioContext.Current.Pending();
+}
+>>>CSharp/StepDefinition
+[{attribute}]
+public void {methodName}({parameters})
+{
+    ScenarioContext.Current.Pending();
+}

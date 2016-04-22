@@ -1,0 +1,15 @@
+<head>
+    <title>Calculator</title>
+</head>
+<body>
+   
+    <h1> Welcome to our calculator ! </h1>
+    <label for="operand1"> First operand: </label>
+    <input type="text" id="operand1"></input><br>
+    <label for="operand2"> Second operand: </label>
+    <input type="text" id="operand2"></input><br>
+    <hr/>
+    <input type="button" onclick="document.getElementById('result').value = +document.getElementById('operand1').value + +document.getElementById('operand2').value" id="add" value="Add">Add</input>
+    <label for="result"> Result: </label>
+    <input type="text" id="result"/>
+</body>

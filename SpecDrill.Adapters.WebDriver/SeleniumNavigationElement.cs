@@ -21,7 +21,7 @@ namespace SpecDrill.Adapters.WebDriver
         {
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
             IPage targetPage = browser.CreatePage<T>();
-            Wait.WithRetry().Doing(() => this.Element.Click()).Until(() => targetPage.IsPageLoaded);
+            Wait.WithRetry().Doing(() => this.Element.Click()).Until(() => targetPage.IsLoaded);
             return (T) targetPage;
         }
 

@@ -4,6 +4,7 @@ using SpecDrill.Infrastructure.Logging;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using System.Collections.Generic;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -13,17 +14,19 @@ namespace SpecDrill.Adapters.WebDriver
 
         protected IBrowser browser;
         protected IElementLocator locator;
+        protected IElement parent;
 
         public SeleniumElement(IBrowser browser, IElement parent, IElementLocator locator)
         {
             this.browser = browser;
             this.locator = locator;
+            this.parent = parent;
         }
 
-        
+
         public bool IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return this.Element.GetAttribute("readonly") != null; }
         }
 
         public bool IsAvailable
@@ -31,7 +34,7 @@ namespace SpecDrill.Adapters.WebDriver
             get
             {
                 IElement locatedElement = browser.PeekElement(this.locator);
-                
+
                 var elementFound = locatedElement != null;
                 if (!elementFound)
                 {
@@ -47,18 +50,22 @@ namespace SpecDrill.Adapters.WebDriver
                     return false;
                 }
 
-                Log.Info(string.Format("Starting Availability test for {0}", locator));
-
-                var displayed = nativeLocatedElement.Displayed;
-                var enabled = nativeLocatedElement.Enabled;
-                var result = displayed && enabled;
-
-                Log.Info(string.Format("Availability test result = {2} > displayed:{0}, enabled:{1}", displayed, enabled, result));
-                
-                return result;
+                return AvailabilityTest(nativeLocatedElement);
             }
         }
 
+        private bool AvailabilityTest(IWebElement nativeLocatedElement)
+        {
+            Log.Info(string.Format("Starting Availability test for {0}", locator));
+
+            var displayed = nativeLocatedElement.Displayed;
+            var enabled = nativeLocatedElement.Enabled;
+            var result = displayed && enabled;
+
+            Log.Info(string.Format("Availability test result = {2} > displayed:{0}, enabled:{1}", displayed, enabled, result));
+
+            return result;
+        }
         public IBrowser Browser
         {
             get { return this.browser; }
@@ -72,20 +79,15 @@ namespace SpecDrill.Adapters.WebDriver
             this.Element.Click();
         }
 
-        public void SendKeys(string keys)
+        public IElement SendKeys(string keys)
         {
             this.Element.SendKeys(keys);
+            return this;
         }
 
-        public IElement FindSubElement(IElementLocator locator)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IElement Blur()
+        public void Blur()
         {
             this.Element.SendKeys("\t");
-            return this;
         }
 
         public string Text
@@ -95,7 +97,16 @@ namespace SpecDrill.Adapters.WebDriver
 
         public string GetAttribute(string attributeName)
         {
-            return this.Element.GetAttribute(attributeName);
+            try
+            {
+                return this.Element.GetAttribute(attributeName);
+            }
+            catch (StaleElementReferenceException sere)
+            {
+                Log.Error(sere, $"Element {this.locator} is stale!");
+            }
+
+            return null;
         }
 
         public void Hover()
@@ -109,18 +120,65 @@ namespace SpecDrill.Adapters.WebDriver
             return this;
         }
 
-        private IWebElement nativeElement = null; 
         public object NativeElement
         {
             get
             {
-                // do not call higher level status check properties from here in order to avoid infinite recursion
-                if (this.nativeElement == null)
+                List<IElement> elementContainers = new List<IElement>();
+
+                IElement current = this.Parent;
+
+                if (current != null)
                 {
-                    this.nativeElement = this.browser.FindNativeElement(this.locator) as IWebElement;
+                    do
+                    {
+                        if (current is IControl || current is IPage)
+                        {
+                            elementContainers.Add(current);
+                        }
+                        current = current.Parent;
+                    } while (current != null);
                 }
 
-                return this.nativeElement;
+                if (elementContainers.Count == 0)
+                   return this.browser.FindNativeElement(this.locator) as IWebElement;
+
+                elementContainers.Reverse();
+
+                IWebElement currentContainer = null;
+
+                currentContainer = elementContainers[0].NativeElement as IWebElement;
+                AvailabilityTest(currentContainer);
+                Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep.");
+                Log.Info($"L01>{elementContainers[0].Locator}");
+
+                if (elementContainers.Count > 1)
+                    for (int i = 1; i < elementContainers.Count; i++)
+                    {
+                        if (currentContainer != null && AvailabilityTest(currentContainer))
+                        {
+                            currentContainer = currentContainer.FindElement(elementContainers[i].Locator.ToSeleniumLocator()) as IWebElement;
+                            Log.Info($"L{i:00}{elementContainers[i].Locator}");
+                        }
+                        else
+                        {
+                            Log.Info($"..some error..");
+                        }
+                    }
+
+                Log.Info($"LOC>{locator}");
+
+                IWebElement nativeElement = null;
+                if (currentContainer != null)
+                {
+                    // do not call higher level status check properties from here in order to avoid infinite recursion
+                    if (AvailabilityTest(currentContainer))
+                    {
+                        nativeElement = currentContainer.FindElement(this.locator.ToSeleniumLocator()) as IWebElement;
+                    }
+                }
+
+                return nativeElement;
             }
         }
 
@@ -134,5 +192,20 @@ namespace SpecDrill.Adapters.WebDriver
             }
         }
 
+        public IElement Parent
+        {
+            get
+            {
+                return this.parent;
+            }
+        }
+
+        public IElementLocator Locator
+        {
+            get
+            {
+                return this.locator;
+            }
+        }
     }
 }

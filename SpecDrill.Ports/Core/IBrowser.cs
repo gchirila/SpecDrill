@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
 {
@@ -32,6 +33,9 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         void Exit();
 
         IElement FindElement(IElementLocator locator);
+
+        IList<IElement> FindElements(IElementLocator locator);
+
         object FindNativeElement(IElementLocator locator);
 
         object ExecuteJavascript(string script, params object[] arguments);

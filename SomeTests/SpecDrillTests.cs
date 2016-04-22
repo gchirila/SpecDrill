@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SomeTests.PageObjects.Test000;
 using SpecDrill;
+using SpecDrill.MsTest;
 
 namespace SomeTests
 {
@@ -17,9 +18,9 @@ namespace SomeTests
         {
             var virtualStoreLoginPage = Browser.Open<Test000LoginPage>();
 
-            Wait.Until(() => virtualStoreLoginPage.IsLoadCompleted);
+            Wait.Until(() => virtualStoreLoginPage.IsLoaded);
 
-            virtualStoreLoginPage.TxtUserName.SendKeys("alina");
+            virtualStoreLoginPage.TxtUserName.SendKeys("alina").Blur();
             virtualStoreLoginPage.TxtUserName.Clear().SendKeys("cosmin");
             virtualStoreLoginPage.TxtPassword.SendKeys("abc123");
 
@@ -34,9 +35,20 @@ namespace SomeTests
             
             var homePage = virtualStoreLoginPage.BtnLogin.Click();
             
-            Assert.AreEqual("Virtual Store - Home", Browser.PageTitle);
+            Assert.AreEqual("Virtual Store - Home", homePage.Title);
+
+            Assert.AreEqual("Cosmin", homePage.LblUserName.Text);
+            var loginPage = homePage.CtlMenu.LnkLogin.Click();
+
+            Assert.AreEqual("Virtual Store - Login", loginPage.Title);
         }
 
         //TODO: Create Hover tests on css hover menu with at least 2 levels
+
+        [TestMethod]
+        public void ShouldReadListWhenListControlIsUsed()
+        {
+
+        }
     }
 }

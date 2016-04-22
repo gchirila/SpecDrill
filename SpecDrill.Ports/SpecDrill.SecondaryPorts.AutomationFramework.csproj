@@ -46,6 +46,7 @@
     <Compile Include="IElement.cs" />
     <Compile Include="IElementLocator.cs" />
     <Compile Include="INavigationElement.cs" />
+    <Compile Include="IControl.cs" />
     <Compile Include="ISelectElement.cs" />
     <Compile Include="IPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

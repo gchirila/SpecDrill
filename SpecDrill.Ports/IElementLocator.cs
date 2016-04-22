@@ -16,5 +16,6 @@
     {
         By LocatorType { get; }
         string LocatorValue { get; }
+        IElementLocator WithIndex(int index);
     }
 }
