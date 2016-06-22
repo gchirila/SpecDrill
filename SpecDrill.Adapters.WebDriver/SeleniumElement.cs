@@ -73,10 +73,28 @@ namespace SpecDrill.Adapters.WebDriver
 
         public void Click()
         {
+            
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
-
+            
             Log.Info("Clicking {0}", this.locator);
-            this.Element.Click();
+            try
+            {
+                this.Element.Click();
+            }
+            catch (StaleElementReferenceException sere)
+            {
+                Log.Error(sere, $"Element {this.locator} is stale!");
+                throw;
+            }
+            catch (ElementNotVisibleException enve)
+            {
+                Log.Error(enve, $"Element {this.locator} is not visible!");
+                throw;
+            }
+            catch (InvalidOperationException ioe)
+            {
+                Log.Error(ioe, $"Clicking Element {this.locator} caused an InvalidOperationException!");
+            }
         }
 
         public IElement SendKeys(string keys)

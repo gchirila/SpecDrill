@@ -15,7 +15,13 @@ namespace SpecDrill.Adapters.WebDriver
     {
         private readonly Dictionary<BrowserNames, Func<string,IBrowserDriver>> driverFactory = new Dictionary<BrowserNames, Func<string,IBrowserDriver>>
         {
-            { BrowserNames.chrome, bdp => SeleniumBrowserDriver.Create(new ChromeDriver(bdp)) },
+            { BrowserNames.chrome, bdp =>
+            //TODO: extract window parameters in specDrillConfig.json
+            {
+                var chromeOptions = new ChromeOptions();
+                chromeOptions.AddArgument("window-size=1920,1080");
+                return SeleniumBrowserDriver.Create(new ChromeDriver(bdp, chromeOptions));
+            }},
             { BrowserNames.ie, bdp => SeleniumBrowserDriver.Create(new InternetExplorerDriver(bdp)) },
             { BrowserNames.firefox, bdp => SeleniumBrowserDriver.Create(new FirefoxDriver()) },
             { BrowserNames.opera, bdp => SeleniumBrowserDriver.Create(new OperaDriver()) },

@@ -52,7 +52,8 @@ namespace SpecDrill
                 {
                     this.elements = this.browser.FindElements(this.locator) ?? new List<IElement>();
                 }
-                return this.elements[index] as T;
+				
+                return Activator.CreateInstance(typeof (T), browser, parent, this.locator.WithIndex(index)) as T;
             }
         }
 
@@ -111,13 +112,15 @@ namespace SpecDrill
             throw new NotImplementedException();
         }
 
-        private string BuildXPathForElementAt(int index)
-        {
-            if (index < 1)
-                throw new IndexOutOfRangeException("XPath index is always > 0!");
+        //private string BuildXPathSelectorForElementAt(int index)
+        //{
+        //    if (index < 1)
+        //        throw new IndexOutOfRangeException("XPath index is always > 0!");
 
-            return $"{this.locator.LocatorValue}[{index}]";
-        }
+        //    return $"{this.locator.LocatorValue}[{index}]";
+        //}
+
+        //private string BuildCssSelectorForElementAt(int index)
 
         IEnumerator IEnumerable.GetEnumerator()
         {
