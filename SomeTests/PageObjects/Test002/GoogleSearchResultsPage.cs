@@ -6,16 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using SpecDrill;
 using SpecDrill.SecondaryPorts.AutomationFramework;
+using SpecDrill.WebControls;
 
 namespace SomeTests.PageObjects.Test002
 {
     public class GoogleSearchResultsPage : GoogleSearchPage
     {
-
+        public ListElement<SearchResultItemControl> SearchResults { get; }
         public GoogleSearchResultsPage(Browser browser)
-            : base(browser, "Google Search")
+            : base(browser, "")
         {
-            //this.TxtResult = WebElement.CreateSelect(this.Browser, this, ElementLocator.Create(By.Id, "result"));
+            SearchResults = new ListElement<SearchResultItemControl>(this, ElementLocator.Create(By.CssSelector, "div.content div.mw div.g"));
         }
     }
 }

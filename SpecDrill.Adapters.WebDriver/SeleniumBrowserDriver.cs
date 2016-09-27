@@ -94,5 +94,24 @@ namespace SpecDrill.Adapters.WebDriver
             actions.MoveToElement((element as SeleniumElement).Element);
             actions.Perform();
         }
+
+        public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
+        {
+            //ExecuteJavaScript(string.Format(@"{0} sdDispatch(arguments[0],'mouseover');", sdDispatch), (element as SeleniumElement).Element);
+            var actions = new Actions(this.seleniumDriver);
+            actions.DragAndDrop((startFromElement as SeleniumElement).Element,
+                (stopToElement as SeleniumElement).Element);
+            actions.Build().Perform();
+        }
+
+        public void RefreshPage()
+        {
+            seleniumDriver.Navigate().Refresh();
+        }
+
+        public void Maximize()
+        {
+            seleniumDriver.Manage().Window.Maximize();
+        }
     }
 }

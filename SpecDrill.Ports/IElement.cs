@@ -1,4 +1,5 @@
 ﻿using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill.SecondaryPorts.AutomationFramework
 {
@@ -7,7 +8,12 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// <summary>
         /// Native Element
         /// </summary>
-        object NativeElement { get; }
+        SearchResult NativeElementSearchResult { get; }
+
+        /// <summary>
+        /// Counts Occurences of element as described by locator (Ignores locator's Index property meaning it doesn't return 1 if index is specified)
+        /// </summary>
+        int Count { get; }
 
         /// <summary>
         /// Checks if the element is in a read-only mode (read-only or disabled)
@@ -53,6 +59,8 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// <param name="attributeName">Element atribute's name</param>
         /// <returns>attribute value, or null if attribute not present</returns>
         string GetAttribute(string attributeName);
+
+        string GetCssValue(string cssValueName);
 
         void Hover();
 

@@ -49,6 +49,7 @@
     <Compile Include="IControl.cs" />
     <Compile Include="ISelectElement.cs" />
     <Compile Include="IPage.cs" />
+    <Compile Include="Model\SearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -50,6 +50,8 @@
     <Compile Include="Locator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebControl.cs" />
+    <Compile Include="WebControls\ListElement.cs" />
+    <Compile Include="WebControls\TreeControl.cs" />
     <Compile Include="WebElement.cs" />
     <Compile Include="WebPage.cs" />
   </ItemGroup>

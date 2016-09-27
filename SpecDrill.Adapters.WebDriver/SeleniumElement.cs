@@ -5,6 +5,7 @@ using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 using System.Collections.Generic;
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -33,7 +34,7 @@ namespace SpecDrill.Adapters.WebDriver
         {
             get
             {
-                IElement locatedElement = browser.PeekElement(this.locator);
+                IElement locatedElement = browser.PeekElement(this);
 
                 var elementFound = locatedElement != null;
                 if (!elementFound)
@@ -42,7 +43,7 @@ namespace SpecDrill.Adapters.WebDriver
                     return false;
                 }
 
-                var nativeLocatedElement = locatedElement.NativeElement as IWebElement;
+                var nativeLocatedElement = locatedElement.NativeElementSearchResult.NativeElement as IWebElement;
 
                 if (nativeLocatedElement == null)
                 {
@@ -56,7 +57,7 @@ namespace SpecDrill.Adapters.WebDriver
 
         private bool AvailabilityTest(IWebElement nativeLocatedElement)
         {
-            Log.Info(string.Format("Starting Availability test for {0}", locator));
+            Log.Info($"Starting Availability test for { $"{nativeLocatedElement.TagName}"} -> {locator}");
 
             var displayed = nativeLocatedElement.Displayed;
             var enabled = nativeLocatedElement.Enabled;
@@ -73,9 +74,9 @@ namespace SpecDrill.Adapters.WebDriver
 
         public void Click()
         {
-            
+
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
-            
+
             Log.Info("Clicking {0}", this.locator);
             try
             {
@@ -113,6 +114,20 @@ namespace SpecDrill.Adapters.WebDriver
             get { return this.Element.Text; }
         }
 
+        public string GetCssValue(string cssValueName)
+        {
+            try
+            {
+                return this.Element.GetCssValue(cssValueName);
+            }
+            catch (StaleElementReferenceException sere)
+            {
+                Log.Error(sere, $"Element {this.locator} is stale!");
+            }
+
+            return null;
+        }
+
         public string GetAttribute(string attributeName)
         {
             try
@@ -132,13 +147,18 @@ namespace SpecDrill.Adapters.WebDriver
             this.browser.HoverOver(this);
         }
 
+        public void DragAndDrop()
+        {
+            this.browser.DragAndDropElement(this, this);
+        }
+
         public IElement Clear()
         {
             this.Element.Clear();
             return this;
         }
 
-        public object NativeElement
+        public SearchResult NativeElementSearchResult
         {
             get
             {
@@ -159,45 +179,58 @@ namespace SpecDrill.Adapters.WebDriver
                 }
 
                 if (elementContainers.Count == 0)
-                   return this.browser.FindNativeElement(this.locator) as IWebElement;
+                    return this.browser.FindNativeElement(this.locator);
 
                 elementContainers.Reverse();
 
-                IWebElement currentContainer = null;
+                SearchResult previousContainer = null;
 
-                currentContainer = elementContainers[0].NativeElement as IWebElement;
-                AvailabilityTest(currentContainer);
+                previousContainer = elementContainers[0].NativeElementSearchResult;
+                AvailabilityTest(previousContainer.NativeElement as IWebElement);
                 Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep.");
                 Log.Info($"L01>{elementContainers[0].Locator}");
 
                 if (elementContainers.Count > 1)
                     for (int i = 1; i < elementContainers.Count; i++)
                     {
-                        if (currentContainer != null && AvailabilityTest(currentContainer))
-                        {
-                            currentContainer = currentContainer.FindElement(elementContainers[i].Locator.ToSeleniumLocator()) as IWebElement;
-                            Log.Info($"L{i:00}{elementContainers[i].Locator}");
-                        }
-                        else
-                        {
-                            Log.Info($"..some error..");
-                        }
+                        var containerToSearch = elementContainers[i];
+                        previousContainer = SearchElementInPreviousContainer(containerToSearch, previousContainer, i);
                     }
 
                 Log.Info($"LOC>{locator}");
 
-                IWebElement nativeElement = null;
-                if (currentContainer != null)
-                {
-                    // do not call higher level status check properties from here in order to avoid infinite recursion
-                    if (AvailabilityTest(currentContainer))
-                    {
-                        nativeElement = currentContainer.FindElement(this.locator.ToSeleniumLocator()) as IWebElement;
-                    }
-                }
+                var nativeElement = SearchElementInPreviousContainer(this, previousContainer);
 
                 return nativeElement;
             }
+        }
+
+        private SearchResult SearchElementInPreviousContainer(IElement elementToSearch, SearchResult previousContainer, int i = -1)
+        {
+            var previousContainerNativeElement = previousContainer.NativeElement as IWebElement;
+
+            if (previousContainer != null && AvailabilityTest(previousContainerNativeElement))
+            {
+                var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
+                if (elementToSearch.Locator.Index > elements.Count)
+                {
+                    throw new Exception($"SeleniumElement.NativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
+                }
+                if (elements.Count == 0)
+                {
+                    throw new NoSuchElementException($"Element ../{elementToSearch.Locator} not found!");
+                }
+                previousContainer = SearchResult.Create(elements[(elementToSearch.Locator.Index ?? 1) - 1], elements.Count);
+
+                Log.Info($"L{i:00}{elementToSearch.Locator}");
+            }
+            else
+            {
+                Log.Info($"..some error..");
+                throw new Exception("Parent container unavailable!!");
+            }
+
+            return previousContainer;
         }
 
         internal IWebElement Element
@@ -205,8 +238,9 @@ namespace SpecDrill.Adapters.WebDriver
             get
             {
                 Wait.NoMoreThan(TimeSpan.FromSeconds(10)).Until(() => this.IsAvailable);
-                browser.ExecuteJavascript(@"arguments[0].style.border='3px solid red';", this.NativeElement);
-                return this.NativeElement as IWebElement;
+                var nativeElement = this.NativeElementSearchResult.NativeElement as IWebElement;
+                browser.ExecuteJavascript(@"arguments[0].style.border='3px solid red';", nativeElement);
+                return nativeElement;
             }
         }
 
@@ -223,6 +257,16 @@ namespace SpecDrill.Adapters.WebDriver
             get
             {
                 return this.locator;
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                Wait.NoMoreThan(TimeSpan.FromSeconds(10)).Until(() => this.IsAvailable);
+                browser.ExecuteJavascript(@"arguments[0].style.border='3px solid green';", this.NativeElementSearchResult.NativeElement);
+                return this.NativeElementSearchResult.Count;
             }
         }
     }

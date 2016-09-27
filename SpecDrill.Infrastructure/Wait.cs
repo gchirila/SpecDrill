@@ -68,7 +68,7 @@ namespace SpecDrill
         protected ILogger Log = Infrastructure.Logging.Log.Get<MaxWaitContext>();
         public TimeSpan MaximumWait { get; set; }
 
-        public void Until(Func<bool> waitCondition)
+        public void Until(Func<bool> waitCondition, bool throwException = true)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -76,10 +76,14 @@ namespace SpecDrill
             {
                 if (waitCondition())
                     return;
-                Thread.Sleep(10);
+                Thread.Sleep(200);
             }
             sw.Stop();
-            throw new TimeoutException(string.Format("Explicit Wait of {0} Timed Out !", this.MaximumWait));
+
+            if (throwException)
+            {
+                throw new TimeoutException(string.Format("Explicit Wait of {0} Timed Out !", this.MaximumWait));
+            }
         }
     }
 

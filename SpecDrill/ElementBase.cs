@@ -1,6 +1,7 @@
 ﻿using System;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill
 {
@@ -21,11 +22,11 @@ namespace SpecDrill
 
         #region IElement
 
-        public object NativeElement
+        public SearchResult NativeElementSearchResult
         {
             get
             {
-                return this.rootElement.NativeElement;
+                return this.rootElement.NativeElementSearchResult;
             }
         }
 
@@ -77,6 +78,14 @@ namespace SpecDrill
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                return this.rootElement.Count;
+            }
+        }
+
         public void Click()
         {
             this.rootElement.Click();
@@ -100,6 +109,11 @@ namespace SpecDrill
         public string GetAttribute(string attributeName)
         {
             return this.rootElement.GetAttribute(attributeName);
+        }
+
+        public string GetCssValue(string cssValueName)
+        {
+            return this.rootElement.GetCssValue(cssValueName);
         }
 
         public void Hover()

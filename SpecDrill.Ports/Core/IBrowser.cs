@@ -1,3 +1,4 @@
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         /// </summary>
         /// <param name="locator"></param>
         /// <returns></returns>
-        IElement PeekElement(IElementLocator locator);
+        IElement PeekElement(IElement locator);
 
         void Exit();
 
@@ -36,10 +37,17 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
 
         IList<IElement> FindElements(IElementLocator locator);
 
-        object FindNativeElement(IElementLocator locator);
+        SearchResult FindNativeElement(IElementLocator locator);
 
         object ExecuteJavascript(string script, params object[] arguments);
 
         void HoverOver(IElement element);
+
+        void DragAndDropElement(IElement startFromElement, IElement stopToElement);
+
+        void MaximizePage();
+
+        void RefreshPage();
+        
     }
 }

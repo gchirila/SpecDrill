@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SomeTests.PageObjects.Test002;
 using SpecDrill;
 using SpecDrill.MsTest;
@@ -18,7 +19,9 @@ namespace SomeTests
         {
             var googleSearchPage = Browser.Open<GoogleSearchPage>();
             googleSearchPage.TxtSearch.SendKeys("drill");
-            System.Threading.Thread.Sleep(3000);
+            var resultsPage = googleSearchPage.BtnSearch.Click();
+            // skip first two results ... wikipedia is ranking as 3rd + 1 skipping commercial
+            resultsPage.SearchResults[4].Link.Text.Should().Contain("Wikipedia");
         }
     }
 }

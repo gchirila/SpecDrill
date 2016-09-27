@@ -43,5 +43,11 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         object ExecuteJavaScript(string js, params object[] elements);
 
         void MoveToElement(IElement locator);
+
+        void DragAndDropElement(IElement startFromElement, IElement stopToElement);
+
+        void RefreshPage();
+
+        void Maximize();
     }
 }

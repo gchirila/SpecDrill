@@ -11,11 +11,18 @@ namespace SpecDrill.Adapters.WebDriver
     {
         private readonly By locatorType;
         private readonly string locatorValue;
-        
+        private readonly int? index; //1-based
+
         public SeleniumElementLocator(By locatorKind, string locatorValue)
         {
             this.locatorType = locatorKind;
             this.locatorValue = locatorValue;
+            this.index = null;
+        }
+
+        public SeleniumElementLocator(By locatorKind, string locatorValue, int index) : this(locatorKind, locatorValue)
+        {
+            this.index = index;
         }
 
         public override string ToString()
@@ -23,26 +30,36 @@ namespace SpecDrill.Adapters.WebDriver
             return string.Format("By: {0} -> `{1}`", locatorType, locatorValue);
         }
 
+        public IElementLocator Copy()
+        {
+            return new SeleniumElementLocator(this.locatorType, this.LocatorValue);
+        }
+
+        public IElementLocator CopyWithIndex(int index)
+        {
+            return new SeleniumElementLocator(this.locatorType, this.LocatorValue, index);
+        }
+
         /// <summary>
         /// Creates new Locator by Appending index information to current Locator
         /// </summary>
         /// <param name="index"> index is one based! </param>
         /// <returns></returns>
-        public IElementLocator WithIndex(int index)
-        {
-            if (index < 1)
-                throw new ArgumentException("Locator Index is 1-based");
+        //public IElementLocator WithIndex(int index)
+        //{
+        //    if (index < 1)
+        //        throw new ArgumentException("Locator Index is 1-based");
 
-            switch (this.locatorType)
-            {
-                case By.CssSelector:
-                    return new SeleniumElementLocator(this.LocatorType, $"{this.locatorValue}:nth-of-type({index})");
-                case By.XPath:
-                    return new SeleniumElementLocator(this.LocatorType, $"{this.locatorValue}[{index}]");
-                default:
-                    throw new Exception("Invalid Locator Type. You can index only CSS or XPath selectors!");
-            }
-        }
+        //    switch (this.locatorType)
+        //    {
+        //        case By.CssSelector:
+        //            return new SeleniumElementLocator(this.LocatorType, $"{this.locatorValue}:nth-of-type({index})");
+        //        case By.XPath:
+        //            return new SeleniumElementLocator(this.LocatorType, $"{this.locatorValue}[{index}]");
+        //        default:
+        //            throw new Exception("Invalid Locator Type. You can index only CSS or XPath selectors!");
+        //    }
+        //}
 
         public By LocatorType
         {
@@ -52,6 +69,14 @@ namespace SpecDrill.Adapters.WebDriver
         public string LocatorValue
         {
             get { return locatorValue; }
+        }
+
+        public int? Index
+        {
+            get
+            {
+                return index;
+            }
         }
     }
 }

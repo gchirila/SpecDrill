@@ -6,6 +6,7 @@
         ie,
         firefox,
         opera,
-        safari
+        safari,
+        appium
     }
 }

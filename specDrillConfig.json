@@ -1,7 +1,7 @@
 ﻿{
     "webdriver": {
-        "browserDriver": "firefox", // chrome, ie, firefox, opera, safari
-        "browserDriversPath": "C:\\Your Browser Drivers Path"//"d:\\_specDrill\\DriverServer"
+        "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
+        "browserDriversPath": "d:\\_specDrill\\DriverServer" //"C:\\Your Browser Drivers Path"//
     },
     "maxWait": "60000",
     "waitPollingFrequency": "200",

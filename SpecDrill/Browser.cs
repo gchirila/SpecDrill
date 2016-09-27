@@ -14,6 +14,7 @@ using SpecDrill.Infrastructure.Logging;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill
 {
@@ -95,12 +96,23 @@ namespace SpecDrill
             return new ImplicitWaitScope(browserDriver, timeoutHistory, timeout, message);
         }
 
-        public IElement PeekElement(IElementLocator locator)
+        //public IElement PeekElement(IElementLocator locator)
+        //{
+        //    using (ImplicitTimeout(TimeSpan.FromSeconds(1)))
+        //    {
+        //        var webElement = WebElement.Create(this, null, locator);
+        //        var nativeElement = webElement.NativeElement;
+        //        return nativeElement == null ? null : webElement;
+        //    }
+        //}
+
+        public IElement PeekElement(IElement element)
         {
             using (ImplicitTimeout(TimeSpan.FromSeconds(1)))
             {
-                var webElement = WebElement.Create(this, null, locator);
-                var nativeElement = webElement.NativeElement;
+                var webElement = WebElement.Create(this, element.Parent, element.Locator);
+                var searchResult = webElement.NativeElementSearchResult;
+                var nativeElement = searchResult.NativeElement;
                 return nativeElement == null ? null : webElement;
             }
         }
@@ -126,16 +138,31 @@ namespace SpecDrill
             {
                 for (int i=0; i<elements.Count; i++)
                 {
-                    result.Add(WebElement.Create(this, null, locator.WithIndex(i + 1)));
+                    result.Add(WebElement.Create(this, null, locator));
                 }
             }
 
             return result;
         }
 
-        public object FindNativeElement(IElementLocator locator)
+        public SearchResult FindNativeElement(IElementLocator locator)
         {
-            return browserDriver.FindElement(locator);
+            if (locator.Index.HasValue)
+            {
+                var elements = browserDriver.FindElements(locator);
+                if (locator.Index > elements.Count)
+                {
+                    throw new Exception($"Browser.FindNativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
+                }
+                
+                return SearchResult.Create(elements[locator.Index.Value], elements.Count);
+
+            }
+            else
+            {
+                //TODO: make this right by always using FindElements !
+                return SearchResult.Create(browserDriver.FindElement(locator), 1);
+            }
         }
 
         public object ExecuteJavascript(string js, params object[] arguments)
@@ -146,6 +173,21 @@ namespace SpecDrill
         public void HoverOver(IElement element)
         {
             browserDriver.MoveToElement(element);
+        }
+
+        public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
+        {
+            browserDriver.DragAndDropElement(startFromElement, stopToElement);
+        }
+
+        public void RefreshPage()
+        {
+            browserDriver.RefreshPage();
+        }
+
+        public void MaximizePage()
+        {
+            browserDriver.Maximize();
         }
     }
 }
