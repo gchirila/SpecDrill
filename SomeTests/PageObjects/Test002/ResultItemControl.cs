@@ -15,7 +15,7 @@ namespace SomeTests.PageObjects.Test002
         public IElement Description { get; }
         public SearchResultItemControl(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
         {
-            Link = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "div.rc>h3.r>a"));
+            Link = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "div a"));
             Description = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "div.rc>div.s>span.st"));
         }
     }

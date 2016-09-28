@@ -18,10 +18,10 @@ namespace SomeTests
         public void ShouldHaveResultsWhenSearchingGoogle()
         {
             var googleSearchPage = Browser.Open<GoogleSearchPage>();
-            googleSearchPage.TxtSearch.SendKeys("drill");
+            googleSearchPage.TxtSearch.SendKeys("drill wiki");
             var resultsPage = googleSearchPage.BtnSearch.Click();
-            // skip first two results ... wikipedia is ranking as 3rd + 1 skipping commercial
-            resultsPage.SearchResults[4].Link.Text.Should().Contain("Wikipedia");
+            
+            resultsPage.SearchResults[1].Link.Text.Should().Contain("Wikipedia");
         }
     }
 }

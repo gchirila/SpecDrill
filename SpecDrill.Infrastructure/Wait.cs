@@ -76,7 +76,7 @@ namespace SpecDrill
             {
                 if (waitCondition())
                     return;
-                Thread.Sleep(200);
+                Thread.Sleep(100);
             }
             sw.Stop();
 
