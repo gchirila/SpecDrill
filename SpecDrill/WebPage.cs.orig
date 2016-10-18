@@ -40,7 +40,6 @@ namespace SpecDrill
                 return retrievedTitle;
             }
         }
-        
 
         //public IElement Element
         //{
@@ -92,18 +91,6 @@ namespace SpecDrill
 
             }
         }
-
-        public void RefreshPage()
-        {
-            browser.RefreshPage();
-            Wait.Until(() => this.IsLoaded);
-            this.WaitForSilence();
-        }
-
-        public virtual void WaitForSilence()
-        {
-        }
-
         // try and see if virtual IsPageLoaded can be used to sum up all kinds of wait (static, jQuery, Angular1, Angular2, etc)
         // goal is to have an immediately returning test so we can wait on it
         // currently there is no IsPageLoaded method on IPage so we can use in lambda

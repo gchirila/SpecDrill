@@ -4,7 +4,5 @@
     {
         string Title { get; }
         bool IsLoaded { get; }
-        void WaitForSilence();
-        void RefreshPage();
     }
 }

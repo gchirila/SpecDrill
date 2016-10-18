@@ -30,14 +30,7 @@ namespace SpecDrill
             int retryCount = this.RetryCount;
             while (retryCount >= 0)
             {
-                try
-                {
-                    action();
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, $"TryingAction: retryCount={retryCount}");
-                }
+                action();
 
                 retryCount--;
 

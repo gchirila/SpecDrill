@@ -39,7 +39,7 @@ namespace SpecDrill.Adapters.WebDriver
                 var elementFound = locatedElement != null;
                 if (!elementFound)
                 {
-                    Log.Info(string.Format("Element ({0}) not found!", locator));
+                    Log.Info($"Element ({locator}) not found!");
                     return false;
                 }
 
@@ -67,13 +67,11 @@ namespace SpecDrill.Adapters.WebDriver
 
             return result;
         }
-        public IBrowser Browser
-        {
-            get { return this.browser; }
-        }
+        public IBrowser Browser => this.browser;
 
-        public void Click()
+        public void Click(bool waitForSilence = false)
         {
+            if (waitForSilence) {  this.ContainingPage.WaitForSilence(); }
 
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
 
@@ -98,14 +96,16 @@ namespace SpecDrill.Adapters.WebDriver
             }
         }
 
-        public IElement SendKeys(string keys)
+        public IElement SendKeys(string keys, bool waitForSilence = false)
         {
+            if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
             this.Element.SendKeys(keys);
             return this;
         }
 
-        public void Blur()
+        public void Blur(bool waitForSilence = false)
         {
+            if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
             this.Element.SendKeys("\t");
         }
 
@@ -142,8 +142,9 @@ namespace SpecDrill.Adapters.WebDriver
             return null;
         }
 
-        public void Hover()
+        public void Hover(bool waitForSilence = false)
         {
+            if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
             this.browser.HoverOver(this);
         }
 
@@ -152,11 +153,24 @@ namespace SpecDrill.Adapters.WebDriver
             this.browser.DragAndDropElement(this, this);
         }
 
-        public IElement Clear()
+        public IElement Clear(bool waitForSilence = false)
         {
+            if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
             this.Element.Clear();
             return this;
         }
+
+        public IElement SearchContainingPage(IElement element)
+        {
+            if (element is IPage)
+                return element;
+
+            return (element.Parent != null) ? 
+                        SearchContainingPage(element.Parent) : 
+                        null;
+        }
+
+        public IPage ContainingPage => SearchContainingPage(this) as IPage;
 
         public SearchResult NativeElementSearchResult
         {

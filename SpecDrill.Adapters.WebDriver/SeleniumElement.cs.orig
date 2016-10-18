@@ -186,6 +186,9 @@ namespace SpecDrill.Adapters.WebDriver
                 SearchResult previousContainer = null;
 
                 previousContainer = elementContainers[0].NativeElementSearchResult;
+                if (previousContainer.NativeElement == null)
+                    return previousContainer;
+
                 AvailabilityTest(previousContainer.NativeElement as IWebElement);
                 Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep.");
                 Log.Info($"L01>{elementContainers[0].Locator}");
@@ -195,6 +198,8 @@ namespace SpecDrill.Adapters.WebDriver
                     {
                         var containerToSearch = elementContainers[i];
                         previousContainer = SearchElementInPreviousContainer(containerToSearch, previousContainer, i);
+                        if (previousContainer.NativeElement == null)
+                            return previousContainer;
                     }
 
                 Log.Info($"LOC>{locator}");
@@ -208,7 +213,7 @@ namespace SpecDrill.Adapters.WebDriver
         private SearchResult SearchElementInPreviousContainer(IElement elementToSearch, SearchResult previousContainer, int i = -1)
         {
             var previousContainerNativeElement = previousContainer.NativeElement as IWebElement;
-
+            
             if (previousContainer != null && AvailabilityTest(previousContainerNativeElement))
             {
                 var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
@@ -218,16 +223,16 @@ namespace SpecDrill.Adapters.WebDriver
                 }
                 if (elements.Count == 0)
                 {
-                    throw new NoSuchElementException($"Element ../{elementToSearch.Locator} not found!");
-                }
-                previousContainer = SearchResult.Create(elements[(elementToSearch.Locator.Index ?? 1) - 1], elements.Count);
+                        return SearchResult.Create(null, 0);
+                    }
+                    previousContainer = SearchResult.Create(elements[(elementToSearch.Locator.Index??1) - 1], elements.Count);
 
                 Log.Info($"L{i:00}{elementToSearch.Locator}");
             }
             else
             {
-                Log.Info($"..some error..");
-                throw new Exception("Parent container unavailable!!");
+                Log.Info($"..some error.. Parent container was null...");
+                // not throwing exception for now
             }
 
             return previousContainer;
@@ -239,7 +244,12 @@ namespace SpecDrill.Adapters.WebDriver
             {
                 Wait.NoMoreThan(TimeSpan.FromSeconds(10)).Until(() => this.IsAvailable);
                 var nativeElement = this.NativeElementSearchResult.NativeElement as IWebElement;
+                if (nativeElement == null)
+                {
+                    throw new Exception("Element Not Found!");
+                }
                 browser.ExecuteJavascript(@"arguments[0].style.border='3px solid red';", nativeElement);
+                
                 return nativeElement;
             }
         }
@@ -265,7 +275,10 @@ namespace SpecDrill.Adapters.WebDriver
             get
             {
                 Wait.NoMoreThan(TimeSpan.FromSeconds(10)).Until(() => this.IsAvailable);
-                browser.ExecuteJavascript(@"arguments[0].style.border='3px solid green';", this.NativeElementSearchResult.NativeElement);
+                var nativeElement = this.NativeElementSearchResult.NativeElement;
+                if (nativeElement == null)
+                    return 0;
+                browser.ExecuteJavascript(@"arguments[0].style.border='3px solid green';", nativeElement);
                 return this.NativeElementSearchResult.Count;
             }
         }

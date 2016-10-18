@@ -30,26 +30,26 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// </summary>
         IBrowser Browser { get; }
 
-        void Click(bool waitForSilence = false);
+        void Click();
 
         /// <summary>
         /// Sends text to input
         /// </summary>
         /// <param name="keys">Text to send into textbox</param>
 
-        IElement SendKeys(string keys, bool waitForSilence = false);
+        IElement SendKeys(string keys);
 
         /// <summary>
         /// Lose element focus
         /// </summary>
         /// <returns></returns>
-        void Blur(bool waitForSilence = false);
+        void Blur();
 
         /// <summary>
         /// Clears input
         /// </summary>
         /// <returns></returns>
-        IElement Clear(bool waitForSilence = false);
+        IElement Clear();
 
         string Text { get; }
 
@@ -62,12 +62,10 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
 
         string GetCssValue(string cssValueName);
 
-        void Hover(bool waitForSilence = false);
+        void Hover();
 
         IElement Parent { get; }
 
         IElementLocator Locator { get; }
-
-        IPage ContainingPage { get; }
     }
 }

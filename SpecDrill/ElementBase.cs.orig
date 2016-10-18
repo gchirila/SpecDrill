@@ -70,9 +70,13 @@ namespace SpecDrill
             }
         }
 
-        public IElementLocator Locator => this.locator;
-
-        public IPage ContainingPage => this.ContainingPage;
+        public IElementLocator Locator
+        {
+            get
+            {
+                return this.locator;
+            }
+        }
 
         public int Count
         {
@@ -82,25 +86,24 @@ namespace SpecDrill
             }
         }
 
-        public void Click(bool waitForSilence = false)
+        public void Click()
         {
-            this.rootElement.Click(waitForSilence);
+            this.rootElement.Click();
         }
 
-        public IElement SendKeys(string keys, bool waitForSilence = false)
+        public IElement SendKeys(string keys)
         {
-            return this.rootElement.SendKeys(keys, waitForSilence);
+            return this.rootElement.SendKeys(keys);
         }
 
-        public void Blur(bool waitForSilence = false)
+        public void Blur()
         {
-            this.rootElement.Blur(waitForSilence);
-            
+            this.rootElement.Blur();
         }
 
-        public IElement Clear(bool waitForSilence = false)
+        public IElement Clear()
         {
-            return this.rootElement.Clear(waitForSilence);
+            return this.rootElement.Clear();
         }
 
         public string GetAttribute(string attributeName)
@@ -113,9 +116,9 @@ namespace SpecDrill
             return this.rootElement.GetCssValue(cssValueName);
         }
 
-        public void Hover(bool waitForSilence = false)
+        public void Hover()
         {
-            this.rootElement.Hover(waitForSilence);
+            this.rootElement.Hover();
         }
         #endregion
     }
