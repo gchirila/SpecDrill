@@ -1,8 +1,10 @@
 ﻿{
-    "webdriver": {
-        "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-        "browserDriversPath": "d:\\_specDrill\\DriverServer" //"C:\\Your Browser Drivers Path"//
-    },
+  "webdriver": {
+    "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
+    "browserDriversPath": "d:\\_specDrill\\DriverServer", //"C:\\Your Browser Drivers Path"//
+    "isRemote": true,
+    "seleniumServerUri": "http://localhost:5555/wd/hub"
+  },
     "maxWait": "60000",
     "waitPollingFrequency": "200",
     "engine": "webdriver", // webdriver, watin (not supported for now) ...

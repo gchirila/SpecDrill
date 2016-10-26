@@ -11,13 +11,20 @@ using SpecDrill.SecondaryPorts.AutomationFramework;
 //using OpenQA.Selenium.Appium.Android;
 //using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Remote;
+using SpecDrill.Infrastructure;
 //using OpenQA.Selenium.Appium.Enums;
 
 namespace SpecDrill.Adapters.WebDriver
 {
     public class SeleniumBrowserFactory : IBrowserDriverFactory
     {
-        private readonly Dictionary<BrowserNames, Func<string, IBrowserDriver>> driverFactory = new Dictionary<BrowserNames, Func<string, IBrowserDriver>>
+        private readonly Dictionary<BrowserNames, Func<string, IBrowserDriver>> driverFactory;
+        //private readonly Dictionary<BrowserNames>
+        private readonly Settings configuration = null;
+        public SeleniumBrowserFactory(Settings configuration)
+        {
+            this.configuration = configuration;
+            driverFactory = new Dictionary<BrowserNames, Func<string, IBrowserDriver>>
         {
             { BrowserNames.chrome, bdp =>
             //TODO: extract window parameters in specDrillConfig.json
@@ -40,16 +47,37 @@ namespace SpecDrill.Adapters.WebDriver
             //    return SeleniumBrowserDriver.Create(new AndroidDriver<AppiumWebElement>(
             //        new Uri("http://127.0.0.1:4723/wd/hub"), capabilities, TimeSpan.FromSeconds(60))); } }
         };
-
-        private readonly Settings configuration = null;
-        public SeleniumBrowserFactory(Settings configuration)
-        {
-            this.configuration = configuration;
         }
 
         public IBrowserDriver Create(BrowserNames browserName)
         {
+            if (configuration.WebDriver.IsRemote)
+            {
+                switch (browserName)
+                {
+                    case BrowserNames.chrome:
+                        return CreateRemoteWebDriver(DesiredCapabilities.Chrome());
+                    case BrowserNames.firefox:
+                        return CreateRemoteWebDriver(DesiredCapabilities.Firefox());
+                    case BrowserNames.opera:
+                        return CreateRemoteWebDriver(DesiredCapabilities.Opera());
+                    case BrowserNames.safari:
+                        return CreateRemoteWebDriver(DesiredCapabilities.Safari());
+                    case BrowserNames.ie:
+                        return CreateRemoteWebDriver(DesiredCapabilities.InternetExplorer());
+                    default:
+                        throw new Exception($"Value Not Supported `{browserName}`!");
+                }
+            }
+
             return driverFactory[browserName](configuration.WebDriver.BrowserDriversPath);
+        }
+
+        public IBrowserDriver CreateRemoteWebDriver(DesiredCapabilities desiredCapabilities)
+        {
+            return SeleniumBrowserDriver.Create(
+                            new RemoteWebDriver(
+                                new Uri(configuration.WebDriver.SeleniumServerUri), desiredCapabilities));
         }
     }
 }

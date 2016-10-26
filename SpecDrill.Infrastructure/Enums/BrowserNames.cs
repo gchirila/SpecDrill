@@ -7,6 +7,7 @@
         firefox,
         opera,
         safari,
-        appium
+        appium,
+        seleniumServer
     }
 }
