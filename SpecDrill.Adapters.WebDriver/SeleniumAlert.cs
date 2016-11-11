@@ -28,7 +28,7 @@ namespace SpecDrill.Adapters.WebDriver
         public void Dismiss()
         {
             this.alert().Dismiss();
-            Wait.Until(() => alert() != null);
+            Wait.Until(() => alert() == null);
         }
 
         public void SendKeys(string keys) => alert().SendKeys(keys);
