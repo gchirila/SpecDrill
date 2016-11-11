@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>SpecDrill</id>
+        <version>1.0.3</version>
+        <authors>Cosmin Sontu</authors>
+        <owners>Cosmin Sontu</owners>
+        <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/CosminSontu/SpecDrill</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
+        <releaseNotes />
+        <copyright>Copyright 2016</copyright>
+        <tags>SpecDrill SpecFlow Selenium WebDriver Automation</tags>
+        <dependencies>
+            <dependency id="Newtonsoft.Json" version="8.0.3" />
+            <dependency id="Selenium.WebDriver" version="3.0.0" />
+            <dependency id="Selenium.Support" version="3.0.0" />
+            <dependency id="log4net" version="2.0.5" />
+            <dependency id="SpecFlow" version="2.0.0" />
+            <dependency id="SpecFlow.MsTest" version="2.0.0" />
+            <dependency id="FluentAssertions" version="4.14.0" />
+            <dependency id="Selenium.WebDriver.ChromeDriver" version="2.25.0.0" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\SomeTests\PageObjects\Test002\GoogleSearchPage.cs" target="content\PageObjects\GoogleSearchPage.cs" />
+        <file src="..\SomeTests\PageObjects\Test002\GoogleSearchResultsPage.cs" target="content\PageObjects\GoogleSearchResultsPage.cs" />
+        <file src="..\SomeTests\PageObjects\Test002\ResultItemControl.cs" target="content\PageObjects\ResultItemControl.cs" />
+        <file src="..\SomeTests\GoogleSearchTests.cs" target="content\GoogleSearchTests.cs" />
+        <file src="..\SpecDrill.NuGet\content\log4net.config" target="content\log4net.config" />
+        <file src="..\SpecDrill.NuGet\content\specDrillConfig.json" target="content\specDrillConfig.json" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.Adapters.WebDriver.dll" target="lib\net461\SpecDrill.Adapters.WebDriver.dll" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.Adapters.WebDriver.pdb" target="lib\net461\SpecDrill.Adapters.WebDriver.pdb" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.dll" target="lib\net461\SpecDrill.dll" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.Infrastructure.dll" target="lib\net461\SpecDrill.Infrastructure.dll" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.Infrastructure.pdb" target="lib\net461\SpecDrill.Infrastructure.pdb" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.MsTest.dll" target="lib\net461\SpecDrill.MsTest.dll" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.MsTest.pdb" target="lib\net461\SpecDrill.MsTest.pdb" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.pdb" target="lib\net461\SpecDrill.pdb" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.SecondaryPorts.AutomationFramework.dll" target="lib\net461\SpecDrill.SecondaryPorts.AutomationFramework.dll" />
+        <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.SecondaryPorts.AutomationFramework.pdb" target="lib\net461\SpecDrill.SecondaryPorts.AutomationFramework.pdb" />
+    </files>
+</package>
