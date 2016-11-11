@@ -3,6 +3,7 @@
 TestResults/
 *.sln.ide/
 _ReSharper.*/
+SpecDrill.NuGet*/
 packages/
 artifacts/
 .vs/
