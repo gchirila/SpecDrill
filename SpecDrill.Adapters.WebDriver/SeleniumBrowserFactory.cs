@@ -23,6 +23,7 @@ namespace SpecDrill.Adapters.WebDriver
         private readonly Settings configuration = null;
         public SeleniumBrowserFactory(Settings configuration)
         {
+            var aPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             this.configuration = configuration;
             driverFactory = new Dictionary<BrowserNames, Func<string, IBrowserDriver>>
         {
@@ -34,9 +35,13 @@ namespace SpecDrill.Adapters.WebDriver
                 return SeleniumBrowserDriver.Create(new ChromeDriver(bdp, chromeOptions));
             }},
             { BrowserNames.ie, bdp => SeleniumBrowserDriver.Create(new InternetExplorerDriver(bdp)) },
-            { BrowserNames.firefox, bdp => SeleniumBrowserDriver.Create(new FirefoxDriver()) },
-            { BrowserNames.opera, bdp => SeleniumBrowserDriver.Create(new OperaDriver()) },
-            { BrowserNames.safari, bdp => SeleniumBrowserDriver.Create(new SafariDriver()) }
+            { BrowserNames.firefox, bdp => 
+                {
+                    Environment.SetEnvironmentVariable("webdriver.gecko.driver", bdp);
+                    return SeleniumBrowserDriver.Create(new FirefoxDriver());
+                } },
+            { BrowserNames.opera, bdp => SeleniumBrowserDriver.Create(new OperaDriver(bdp)) },
+            { BrowserNames.safari, bdp => SeleniumBrowserDriver.Create(new SafariDriver(bdp)) }
             //,{ BrowserNames.appium, bdp => {
             //    DesiredCapabilities capabilities = new DesiredCapabilities();
             //    capabilities.SetCapability(MobileCapabilityType.PlatformVersion, "5.1");
@@ -66,11 +71,23 @@ namespace SpecDrill.Adapters.WebDriver
                     case BrowserNames.ie:
                         return CreateRemoteWebDriver(DesiredCapabilities.InternetExplorer());
                     default:
-                        throw new Exception($"Value Not Supported `{browserName}`!");
+                        throw new ArgumentOutOfRangeException($"SpecDrill: Value Not Supported `{browserName}`!");
                 }
             }
 
-            return driverFactory[browserName](configuration.WebDriver.BrowserDriversPath);
+            return driverFactory[browserName](GetBrowserDriversPath());
+        }
+
+        private string GetBrowserDriversPath()
+        {
+            var browserDriversPath = configuration.WebDriver.BrowserDriversPath;
+            if (!configuration.WebDriver.BrowserDriversPath.Contains(":\\"))
+            {
+                var currentPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                browserDriversPath = $"{currentPath}\\{browserDriversPath}";
+            }
+
+            return browserDriversPath;
         }
 
         public IBrowserDriver CreateRemoteWebDriver(DesiredCapabilities desiredCapabilities)

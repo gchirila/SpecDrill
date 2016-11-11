@@ -18,13 +18,13 @@ namespace SomeTests.PageObjects.Test001
 
         public IElement TxtResult { get; private set; }
 
-        public Test001CalculatorPage(Browser browser)
-            : base(browser, "Calculator")
+        public Test001CalculatorPage()
+            : base("Calculator")
         {
-            this.TxtOperand1 = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "operand1"));
-            this.TxtOperand2 = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "operand2"));
-            this.BtnAdd = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "add"));
-            this.TxtResult = WebElement.CreateSelect(this.Browser, this, ElementLocator.Create(By.Id, "result"));
+            this.TxtOperand1 = WebElement.Create(this, ElementLocator.Create(By.Id, "operand1"));
+            this.TxtOperand2 = WebElement.Create(this, ElementLocator.Create(By.Id, "operand2"));
+            this.BtnAdd = WebElement.Create(this, ElementLocator.Create(By.Id, "add"));
+            this.TxtResult = WebElement.CreateSelect(this, ElementLocator.Create(By.Id, "result"));
         }
     }
 }

@@ -15,12 +15,12 @@ namespace SomeTests.PageObjects.Test000
         public IElement TxtPassword { get; private set; }
         public INavigationElement<Test000HomePage> BtnLogin { get; private set; }
 
-        public MenuControl(Browser browser, IElement parent, IElementLocator locator)
-            : base(browser, parent, locator)
+        public MenuControl(IElement parent, IElementLocator locator)
+            : base(parent, locator)
         {
-            this.TxtUserName = WebElement.Create(this.browser, this, ElementLocator.Create(By.Id, "userName"));
-            this.TxtPassword = WebElement.Create(this.browser, this, ElementLocator.Create(By.Id, "password"));
-            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this.browser, this, ElementLocator.Create(By.Id, "login"));
+            this.TxtUserName = WebElement.Create(this, ElementLocator.Create(By.Id, "userName"));
+            this.TxtPassword = WebElement.Create(this, ElementLocator.Create(By.Id, "password"));
+            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this, ElementLocator.Create(By.Id, "login"));
         }
     }
 }

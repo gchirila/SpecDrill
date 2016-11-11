@@ -15,5 +15,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Model
         {
             return new SearchResult(nativeElement, count);
         }
+
+        public bool HasResult => NativeElement != null;
     }
 }

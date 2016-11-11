@@ -37,6 +37,9 @@ namespace SpecDrill.Adapters.WebDriver
 
         public IElementLocator CopyWithIndex(int index)
         {
+            if (index < 1)
+                throw new IndexOutOfRangeException("SpecDrill: SeleniumElementLocator.CopyWithIndex(idx) index is 1-based!");
+            
             return new SeleniumElementLocator(this.locatorType, this.LocatorValue, index);
         }
 
@@ -57,7 +60,7 @@ namespace SpecDrill.Adapters.WebDriver
         //        case By.XPath:
         //            return new SeleniumElementLocator(this.LocatorType, $"{this.locatorValue}[{index}]");
         //        default:
-        //            throw new Exception("Invalid Locator Type. You can index only CSS or XPath selectors!");
+        //            throw new Exception("SpecDrill Invalid Locator Type. You can index only CSS or XPath selectors!");
         //    }
         //}
 

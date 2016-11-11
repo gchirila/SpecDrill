@@ -45,6 +45,32 @@ namespace SpecDrill.Adapters.WebDriver
 
         }
 
+        private Func<IAlert> WdAlert => () =>
+        {
+            try
+            {
+                return this.seleniumDriver.SwitchTo().Alert();
+            }
+            catch (NoAlertPresentException)
+            { }
+
+            return null;
+        };
+
+        public IBrowserAlert Alert
+        {
+            get
+            {
+                if (this.WdAlert() == null)
+                    return null;
+
+                return new SeleniumAlert(WdAlert);
+            }
+               
+        }
+
+        public bool IsAlertPresent => this.WdAlert != null;
+
         public void ChangeBrowserDriverTimeout(TimeSpan timeout)
         {
             this.seleniumDriver.Manage().Timeouts().ImplicitlyWait(timeout);
@@ -58,13 +84,13 @@ namespace SpecDrill.Adapters.WebDriver
             return new ReadOnlyCollection<object>(result);
         }
 
-        public object FindElement(IElementLocator locator)
-        {
-            var elements = seleniumDriver.FindElements(locator.ToSelenium());
-            if (elements == null || elements.Count == 0)
-                return null;
-            return elements[0];
-        }
+        //public object FindElement(IElementLocator locator)
+        //{
+        //    var elements = seleniumDriver.FindElements(locator.ToSelenium());
+        //    if (elements == null || elements.Count == 0)
+        //        return null;
+        //    return elements[0];
+        //}
 
         public object ExecuteJavaScript(string js, params object[] arguments)
         {
@@ -90,9 +116,18 @@ namespace SpecDrill.Adapters.WebDriver
         public void MoveToElement(IElement element)
         {
             //ExecuteJavaScript(string.Format(@"{0} sdDispatch(arguments[0],'mouseover');", sdDispatch), (element as SeleniumElement).Element);
+            //String javaScript = "var evObj = document.createEvent('MouseEvents');" +
+            //        "evObj.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);" +
+            //        "arguments[0].dispatchEvent(evObj);";
+            //ExecuteJavaScript(javaScript, (element as SeleniumElement).Element);
             var actions = new Actions(this.seleniumDriver);
             actions.MoveToElement((element as SeleniumElement).Element);
-            actions.Perform();
+            actions.Build().Perform();
+        }
+
+        public void Click(IElement element)
+        {
+            (element as SeleniumElement).Element.Click();
         }
 
         public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
@@ -109,9 +144,11 @@ namespace SpecDrill.Adapters.WebDriver
             seleniumDriver.Navigate().Refresh();
         }
 
-        public void Maximize()
+        public void MaximizePage()
         {
             seleniumDriver.Manage().Window.Maximize();
         }
+
+
     }
 }

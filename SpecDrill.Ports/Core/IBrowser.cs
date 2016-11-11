@@ -29,25 +29,30 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         /// </summary>
         /// <param name="locator"></param>
         /// <returns></returns>
-        IElement PeekElement(IElement locator);
+        SearchResult PeekElement(IElement locator);
 
         void Exit();
 
-        IElement FindElement(IElementLocator locator);
+        //IElement FindElement(IElementLocator locator);
 
-        IList<IElement> FindElements(IElementLocator locator);
+        //IList<IElement> FindElements(IElementLocator locator);
 
         SearchResult FindNativeElement(IElementLocator locator);
 
         object ExecuteJavascript(string script, params object[] arguments);
 
-        void HoverOver(IElement element);
+        void Hover(IElement element);
 
         void DragAndDropElement(IElement startFromElement, IElement stopToElement);
 
         void MaximizePage();
 
         void RefreshPage();
+
+        void Click(IElement element);
+
+        IBrowserAlert Alert { get; }
         
+        bool IsAlertPresent { get; }
     }
 }

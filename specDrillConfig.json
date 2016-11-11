@@ -1,8 +1,8 @@
 ﻿{
   "webdriver": {
     "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-    "browserDriversPath": "d:\\_specDrill\\DriverServer", //"C:\\Your Browser Drivers Path"//
-    "isRemote": true,
+    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.25.0.0\\driver", //"C:\\Your Browser Drivers Path"//
+    "isRemote": false,
     "seleniumServerUri": "http://localhost:5555/wd/hub"
   },
     "maxWait": "60000",
@@ -22,8 +22,14 @@
       },
       {
         "pageObjectType": "GoogleSearchPage",
-        "url": "http://www.google.com", // relative url path to executing assembly's location
+        "url": "http://www.google.com",
+        "isFileSystemPath": false
+      },
+      {
+        "pageObjectType": "DashboardPage",
+        "url": "http://ap-gda01-cihrp:8080/",
         "isFileSystemPath": false
       }
+
     ]
 }

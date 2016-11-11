@@ -13,10 +13,10 @@ namespace SomeTests.PageObjects.Test002
     {
         public IElement Link { get; }
         public IElement Description { get; }
-        public SearchResultItemControl(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
+        public SearchResultItemControl(IElement parent, IElementLocator locator) : base(parent, locator)
         {
-            Link = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "div a"));
-            Description = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "div.rc>div.s>span.st"));
+            Link = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div a"));
+            Description = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div.rc>div.s>span.st"));
         }
     }
 }

@@ -11,10 +11,10 @@ namespace SomeTests.PageObjects.Test000
 {
     public class MenuListItemControl : WebControl
     {
-        public MenuListItemControl(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
+        public MenuListItemControl(IElement parent, IElementLocator locator) : base(parent, locator)
         {
-            LnkLogin = WebElement.CreateNavigation<Test000LoginPage>(browser, parent, ElementLocator.Create(By.PartialLinkText, "Login"));
-            LnkHome = WebElement.CreateNavigation<Test000HomePage>(browser, parent, ElementLocator.Create(By.PartialLinkText, "Home"));
+            LnkLogin = WebElement.CreateNavigation<Test000LoginPage>(parent, ElementLocator.Create(By.PartialLinkText, "Login"));
+            LnkHome = WebElement.CreateNavigation<Test000HomePage>(parent, ElementLocator.Create(By.PartialLinkText, "Home"));
         }
 
         public INavigationElement<Test000LoginPage> LnkLogin { get; private set; }

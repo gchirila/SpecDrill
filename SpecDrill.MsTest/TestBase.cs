@@ -1,18 +1,18 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SpecDrill.Infrastructure;
 using SpecDrill.Infrastructure.Configuration;
 using SpecDrill.Infrastructure.Logging.Interfaces;
+using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 
 namespace SpecDrill.MsTest
 {
     public class TestBase
     {
         protected ILogger Log =  Infrastructure.Logging.Log.Get<TestBase>();
-
-        protected Browser Browser = new Browser(ConfigurationManager.Settings);
-
-        static TestBase()
+        protected readonly IBrowser Browser;
+        public TestBase()
         {
-            
+            Browser = new Browser(ConfigurationManager.Settings);
         }
 
         [TestInitialize]
@@ -25,7 +25,6 @@ namespace SpecDrill.MsTest
         public void _TestTearDown()
         {
             TestTearDown();
-            Browser.Exit();
         }
 
         public virtual void TestSetUp()
@@ -34,6 +33,7 @@ namespace SpecDrill.MsTest
 
         public virtual void TestTearDown()
         {
+            Browser.Exit();
         }
     }
 }

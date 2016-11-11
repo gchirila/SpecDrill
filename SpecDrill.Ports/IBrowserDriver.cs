@@ -38,7 +38,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// </summary>
         /// <param name="locator"></param>
         /// <returns></returns>
-        object FindElement(IElementLocator locator);
+        //object FindElement(IElementLocator locator);
 
         object ExecuteJavaScript(string js, params object[] elements);
 
@@ -48,6 +48,12 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
 
         void RefreshPage();
 
-        void Maximize();
+        void MaximizePage();
+
+        void Click(IElement element);
+
+        IBrowserAlert Alert { get; }
+
+        bool IsAlertPresent { get; }
     }
 }

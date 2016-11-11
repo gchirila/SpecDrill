@@ -16,20 +16,20 @@ namespace SomeTests.PageObjects.Test002
         public INavigationElement<GoogleSearchResultsPage> BtnSearch { get; private set; }
 
         public IElement TxtResult { get; private set; }
-        public GoogleSearchPage(Browser browser, string title) : base(browser, title)
+        public GoogleSearchPage(string title) : base(title)
         {
             InitFields();
         }
-        public GoogleSearchPage(Browser browser)
-            : base(browser, "")
+        public GoogleSearchPage()
+            : base("")
         {
             InitFields();
         }
 
         private void InitFields()
         {
-            this.TxtSearch = WebElement.Create(this.Browser, this, ElementLocator.Create(By.CssSelector, "input#lst-ib"));
-            this.BtnSearch = WebElement.CreateNavigation<GoogleSearchResultsPage>(this.Browser, this, ElementLocator.Create(By.CssSelector, "button.lsb>span.sbico"));
+            this.TxtSearch = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "input#lst-ib"));
+            this.BtnSearch = WebElement.CreateNavigation<GoogleSearchResultsPage>(this, ElementLocator.Create(By.CssSelector, "button.lsb>span.sbico"));
         }
     }
 }

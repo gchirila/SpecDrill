@@ -20,15 +20,15 @@ namespace SomeTests.PageObjects.Test000
 
         public MenuListItemControl CtlMenu { get; private set; }
 
-        public Test000LoginPage(Browser browser)
-            : base(browser, "Virtual Store - Login")
+        public Test000LoginPage()
+            : base("Virtual Store - Login")
         {
-            this.TxtUserName = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "userName"));
-            this.TxtPassword = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "password"));
-            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this.Browser, this, ElementLocator.Create(By.Id, "login"));
-            this.DdlCountry = WebElement.CreateSelect(this.Browser, this, ElementLocator.Create(By.Id, "country"));
-            this.DdlCity = WebElement.CreateSelect(this.Browser, this, ElementLocator.Create(By.Id, "city"));
-            this.CtlMenu = WebElement.CreateControl<MenuListItemControl>(this.Browser, this, ElementLocator.Create(By.Id, "menu"));
+            this.TxtUserName = WebElement.Create(this, ElementLocator.Create(By.Id, "userName"));
+            this.TxtPassword = WebElement.Create(this, ElementLocator.Create(By.Id, "password"));
+            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this, ElementLocator.Create(By.Id, "login"));
+            this.DdlCountry = WebElement.CreateSelect(this, ElementLocator.Create(By.Id, "country"));
+            this.DdlCity = WebElement.CreateSelect(this, ElementLocator.Create(By.Id, "city"));
+            this.CtlMenu = WebElement.CreateControl<MenuListItemControl>(this, ElementLocator.Create(By.Id, "menu"));
         }
     }
 }

@@ -15,12 +15,12 @@ namespace SomeTests.PageObjects.Test000
         public INavigationElement<Test000HomePage> BtnLogin { get; private set; }
         public MenuListItemControl CtlMenu { get; private set; }
 
-        public Test000HomePage(Browser browser)
-            : base(browser, "Virtual Store - Home")
+        public Test000HomePage()
+            : base("Virtual Store - Home")
         {
-            this.LblUserName = WebElement.Create(this.Browser, this, ElementLocator.Create(By.Id, "username"));
-            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this.Browser, this, ElementLocator.Create(By.Id, "login"));
-            this.CtlMenu = WebElement.CreateControl<MenuListItemControl>(this.Browser, this, ElementLocator.Create(By.Id, "menu"));
+            this.LblUserName = WebElement.Create(this, ElementLocator.Create(By.Id, "username"));
+            this.BtnLogin = WebElement.CreateNavigation<Test000HomePage>(this, ElementLocator.Create(By.Id, "login"));
+            this.CtlMenu = WebElement.CreateControl<MenuListItemControl>(this, ElementLocator.Create(By.Id, "menu"));
         }
     }
 }

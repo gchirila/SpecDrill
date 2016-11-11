@@ -12,17 +12,17 @@ namespace SpecDrill.Adapters.WebDriver.SeleniumExtensions
 {
     public static class SeleniumExtensions
     {
-        public static ReadOnlyCollection<IElement> ToSpecDrill(this ReadOnlyCollection<object> seleniumWebElements, IBrowser browser, IElementLocator locator)
-        {
-            var result = new List<IElement>();
-            foreach (var seleniumWebElement in seleniumWebElements)
-            {
-                result.Add(seleniumWebElement.ToSpecDrill(browser, null, locator));
-            }
-            return new ReadOnlyCollection<IElement>(result);
-        }
+        //public static ReadOnlyCollection<IElement> ToSpecDrill(this ReadOnlyCollection<object> seleniumWebElements, IBrowser browser, IElementLocator locator)
+        //{
+        //    var result = new List<IElement>();
+        //    foreach (IWebElement seleniumWebElement in seleniumWebElements)
+        //    {
+        //        result.Add(seleniumWebElement.ToSpecDrill(browser, null, locator));
+        //    }
+        //    return new ReadOnlyCollection<IElement>(result);
+        //}
 
-        public static IElement ToSpecDrill(this object seleniumWebElement, IBrowser browser, IElement parent, IElementLocator locator)
+        public static IElement ToSpecDrill(this IWebElement seleniumWebElement, IBrowser browser, IElement parent, IElementLocator locator)
         {
             return new SeleniumElement(browser, null, locator);
         }

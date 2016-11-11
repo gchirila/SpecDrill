@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SomeTests</RootNamespace>
     <AssemblyName>SomeTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -68,12 +68,12 @@
     <Compile Include="PageObjects\Test002\GoogleSearchPage.cs" />
     <Compile Include="PageObjects\Test002\ResultItemControl.cs" />
     <Compile Include="SpecDrillTests.cs" />
-    <Compile Include="SpecFlow\Features\SpecFlowFeature1.feature.cs">
+    <Compile Include="PageObjects\SpecFlow\Features\SpecFlowFeature1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecFlowFeature1.feature</DependentUpon>
     </Compile>
-    <Compile Include="SpecFlow\Tests\SpecFlowFeature1Steps.cs" />
+    <Compile Include="PageObjects\SpecFlow\Tests\SpecFlowFeature1Steps.cs" />
     <Compile Include="TestBaseTests.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,7 +115,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="SpecFlow\Features\SpecFlowFeature1.feature">
+    <None Include="PageObjects\SpecFlow\Features\SpecFlowFeature1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SpecFlowFeature1.feature.cs</LastGenOutput>
     </None>

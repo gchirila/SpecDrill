@@ -15,11 +15,14 @@ using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 using SpecDrill.SecondaryPorts.AutomationFramework.Model;
+using System.IO;
 
 namespace SpecDrill
 {
     public class Browser : IBrowser
     {
+        private static IBrowser browserInstance = null;
+
         private readonly Settings configuration;
 
         private ILogger Log = Infrastructure.Logging.Log.Get<Browser>();
@@ -46,7 +49,11 @@ namespace SpecDrill
                 timeoutHistory.Push(cfgMaxWait);
                 browserDriver.ChangeBrowserDriverTimeout(cfgMaxWait);
             }
+
+            browserInstance = this;
         }
+
+        public static IBrowser Instance => browserInstance;
 
         public T Open<T>()
             where T : IPage
@@ -54,13 +61,13 @@ namespace SpecDrill
             var homePage = configuration.Homepages.FirstOrDefault(homepage => homepage.PageObjectType == typeof(T).Name);
             if (homePage != null)
             {
-                
-                //Action navigateToUrl = () => this.GoToUrl(string.Format("file:///{0}{1}",
-                //    System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/')
-                //    , homePage.Url));
-                
+
                 Action navigateToUrl = homePage.IsFileSystemPath ?
-                    (Action)(() => this.GoToUrl(string.Format("file:///{0}{1}", System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'), homePage.Url)))
+                    (Action)(() =>
+                    this.GoToUrl(
+                        string.Format("file:///{0}{1}",
+                            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'),
+                            homePage.Url)))
                     : () => this.GoToUrl(homePage.Url);
 
                 navigateToUrl();
@@ -68,17 +75,17 @@ namespace SpecDrill
                 var targetPage = this.CreatePage<T>();
 
                 Wait.WithRetry().Doing(navigateToUrl).Until(() => targetPage.IsLoaded);
-
+                targetPage.WaitForSilence();
                 return targetPage;
             }
 
-            throw new Exception(string.Format("Page ({0}) cannot be found in Homepages section of settings file.", typeof(T).Name));
+            throw new Exception($"SpecDrill: Page ({typeof(T).Name}) cannot be found in Homepages section of settings file.");
         }
 
         public T CreatePage<T>()
             where T : IPage
         {
-            return (T)Activator.CreateInstance(typeof(T), this);
+            return (T)Activator.CreateInstance(typeof(T));
         }
 
         public void GoToUrl(string url)
@@ -89,6 +96,19 @@ namespace SpecDrill
         public string PageTitle
         {
             get { return browserDriver.Title; }
+        }
+
+        public bool IsAlertPresent => this.browserDriver.Alert != null;
+
+        public IBrowserAlert Alert
+        {
+            get
+            {
+                var alert = this.browserDriver.Alert;
+                if (alert == null)
+                    throw new Exception("SpecDrill: No alert present!");
+                return alert;
+            }
         }
 
         public IDisposable ImplicitTimeout(TimeSpan timeout, string message = null)
@@ -106,14 +126,12 @@ namespace SpecDrill
         //    }
         //}
 
-        public IElement PeekElement(IElement element)
+        public SearchResult PeekElement(IElement element)
         {
-            using (ImplicitTimeout(TimeSpan.FromSeconds(1)))
+            //using (ImplicitTimeout(TimeSpan.FromSeconds(1)))
             {
-                var webElement = WebElement.Create(this, element.Parent, element.Locator);
-                var searchResult = webElement.NativeElementSearchResult;
-                var nativeElement = searchResult.NativeElement;
-                return nativeElement == null ? null : webElement;
+                var webElement = WebElement.Create(element.Parent, element.Locator);
+                return webElement.NativeElementSearchResult;
             }
         }
 
@@ -122,47 +140,51 @@ namespace SpecDrill
             browserDriver.Exit();
         }
 
-        public IElement FindElement(IElementLocator locator)
-        {
-            return WebElement.Create(this, null, locator);
-        }
+        //public IElement FindElement(IElementLocator locator)
+        //{
+        //    return WebElement.Create(null, locator);
+        //}
 
-        public IList<IElement> FindElements(IElementLocator locator)
-        {
-            var elements = this.browserDriver.FindElements(locator);
+        //public IList<IElement> FindElements(IElementLocator locator)
+        //{
+        //    var elements = this.browserDriver.FindElements(locator);
 
-            var elementCount = elements?.Count ?? 0;
+        //    var elementCount = elements?.Count ?? 0;
 
-            var result = new List<IElement>();
-            if (elementCount > 0)
-            {
-                for (int i=0; i<elements.Count; i++)
-                {
-                    result.Add(WebElement.Create(this, null, locator));
-                }
-            }
+        //    var result = new List<IElement>();
+        //    if (elementCount > 0)
+        //    {
+        //        for (int i=0; i<elements.Count; i++)
+        //        {
+        //            result.Add(WebElement.Create(null, locator));
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public SearchResult FindNativeElement(IElementLocator locator)
         {
+            var elements = browserDriver.FindElements(locator);
+            int index = 0;
+            int count = 1;
+
             if (locator.Index.HasValue)
             {
-                var elements = browserDriver.FindElements(locator);
                 if (locator.Index > elements.Count)
                 {
-                    throw new Exception($"Browser.FindNativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
+                    throw new IndexOutOfRangeException($"SpecDrill: Browser.FindNativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
                 }
-                
-                return SearchResult.Create(elements[locator.Index.Value], elements.Count);
+                index = locator.Index.Value;
+                count = elements.Count;
+            }
 
-            }
-            else
-            {
-                //TODO: make this right by always using FindElements !
-                return SearchResult.Create(browserDriver.FindElement(locator), 1);
-            }
+            //if (elements.Count == 0)
+            //{
+            //    throw new IndexOutOfRangeException($"SpecDrill: No elements found.");
+            //}
+
+            return SearchResult.Create(elements.Count > 0 ? elements[index] : null, elements.Count);
         }
 
         public object ExecuteJavascript(string js, params object[] arguments)
@@ -170,11 +192,15 @@ namespace SpecDrill
             return browserDriver.ExecuteJavaScript(js, arguments);
         }
 
-        public void HoverOver(IElement element)
+        public void Hover(IElement element)
         {
             browserDriver.MoveToElement(element);
         }
 
+        public void Click(IElement element)
+        {
+            browserDriver.Click(element);
+        }
         public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
         {
             browserDriver.DragAndDropElement(startFromElement, stopToElement);
@@ -187,7 +213,7 @@ namespace SpecDrill
 
         public void MaximizePage()
         {
-            browserDriver.Maximize();
+            browserDriver.MaximizePage();
         }
     }
 }

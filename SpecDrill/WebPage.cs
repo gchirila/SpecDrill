@@ -19,7 +19,7 @@ namespace SpecDrill
     {
         protected ILogger Log = Infrastructure.Logging.Log.Get<WebPage>();
         private string titlePattern;
-        public WebPage(Browser browser, string titlePattern) : base(browser, null, ElementLocator.Create(By.TagName, "html"))
+        public WebPage(string titlePattern) : base(null, ElementLocator.Create(By.TagName, "html"))
         {
             this.titlePattern = titlePattern;
         }

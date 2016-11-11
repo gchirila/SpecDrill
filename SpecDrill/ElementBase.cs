@@ -8,16 +8,15 @@ namespace SpecDrill
     public class ElementBase : IElement
     {
         protected IElementLocator locator;
-        protected IBrowser browser;
+        protected IBrowser browser => SpecDrill.Browser.Instance;
         protected IElement parent;
         protected IElement rootElement;
-
-        public ElementBase(IBrowser browser, IElement parent, IElementLocator locator)
+        public ElementBase(IElement parent, IElementLocator locator)
         {
-            this.browser = browser;
+            
             this.parent = parent;
             this.locator = locator;
-            this.rootElement = WebElement.Create(browser, parent, locator);
+            this.rootElement = WebElement.Create(parent, locator);
         }
 
         #region IElement
@@ -117,6 +116,7 @@ namespace SpecDrill
         {
             this.rootElement.Hover(waitForSilence);
         }
+
         #endregion
     }
 }

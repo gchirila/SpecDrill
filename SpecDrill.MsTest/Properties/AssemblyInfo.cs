@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SpecDrill.MsTest")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("SpecDril with MsTest support")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Sontu Cosmin")]
 [assembly: AssemblyProduct("SpecDrill.MsTest")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
