@@ -60,8 +60,6 @@ namespace SomeTests
 
             using (var virtualStoreLoginPage = gatewayPage.FrmPortal.SwitchTo())
             {
-                Wait.Until(() => virtualStoreLoginPage.IsLoaded);
-
                 virtualStoreLoginPage.TxtUserName.SendKeys("alina").Blur();
                 virtualStoreLoginPage.TxtUserName.Clear().SendKeys("cosmin");
                 virtualStoreLoginPage.TxtPassword.SendKeys("abc123");
