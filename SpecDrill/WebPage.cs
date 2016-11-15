@@ -31,7 +31,7 @@ namespace SpecDrill
                 string retrievedTitle = null;
                 try
                 {
-                    retrievedTitle = this.Browser.PageTitle;
+                    retrievedTitle = this.Browser.ExecuteJavascript("return document.title;") as string;
                 }
                 catch (Exception e)
                 {
@@ -102,6 +102,11 @@ namespace SpecDrill
 
         public virtual void WaitForSilence()
         {
+        }
+
+        public void Dispose()
+        {
+            browser.SwitchToDocument();
         }
 
         // try and see if virtual IsPageLoaded can be used to sum up all kinds of wait (static, jQuery, Angular1, Angular2, etc)

@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SomeTests.PageObjects.Test000;
 using SpecDrill;
 using SpecDrill.MsTest;
+using FluentAssertions;
 
 namespace SomeTests
 {
@@ -49,6 +50,44 @@ namespace SomeTests
         public void ShouldReadListWhenListControlIsUsed()
         {
 
+        }
+
+        [TestMethod]
+        public void ShouldBeAbleToNavigateWithinFrame()
+        {
+            var gatewayPage = Browser.Open<Test000GatewayPage>();
+
+
+            using (var virtualStoreLoginPage = gatewayPage.FrmPortal.SwitchTo())
+            {
+                Wait.Until(() => virtualStoreLoginPage.IsLoaded);
+
+                virtualStoreLoginPage.TxtUserName.SendKeys("alina").Blur();
+                virtualStoreLoginPage.TxtUserName.Clear().SendKeys("cosmin");
+                virtualStoreLoginPage.TxtPassword.SendKeys("abc123");
+
+                virtualStoreLoginPage.DdlCountry.SelectByValue("md");
+                Assert.AreEqual("Moldova", virtualStoreLoginPage.DdlCountry.SelectedOptionText);
+
+                virtualStoreLoginPage.DdlCity.SelectByText("Chisinau");
+                Assert.AreEqual("Chisinau", virtualStoreLoginPage.DdlCity.SelectedOptionText);
+
+                virtualStoreLoginPage.DdlCountry.SelectByIndex(1);
+                Assert.AreEqual("Romania", virtualStoreLoginPage.DdlCountry.SelectedOptionText);
+
+                var homePage = virtualStoreLoginPage.BtnLogin.Click();
+
+                Assert.AreEqual("Virtual Store - Home", homePage.Title);
+
+                Assert.AreEqual("Cosmin", homePage.LblUserName.Text);
+                var loginPage = homePage.CtlMenu.LnkLogin.Click();
+
+                Assert.AreEqual("Virtual Store - Login", loginPage.Title);
+            }
+
+            Wait.Until(() => gatewayPage.LblGwText.IsAvailable);
+
+            gatewayPage.LblGwText.Text.Should().Contain("Gateway");
         }
     }
 }

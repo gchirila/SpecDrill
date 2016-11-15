@@ -62,6 +62,7 @@
     <Compile Include="PageObjects\Test000\MenuControl.cs" />
     <Compile Include="PageObjects\Test000\MenuListItemControl.cs" />
     <Compile Include="PageObjects\Test000\Test000HomePage.cs" />
+    <Compile Include="PageObjects\Test000\Test000GatewayPage.cs" />
     <Compile Include="PageObjects\Test000\Test000LoginPage.cs" />
     <Compile Include="PageObjects\Test001\Test001CalculatorPage.cs" />
     <Compile Include="PageObjects\Test002\GoogleSearchResultsPage.cs" />
@@ -105,6 +106,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="WebsiteMocks\Test000\gateway.html" />
     <Content Include="WebsiteMocks\Test000\home.html" />
     <Content Include="WebsiteMocks\Test000\login.html" />
     <Content Include="WebsiteMocks\Test001\calculator.html" />

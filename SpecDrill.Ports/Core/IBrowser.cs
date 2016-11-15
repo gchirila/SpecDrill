@@ -25,6 +25,13 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         IDisposable ImplicitTimeout(TimeSpan implicitTimeout, string message = null);
 
         /// <summary>
+        /// Switches to specified frame.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="seleniumFrameElement"></param>
+        void SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement) where T : class, IPage;
+
+        /// <summary>
         /// Returns instance of element if present or null if not available.
         /// </summary>
         /// <param name="locator"></param>
@@ -54,5 +61,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         IBrowserAlert Alert { get; }
         
         bool IsAlertPresent { get; }
+
+        void SwitchToDocument();
     }
 }

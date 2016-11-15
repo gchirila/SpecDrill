@@ -215,5 +215,15 @@ namespace SpecDrill
         {
             browserDriver.MaximizePage();
         }
+
+        public void SwitchToDocument()
+        {
+            browserDriver.SwitchToDocument();
+        }
+
+        void IBrowser.SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement)
+        {
+            browserDriver.SwitchToFrame(seleniumFrameElement);
+        }
     }
 }

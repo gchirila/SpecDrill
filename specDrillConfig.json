@@ -9,27 +9,32 @@
     "waitPollingFrequency": "200",
     "engine": "webdriver", // webdriver, watin (not supported for now) ...
 
-    "homepages": [
-      {
-        "pageObjectType": "Test000LoginPage",
-        "url": "../../../WebsiteMocks/Test000/login.html", // relative url path to executing assembly's location
-        "isFileSystemPath": true
-      },
-      {
-        "pageObjectType": "Test001CalculatorPage",
-        "url": "../../../WebsiteMocks/Test001/calculator.html", // relative url path to executing assembly's location
-        "isFileSystemPath": true
-      },
-      {
-        "pageObjectType": "GoogleSearchPage",
-        "url": "http://www.google.com",
-        "isFileSystemPath": false
-      },
-      {
-        "pageObjectType": "DashboardPage",
-        "url": "http://ap-gda01-cihrp:8080/",
-        "isFileSystemPath": false
-      }
+  "homepages": [
+    {
+      "pageObjectType": "Test000LoginPage",
+      "url": "../../../WebsiteMocks/Test000/login.html", // relative url path to executing assembly's location
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "Test000GatewayPage",
+      "url": "../../../WebsiteMocks/Test000/gateway.html", // relative url path to executing assembly's location
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "Test001CalculatorPage",
+      "url": "../../../WebsiteMocks/Test001/calculator.html", // relative url path to executing assembly's location
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "GoogleSearchPage",
+      "url": "http://www.google.com",
+      "isFileSystemPath": false
+    },
+    {
+      "pageObjectType": "DashboardPage",
+      "url": "http://ap-gda01-cihrp:8080/",
+      "isFileSystemPath": false
+    }
 
-    ]
+  ]
 }

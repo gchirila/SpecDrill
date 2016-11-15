@@ -55,6 +55,7 @@
     <Compile Include="SeleniumBrowserDriver.cs" />
     <Compile Include="SeleniumBrowserFactory.cs" />
     <Compile Include="SeleniumElementLocatorExtensions.cs" />
+    <Compile Include="SeleniumFrameElement.cs" />
     <Compile Include="SeleniumNavigationElement.cs" />
     <Compile Include="SeleniumSelectElement.cs" />
     <Compile Include="SeleniumElement.cs" />

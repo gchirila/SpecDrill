@@ -7,24 +7,24 @@ using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 
 namespace SpecDrill.Adapters.WebDriver
 {
-    public class SeleniumNavigationElement<T> : SeleniumElement, INavigationElement<T>
+    public class SeleniumFrameElement<T> : SeleniumElement, IFrameElement<T>
         where T: class, IPage
     {
         
-        public SeleniumNavigationElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
+        public SeleniumFrameElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
         {
             this.browser = browser;
             this.locator = locator;
         }
 
-        public T Click()
+        public T SwitchTo()
         {
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
+            Browser.SwitchToFrame(this);
             IPage targetPage = browser.CreatePage<T>();
-            Wait.WithRetry().Doing(() => this.Element.Click()).Until(() => targetPage.IsLoaded);
+            Wait.Until(() => targetPage.IsLoaded);
             targetPage.WaitForSilence();
             return (T) targetPage;
         }
-
     }
 }

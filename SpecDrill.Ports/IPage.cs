@@ -1,6 +1,8 @@
-﻿namespace SpecDrill.SecondaryPorts.AutomationFramework
+﻿using System;
+
+namespace SpecDrill.SecondaryPorts.AutomationFramework
 {
-    public interface IPage : IElement
+    public interface IPage : IElement, IDisposable
     {
         string Title { get; }
         bool IsLoaded { get; }

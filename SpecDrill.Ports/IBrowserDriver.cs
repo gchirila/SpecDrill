@@ -55,5 +55,9 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         IBrowserAlert Alert { get; }
 
         bool IsAlertPresent { get; }
+
+        void SwitchToDocument();
+
+        void SwitchToFrame(IElement seleniumFrameElement);
     }
 }

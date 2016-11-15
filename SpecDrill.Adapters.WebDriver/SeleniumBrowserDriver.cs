@@ -149,6 +149,14 @@ namespace SpecDrill.Adapters.WebDriver
             seleniumDriver.Manage().Window.Maximize();
         }
 
+        public void SwitchToDocument()
+        {
+            seleniumDriver.SwitchTo().DefaultContent();
+        }
 
+        public void SwitchToFrame(IElement seleniumFrameElement)
+        {
+            seleniumDriver.SwitchTo().Frame((seleniumFrameElement as SeleniumElement).Element);
+        }
     }
 }
