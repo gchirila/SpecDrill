@@ -6,6 +6,7 @@ using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 using System.Collections.Generic;
 using SpecDrill.SecondaryPorts.AutomationFramework.Model;
+using System.Linq;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -55,10 +56,10 @@ namespace SpecDrill.Adapters.WebDriver
 
         private bool AvailabilityTest(IWebElement nativeLocatedElement)
         {
-            Log.Info($"Testing Availability for { $"{nativeLocatedElement.TagName}"} -> {locator}");
             bool result = false;
             try
             {
+                Log.Info($"Testing Availability for { $"{nativeLocatedElement.TagName}"} -> {locator}");
                 var displayed = nativeLocatedElement.Displayed;
                 var enabled = nativeLocatedElement.Enabled;
                 result = displayed && enabled;
@@ -213,54 +214,68 @@ namespace SpecDrill.Adapters.WebDriver
                 }
 
                 if (elementContainers.Count == 0)
-                    return this.browser.FindNativeElement(this.locator);
+                    return this.browser.FindNativeElement(this.Locator);
 
                 elementContainers.Reverse();
 
-                SearchResult previousContainer = null;
+                SearchResult previousContainer = this.browser.FindNativeElement(elementContainers.First().Locator);
+                    //elementContainers.First().NativeElementSearchResult;
 
-                previousContainer = elementContainers[0].NativeElementSearchResult;
-                if (previousContainer.NativeElement == null)
-                    return previousContainer;
+                if (!previousContainer.HasResult)
+                    return SearchResult.Empty;
 
-                AvailabilityTest(previousContainer.NativeElement as IWebElement);
-                Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep.");
-                Log.Info($"L01>{elementContainers[0].Locator}");
+                bool isParentAvailable = AvailabilityTest(previousContainer.NativeElement as IWebElement);
+                
+                Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep. Its parent is{(isParentAvailable ? string.Empty : " not")} available.");
+                Log.Info($"L01>{elementContainers.First().Locator}");
 
                 if (elementContainers.Count > 1)
+                {
                     for (int i = 1; i < elementContainers.Count; i++)
                     {
                         var containerToSearch = elementContainers[i];
                         previousContainer = SearchElementInPreviousContainer(containerToSearch, previousContainer, i);
-                        if (previousContainer.NativeElement == null)
-                            return previousContainer;
+
+                        if (!previousContainer.HasResult)
+                            return SearchResult.Empty;
                     }
+                }
 
                 Log.Info($"LOC>{locator}");
 
-                var nativeElement = SearchElementInPreviousContainer(this, previousContainer);
-
-                return nativeElement;
+                return SearchElementInPreviousContainer(
+                    elementToSearch: this, 
+                    previousContainer: previousContainer);
             }
         }
 
         private SearchResult SearchElementInPreviousContainer(IElement elementToSearch, SearchResult previousContainer, int i = -1)
         {
+            if (previousContainer == null || !previousContainer.HasResult)
+                return SearchResult.Empty;
+
             var previousContainerNativeElement = previousContainer.NativeElement as IWebElement;
             
-            if (previousContainer != null && AvailabilityTest(previousContainerNativeElement))
+            if (AvailabilityTest(previousContainerNativeElement))
             {
-                var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
-                if (elementToSearch.Locator.Index > elements.Count)
+                try
                 {
-                    throw new Exception($"SpecDrill: SeleniumElement.NativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
-                }
-                if (elements.Count == 0)
-                {
-                        return SearchResult.Create(null, 0);
+                    var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
+                    if (elementToSearch.Locator.Index > elements.Count)
+                    {
+                        throw new Exception($"SpecDrill: SeleniumElement.NativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
                     }
-                    previousContainer = SearchResult.Create(elements[(elementToSearch.Locator.Index??1) - 1], elements.Count);
-
+                    if (elements.Count == 0)
+                    {
+                        return SearchResult.Empty;
+                    }
+                    previousContainer = SearchResult.Create(elements[(elementToSearch.Locator.Index ?? 1) - 1], elements.Count);
+                }
+                catch (StaleElementReferenceException sere)
+                {
+                    Log.Error(sere, $"L{i:00}{elementToSearch.Locator} - Is Stale !");
+                    return SearchResult.Empty;
+                }
                 Log.Info($"L{i:00}{elementToSearch.Locator}");
             }
             else

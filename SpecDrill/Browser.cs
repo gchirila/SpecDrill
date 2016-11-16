@@ -128,11 +128,8 @@ namespace SpecDrill
 
         public SearchResult PeekElement(IElement element)
         {
-            //using (ImplicitTimeout(TimeSpan.FromSeconds(1)))
-            {
-                var webElement = WebElement.Create(element.Parent, element.Locator);
-                return webElement.NativeElementSearchResult;
-            }
+            var webElement = WebElement.Create(element.Parent, element.Locator);
+            return webElement.NativeElementSearchResult;
         }
 
         public void Exit()
@@ -220,7 +217,7 @@ namespace SpecDrill
         {
             browserDriver.SwitchToDocument();
         }
-
+         
         void IBrowser.SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement)
         {
             browserDriver.SwitchToFrame(seleniumFrameElement);

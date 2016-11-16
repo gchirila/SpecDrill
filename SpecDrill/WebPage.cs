@@ -88,6 +88,8 @@ namespace SpecDrill
                 Log.Info("LoadCompleted = {0}, retrievedTitle = {1}, patternToMatch = {2}", isLoaded, this.Title ?? "(null)",
                     this.titlePattern ?? "(null)");
 
+
+
                 return isLoaded;
 
             }

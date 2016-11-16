@@ -72,16 +72,35 @@ namespace SpecDrill
 
     public class MaxWaitContext
     {
-        protected ILogger Log = Infrastructure.Logging.Log.Get<MaxWaitContext>();
+        protected static readonly ILogger Log = Infrastructure.Logging.Log.Get<MaxWaitContext>();
         public TimeSpan MaximumWait { get; set; }
+        private Func<Func<bool>, bool, bool> safeWait = (waitCondition, throwException) =>
+        {
+            bool result = false;
+            try
+            {
+                result = waitCondition();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error on wait");
+                if (throwException)
+                    throw;
+            }
+            return result;
+        };
 
         public void Until(Func<bool> waitCondition, bool throwException = true)
         {
+            Func<bool> safeWaitCondition = () => safeWait(waitCondition, false); 
+            // Note: Ignoring automation framework exceptions while waiting.
+            // Always check logs on timeout to identify root cause !
+
             Stopwatch sw = new Stopwatch();
             sw.Start();
             while (sw.Elapsed < MaximumWait)
             {
-                if (waitCondition())
+                if (safeWaitCondition())
                     return;
                 Thread.Sleep(33);
             }
