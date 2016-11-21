@@ -19,6 +19,8 @@ namespace SpecDrill
     {
         protected ILogger Log = Infrastructure.Logging.Log.Get<WebPage>();
         private string titlePattern;
+
+        public WebPage() : this(string.Empty) {  }
         public WebPage(string titlePattern) : base(null, ElementLocator.Create(By.TagName, "html"))
         {
             this.titlePattern = titlePattern;
@@ -111,7 +113,7 @@ namespace SpecDrill
             browser.SwitchToDocument();
         }
 
-        // try and see if virtual IsPageLoaded can be used to sum up all kinds of wait (static, jQuery, Angular1, Angular2, etc)
+        // TODO: Investigate how virtual IsPageLoaded can be used to sum up all kinds of wait (static, jQuery, Angular1, Angular2, etc)
         // goal is to have an immediately returning test so we can wait on it
         // currently there is no IsPageLoaded method on IPage so we can use in lambda
         #endregion

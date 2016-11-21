@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using SpecDrill.Adapters.WebDriver;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using SpecDrill.WebControls;
 
 namespace SpecDrill
 {
@@ -27,6 +28,12 @@ namespace SpecDrill
             return new SeleniumNavigationElement<T>(Browser.Instance, parent, locator);
         }
 
+        public static ListElement<T> CreateList<T>(IElement parent, IElementLocator elementLocator)
+            where T : WebControl
+        {
+            return new ListElement<T>(parent, elementLocator);
+        }
+
         public static IFrameElement<T> CreateFrame<T>(IElement parent, IElementLocator locator)
             where T: class, IPage
         {
@@ -34,10 +41,10 @@ namespace SpecDrill
         }
 
         public static T CreateControl<T>(IElement parent, IElementLocator elementLocator)
-            where T : WebControl
+            where T : class, IElement
         {
-
-            return Activator.CreateInstance(typeof(T), parent, elementLocator) as T;
+            var control = Activator.CreateInstance(typeof(T), parent, elementLocator) as T;
+            return Browser.Instance.CreateControl(control);
         }
     }
 }

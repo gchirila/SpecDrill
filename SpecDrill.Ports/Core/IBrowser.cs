@@ -11,6 +11,8 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
 
         T CreatePage<T>()
             where T : IPage;
+        T CreateControl<T>(T fromInstance)
+            where T : IElement;
 
         void GoToUrl(string url);
 

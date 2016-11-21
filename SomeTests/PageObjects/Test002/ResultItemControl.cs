@@ -11,12 +11,16 @@ namespace SomeTests.PageObjects.Test002
 {
     public class SearchResultItemControl : WebControl
     {
-        public IElement Link { get; }
-        public IElement Description { get; }
+        [Find(By.CssSelector, "div a")]
+        public IElement Link { get; private set; }
+
+        [Find(By.CssSelector, "div.rc>div.s>span.st")]
+        public IElement Description { get; private set; }
+
         public SearchResultItemControl(IElement parent, IElementLocator locator) : base(parent, locator)
         {
-            Link = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div a"));
-            Description = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div.rc>div.s>span.st"));
+            //Link = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div a"));
+            //Description = WebElement.Create(this, ElementLocator.Create(By.CssSelector, "div.rc>div.s>span.st"));
         }
     }
 }

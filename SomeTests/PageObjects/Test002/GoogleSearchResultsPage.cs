@@ -12,11 +12,13 @@ namespace SomeTests.PageObjects.Test002
 {
     public class GoogleSearchResultsPage : GoogleSearchPage
     {
-        public ListElement<SearchResultItemControl> SearchResults { get; }
+        [Find(By.CssSelector, "div.content div.mw div.g")]
+        public ListElement<SearchResultItemControl> SearchResults { get; private set; }
         public GoogleSearchResultsPage()
             : base(string.Empty)
         {
-            SearchResults = new ListElement<SearchResultItemControl>(this, ElementLocator.Create(By.CssSelector, "div.content div.mw div.g"));
+            //SearchResults = WebElement.CreateList<SearchResultItemControl>(this, ElementLocator.Create(By.CssSelector, "div.content div.mw div.g"));
+                //new ListElement<SearchResultItemControl>(this, ElementLocator.Create(By.CssSelector, "div.content div.mw div.g"));
         }
     }
 }

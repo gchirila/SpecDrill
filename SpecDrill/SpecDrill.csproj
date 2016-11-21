@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindAttribute.cs" />
     <Compile Include="AutomationScopes\BenchmarkScope.cs" />
     <Compile Include="AutomationScopes\ImplicitWaitScope.cs" />
     <Compile Include="Browser.cs" />

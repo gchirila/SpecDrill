@@ -114,7 +114,7 @@ namespace SomeTests
             const int retryCount = 3;
 
             Wait.WithRetry(retryCount, retryInterval).Doing(() => retriesDone++).Until(() => retriesDone == 2);
-
+            
             Assert.IsTrue(retriesDone == 2, "Retries Count is different than expected");
         }
     }

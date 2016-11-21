@@ -58,7 +58,7 @@ namespace SomeTests
             var gatewayPage = Browser.Open<Test000GatewayPage>();
 
 
-            using (var virtualStoreLoginPage = gatewayPage.FrmPortal.SwitchTo())
+            using (var virtualStoreLoginPage = gatewayPage.FrmPortal.Open())
             {
                 virtualStoreLoginPage.TxtUserName.SendKeys("alina").Blur();
                 virtualStoreLoginPage.TxtUserName.Clear().SendKeys("cosmin");

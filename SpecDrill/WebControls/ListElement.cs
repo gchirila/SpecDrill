@@ -8,8 +8,13 @@ using System.Linq;
 
 namespace SpecDrill.WebControls
 {
-    public class ListElement<T> : WebControl, IReadOnlyList<T>
-        where T : WebControl, IElement
+    public interface IListElement<T> : IReadOnlyList<T> 
+        where T : class, IElement
+    {
+        T GetElementByText(string regex);
+    }
+    public class ListElement<T> : WebControl, IListElement<T>
+        where T : /*WebControl,*/ class, IElement
     {
         public ListElement(IElement parent, IElementLocator locator) : base(parent, locator)
         {
@@ -29,7 +34,7 @@ namespace SpecDrill.WebControls
                 if (index > Count)
                     throw new IndexOutOfRangeException("SpecDrill: ListElement<T>");
 
-                return Activator.CreateInstance(typeof(T), parent, this.locator.CopyWithIndex(index)) as T;
+                return WebElement.CreateControl<T>(parent, locator);
             }
         }
 
@@ -47,12 +52,12 @@ namespace SpecDrill.WebControls
             return match;
         }
 
-        public U GetChildNodeByText<U>(T node, IElementLocator childrenLocator, string regex)
-            where U : WebControl, IElement
-        {
-            var children = new ListElement<U>(node, childrenLocator);
-            return children.GetElementByText(regex);
-        }
+        //public U GetChildNodeByText<U>(T node, IElementLocator childrenLocator, string regex)
+        //    where U : WebControl, IElement
+        //{
+        //    var children = WebElement.CreateList<U>(node, childrenLocator);
+        //    return children.GetElementByText(regex);
+        //}
 
         IEnumerator IEnumerable.GetEnumerator()
         {

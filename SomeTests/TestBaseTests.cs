@@ -29,6 +29,7 @@ namespace SomeTests
             Assert.AreEqual(0, methodTearDownCount);
             methodTearDownCount++;
             Assert.AreEqual(1, methodTearDownCount);
+            base.TestTearDown();
         }
 
         [TestMethod]

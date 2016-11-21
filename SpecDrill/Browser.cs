@@ -1,21 +1,19 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Newtonsoft.Json;
 using SpecDrill.Adapters.WebDriver;
-using SpecDrill.Adapters.WebDriver.ElementLocatorExtensions;
 using SpecDrill.AutomationScopes;
 using SpecDrill.Configuration;
 using SpecDrill.Infrastructure;
 using SpecDrill.Infrastructure.Enums;
-using SpecDrill.Infrastructure.Logging;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 using System.IO;
+
+using System.Reflection;
+using SpecDrill.WebControls;
 
 namespace SpecDrill
 {
@@ -82,10 +80,171 @@ namespace SpecDrill
             throw new Exception($"SpecDrill: Page ({typeof(T).Name}) cannot be found in Homepages section of settings file.");
         }
 
-        public T CreatePage<T>()
-            where T : IPage
+        public T CreatePage<T>() where T : IPage => CreateContainer<T>();
+        public T CreateControl<T>(T fromInstance) where T : IElement => CreateContainer<T>(fromInstance);
+
+        private T CreateContainer<T>(T containerInstance = default(T))
+            where T : IElement
         {
-            return (T)Activator.CreateInstance(typeof(T));
+            var container = ((IElement)containerInstance ?? (T)Activator.CreateInstance(typeof(T)));
+
+            Type containerType = typeof(T);
+
+            containerType.GetMembers()
+                .Where(member => member.MemberType == MemberTypes.Property || member.MemberType == MemberTypes.Field)
+                .ToList()
+                .ForEach(
+                member =>
+                {
+                    var memberType = GetMemberType(member);
+                    var memberAttributes = member.GetCustomAttributes<FindAttribute>(false)
+                    .ToList();
+
+                    if (memberAttributes.Any())
+                    {
+                        var memberValue = GetMemberValue(member, container);
+
+                        if (memberValue != null)
+                            return;
+
+                        memberAttributes
+                        .ForEach //TODO: Currently if many attributes apply, last one wins; Should throw exception !
+                        (
+                            findAttribute =>
+                            {
+                                object element = null;
+
+                                if (memberType == typeof(IElement))
+                                {
+                                    element = WebElement.Create(findAttribute.Nested ? container : default(T),
+                                        ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
+                                }
+                                else if (memberType == typeof(ISelectElement))
+                                {
+                                    element = WebElement.CreateSelect(findAttribute.Nested ? container : default(T),
+                                        ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
+                                }
+                                else if (typeof(INavigationElement<IPage>).IsAssignableFrom(memberType))
+                                {
+                                    element = InvokeFactoryMethod("CreateNavigation", memberType.GenericTypeArguments, container, findAttribute);
+                                }
+                                else if (typeof(IFrameElement<IPage>).IsAssignableFrom(memberType))
+                                {
+                                    element = InvokeFactoryMethod("CreateFrame", memberType.GenericTypeArguments, container, findAttribute);
+                                }
+                                else if (typeof(WebControl).IsAssignableFrom(memberType))
+                                {
+                                    if (memberType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IListElement<>)))
+                                    {
+                                        element = InvokeFactoryMethod("CreateList", memberType.GenericTypeArguments, container, findAttribute);
+                                    }
+                                    else
+                                    {
+                                        element = InvokeFactoryMethod("CreateControl", new Type[] { memberType }, container, findAttribute);
+                                    }
+                                }
+
+                                SetValue(containerType, member, instance: container, value: element);
+                            }
+                        );
+                    }
+                });
+            return (T)container;
+        }
+
+        private static object InvokeFactoryMethod<T>(string methodName, Type[] genericTypeArguments, T page, FindAttribute findAttribute) where T : IElement
+        {
+            object element;
+            MethodInfo method = typeof(WebElement).GetMethod(methodName, BindingFlags.Static | BindingFlags.Public);
+            MethodInfo generic = method.MakeGenericMethod(genericTypeArguments);
+            element = generic.Invoke(null, new object[] {
+                                    findAttribute.Nested ? page : default(T),
+                                    ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue) });
+            return element;
+        }
+
+        private object GetMemberValue(MemberInfo member, object instance)
+        {
+            PropertyInfo property = member as PropertyInfo;
+            if (property != null)
+            {
+                return property.GetValue(instance);
+            }
+            FieldInfo field = member as FieldInfo;
+            if (field != null)
+            {
+                return field.GetValue(instance);
+            }
+            return null;
+        }
+
+        private void SetValue(Type containerType, MemberInfo member, object instance, object value)
+        {
+            PropertyInfo property = member as PropertyInfo;
+            if (property != null)
+            {
+                var propertyName = property.Name;
+
+                SetPropertyValue(containerType, propertyName, instance, value);
+            }
+            FieldInfo field = member as FieldInfo;
+            if (field != null)
+            {
+                var fieldName = field.Name;
+
+                SetFieldValue(containerType, fieldName, instance, value);
+            }
+        }
+
+        private void SetPropertyValue(Type type, string propertyName, object instance, object value)
+        {
+            if (type != null)
+            {
+                PropertyInfo pInfo = type.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                var setter = pInfo?.GetSetMethod(true);
+                if (setter != null)
+                {
+                    setter.Invoke(instance, new object[] { value });
+                    return;
+                }
+
+                SetPropertyValue(type.BaseType, propertyName, instance, value);
+            }
+            else
+            {
+                throw new Exception($"SpecDrill: Could not set {propertyName}");
+            }
+        }
+
+        private void SetFieldValue(Type type, string fieldName, object instance, object value)
+        {
+            if (type != null)
+            {
+                FieldInfo pInfo = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+                try
+                {
+                    pInfo.SetValue(instance, value);
+                    return;
+                }
+                catch { }
+
+                SetFieldValue(type.BaseType, fieldName, instance, value);
+            }
+            else
+            {
+                throw new Exception($"SpecDrill: Could not set {fieldName}");
+            }
+        }
+        private Type GetMemberType(MemberInfo member)
+        {
+            PropertyInfo property = member as PropertyInfo;
+            if (property != null) return property.PropertyType;
+            FieldInfo field = member as FieldInfo;
+            if (field != null) return field.FieldType;
+
+            throw new Exception($"SpecDrill - Browser: Find attribute cannot be applied to members of type {member.GetType().FullName}");
+
         }
 
         public void GoToUrl(string url)
@@ -217,7 +376,7 @@ namespace SpecDrill
         {
             browserDriver.SwitchToDocument();
         }
-         
+
         void IBrowser.SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement)
         {
             browserDriver.SwitchToFrame(seleniumFrameElement);

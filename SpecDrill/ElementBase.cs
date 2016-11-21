@@ -71,7 +71,7 @@ namespace SpecDrill
 
         public IElementLocator Locator => this.locator;
 
-        public IPage ContainingPage => this.ContainingPage;
+        public IPage ContainingPage => this.rootElement.ContainingPage;
 
         public int Count
         {

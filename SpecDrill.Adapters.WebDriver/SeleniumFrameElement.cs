@@ -17,7 +17,8 @@ namespace SpecDrill.Adapters.WebDriver
             this.locator = locator;
         }
 
-        public T SwitchTo()
+        public T SwitchTo() => Open();
+        public T Open()
         {
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
             Browser.SwitchToFrame(this);
