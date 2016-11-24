@@ -39,6 +39,16 @@ namespace SpecDrill
 
             browserDriver = driverFactory.Create(browserName);
 
+            // configuring browser window
+            if (configuration.BrowserWindow.IsMaximized)
+            {
+                MaximizePage();
+            }
+            else
+            {
+                SetWindowSize(configuration.BrowserWindow.InitialWidth ?? 800, configuration.BrowserWindow.InitialHeight ?? 600);
+            }
+
             var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.MaxWait == 0 ? 60000 : configuration.MaxWait);
 
             // set initial browser driver timeout to configuration or 1 minute if not defined
@@ -49,6 +59,11 @@ namespace SpecDrill
             }
 
             browserInstance = this;
+        }
+
+        public void SetWindowSize(int initialWidth, int initialHeight)
+        {
+            this.browserDriver.SetWindowSize(initialWidth, initialHeight);
         }
 
         public static IBrowser Instance => browserInstance;
@@ -86,7 +101,7 @@ namespace SpecDrill
         private T CreateContainer<T>(T containerInstance = default(T))
             where T : IElement
         {
-            var container = ((IElement)containerInstance ?? (T)Activator.CreateInstance(typeof(T)));
+            var container = EnsureContainerInstance(containerInstance);
 
             Type containerType = typeof(T);
 
@@ -150,6 +165,18 @@ namespace SpecDrill
                     }
                 });
             return (T)container;
+        }
+
+        private IElement EnsureContainerInstance<T>(T containerInstance) where T : IElement
+        {
+            try
+            {
+                return ((IElement)containerInstance ?? (T)Activator.CreateInstance(typeof(T)));
+            }
+            catch (MissingMethodException mme)
+            {
+                throw new Exception($"SpecDrill: Page ({typeof(T).Name}) does not have a prameterless constructor. This error happens when you define at least one constructor with parameters. Possible Solution: Explicitly declare a parameterless constructor.", mme);
+            }
         }
 
         private static object InvokeFactoryMethod<T>(string methodName, Type[] genericTypeArguments, T page, FindAttribute findAttribute) where T : IElement

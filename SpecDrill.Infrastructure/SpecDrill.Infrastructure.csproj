@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\BrowserWindowConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\Homepage.cs" />
     <Compile Include="Configuration\SeleniumConfiguration.cs" />

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SpecDrill;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 
-namespace SomeTests.PageObjects.Test002
+namespace $rootnamespace$.PageObjects
 {
     public class GoogleSearchPage : WebPage
     {

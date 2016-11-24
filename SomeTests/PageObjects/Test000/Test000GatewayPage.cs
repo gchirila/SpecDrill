@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SpecDrill;
 using SpecDrill.SecondaryPorts.AutomationFramework;
+using SpecDrill.WebControls;
 
 namespace SomeTests.PageObjects.Test000
 {
@@ -15,6 +16,9 @@ namespace SomeTests.PageObjects.Test000
         public IFrameElement<Test000LoginPage> FrmPortal;// { get; private set; }
         [Find(By.Id, "gwText")]
         public IElement LblGwText { get; private set; }
+
+        [Find(By.CssSelector, "#uList>li")]
+        public ListElement<WebControl> UList;
         //public Test000GatewayPage()
         //    : base(string.Empty)
         //{

@@ -26,32 +26,32 @@ namespace SpecDrill.Adapters.WebDriver
             var aPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             this.configuration = configuration;
             driverFactory = new Dictionary<BrowserNames, Func<string, IBrowserDriver>>
-        {
-            { BrowserNames.chrome, bdp =>
-            //TODO: extract window parameters in specDrillConfig.json
             {
-                var chromeOptions = new ChromeOptions();
-                chromeOptions.AddArgument("window-size=1920,1080");
-                return SeleniumBrowserDriver.Create(new ChromeDriver(bdp, chromeOptions));
-            }},
-            { BrowserNames.ie, bdp => SeleniumBrowserDriver.Create(new InternetExplorerDriver(bdp)) },
-            { BrowserNames.firefox, bdp => 
+                { BrowserNames.chrome, bdp =>
+                //TODO: extract window parameters in specDrillConfig.json
                 {
-                    Environment.SetEnvironmentVariable("webdriver.gecko.driver", bdp);
-                    return SeleniumBrowserDriver.Create(new FirefoxDriver());
-                } },
-            { BrowserNames.opera, bdp => SeleniumBrowserDriver.Create(new OperaDriver(bdp)) },
-            { BrowserNames.safari, bdp => SeleniumBrowserDriver.Create(new SafariDriver(bdp)) }
-            //,{ BrowserNames.appium, bdp => {
-            //    DesiredCapabilities capabilities = new DesiredCapabilities();
-            //    capabilities.SetCapability(MobileCapabilityType.PlatformVersion, "5.1");
-            //    capabilities.SetCapability(MobileCapabilityType.DeviceName, "Samsung Galaxy S4");
-            //    //capabilities.SetCapability(MobileCapabilityType.App, app);
-            //    capabilities.SetCapability("unicodeKeyboard", true);
-            //    capabilities.SetCapability("autoAcceptAlerts", true);
-            //    return SeleniumBrowserDriver.Create(new AndroidDriver<AppiumWebElement>(
-            //        new Uri("http://127.0.0.1:4723/wd/hub"), capabilities, TimeSpan.FromSeconds(60))); } }
-        };
+                    //var chromeOptions = new ChromeOptions();
+                    //chromeOptions.AddArgument($"window-size={configuration.BrowserWindow.InitialWidth},{configuration.BrowserWindow.InitialHeight}");
+                    return SeleniumBrowserDriver.Create(new ChromeDriver(bdp/*, chromeOptions*/));
+                }},
+                { BrowserNames.ie, bdp => SeleniumBrowserDriver.Create(new InternetExplorerDriver(bdp)) },
+                { BrowserNames.firefox, bdp =>
+                    {
+                        Environment.SetEnvironmentVariable("webdriver.gecko.driver", bdp);
+                        return SeleniumBrowserDriver.Create(new FirefoxDriver());
+                    } },
+                { BrowserNames.opera, bdp => SeleniumBrowserDriver.Create(new OperaDriver(bdp)) },
+                { BrowserNames.safari, bdp => SeleniumBrowserDriver.Create(new SafariDriver(bdp)) }
+                //,{ BrowserNames.appium, bdp => {
+                //    DesiredCapabilities capabilities = new DesiredCapabilities();
+                //    capabilities.SetCapability(MobileCapabilityType.PlatformVersion, "5.1");
+                //    capabilities.SetCapability(MobileCapabilityType.DeviceName, "Samsung Galaxy S4");
+                //    //capabilities.SetCapability(MobileCapabilityType.App, app);
+                //    capabilities.SetCapability("unicodeKeyboard", true);
+                //    capabilities.SetCapability("autoAcceptAlerts", true);
+                //    return SeleniumBrowserDriver.Create(new AndroidDriver<AppiumWebElement>(
+                //        new Uri("http://127.0.0.1:4723/wd/hub"), capabilities, TimeSpan.FromSeconds(60))); } }
+            };
         }
 
         public IBrowserDriver Create(BrowserNames browserName)

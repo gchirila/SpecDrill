@@ -39,8 +39,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TechTalk.SpecFlow, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpecFlow.2.0.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+    <Reference Include="TechTalk.SpecFlow, Version=2.1.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.1.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -49,21 +49,32 @@
     <Compile Include="MsTest\SpecFlowTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Templates\SkeletonTemplates.sftemplate">
       <LastGenOutput>SkeletonTemplates1.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpecDrill.MsTest\SpecDrill.MsTest.csproj">
-      <Project>{405307ed-862c-4a6f-97a8-67edfc9f3d0f}</Project>
-      <Name>SpecDrill.MsTest</Name>
+    <ProjectReference Include="..\SpecDrill.Infrastructure\SpecDrill.Infrastructure.csproj">
+      <Project>{9a59519a-1464-436e-b059-af2beeffe96f}</Project>
+      <Name>SpecDrill.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpecDrill.Ports\SpecDrill.SecondaryPorts.AutomationFramework.csproj">
+      <Project>{ad2db2ca-0c02-4a57-a92c-5a6f76a5e2fc}</Project>
+      <Name>SpecDrill.SecondaryPorts.AutomationFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpecDrill\SpecDrill.csproj">
       <Project>{e9223b33-98fc-4d5a-8c0e-e63011fd454e}</Project>
       <Name>SpecDrill</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

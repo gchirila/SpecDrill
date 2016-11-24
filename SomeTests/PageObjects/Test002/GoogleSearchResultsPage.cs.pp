@@ -8,7 +8,7 @@ using SpecDrill;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.WebControls;
 
-namespace SomeTests.PageObjects.Test002
+namespace $rootnamespace$.PageObjects
 {
     public class GoogleSearchResultsPage : GoogleSearchPage
     {

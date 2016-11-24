@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 
-namespace SomeTests.PageObjects.Test002
+namespace $rootnamespace$.PageObjects
 {
     public class SearchResultItemControl : WebControl
     {

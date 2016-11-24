@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SomeTests.PageObjects.Test002;
+using $rootnamespace$.PageObjects;
 using SpecDrill;
 using SpecDrill.MsTest;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SomeTests
+namespace $rootnamespace$
 {
     [TestClass]
     public class GoogleSearchTests : TestBase

@@ -87,5 +87,14 @@ namespace SomeTests
 
             gatewayPage.LblGwText.Text.Should().Contain("Gateway");
         }
+
+        [TestMethod]
+        public void Issue_6_ShouldCorrectlySelectItemsWhenAccessedByIndex()
+        {
+            var gatewayPage = Browser.Open<Test000GatewayPage>();
+
+            gatewayPage.UList[1].Text.Should().Be("O1");
+            gatewayPage.UList[2].Text.Should().Be("O2");
+        }
     }
 }

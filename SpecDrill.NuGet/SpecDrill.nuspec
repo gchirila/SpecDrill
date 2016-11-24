@@ -2,23 +2,34 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill</id>
-        <version>1.0.3</version>
+        <version>1.0.8</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/CosminSontu/SpecDrill</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
-        <releaseNotes />
+	<releaseNotes>
+        v1.0.8
+	        - Fixed Issue #8 - log4net.config in nuget package is empty
+            - Fixed Issue #7 - Provide meaningful exception when PageObject is lacking parameterless constructor
+            - Fixed Issue #6 - ListElement is not considering indexer's index parameter
+	        - Fixed Issue #1 - Startup browser window size is not configurable
+	    v1.0.7
+	        - Fixed Issue #4 - Support declarative (attribute based) way of declaring Page/Control objects
+	    v1.0.6
+	        - Refactored searching for native elements
+            - Waits are now fault tolerant
+        v1.0.5
+            - Fixed Issue #5 - Page load test fails for pages in iframe
+	</releaseNotes>
         <copyright>Copyright 2016</copyright>
-        <tags>SpecDrill SpecFlow Selenium WebDriver Automation</tags>
+        <tags>SpecDrill SpecFlow Selenium WebDriver Automation BDD ATDD</tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="8.0.3" />
             <dependency id="Selenium.WebDriver" version="3.0.0" />
             <dependency id="Selenium.Support" version="3.0.0" />
             <dependency id="log4net" version="2.0.5" />
-            <dependency id="SpecFlow" version="2.0.0" />
-            <dependency id="SpecFlow.MsTest" version="2.0.0" />
             <dependency id="FluentAssertions" version="4.14.0" />
             <dependency id="Selenium.WebDriver.ChromeDriver" version="2.25.0.0" />
         </dependencies>

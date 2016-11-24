@@ -22,7 +22,7 @@ namespace SpecDrill.WebControls
             this.locator = locator;
 
             if (locator.LocatorType != By.XPath && locator.LocatorType != By.CssSelector)
-                throw new ArgumentException("Only Css or XPath locators are accepted!");
+                throw new ArgumentException("SpecDrill: For ListElement<> only Css or XPath locators are accepted!");
         }
 
         public T this[int index]
@@ -34,7 +34,7 @@ namespace SpecDrill.WebControls
                 if (index > Count)
                     throw new IndexOutOfRangeException("SpecDrill: ListElement<T>");
 
-                return WebElement.CreateControl<T>(parent, locator);
+                return WebElement.CreateControl<T>(parent, locator.CopyWithIndex(index));
             }
         }
 

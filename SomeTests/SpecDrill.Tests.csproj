@@ -52,29 +52,41 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TechTalk.SpecFlow, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpecFlow.2.0.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
+    <Reference Include="TechTalk.SpecFlow, Version=2.1.0.0, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpecFlow.2.1.0\lib\net45\TechTalk.SpecFlow.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GoogleSearchTests.cs" />
+    <None Include="Features\GoogleSearch.feature.cs.pp" />
+    <None Include="Features\GoogleSearchSteps.cs.pp" />
+    <None Include="GoogleSearchTests.cs.pp" />
     <Compile Include="PageObjects\Test000\MenuControl.cs" />
     <Compile Include="PageObjects\Test000\MenuListItemControl.cs" />
     <Compile Include="PageObjects\Test000\Test000HomePage.cs" />
     <Compile Include="PageObjects\Test000\Test000GatewayPage.cs" />
     <Compile Include="PageObjects\Test000\Test000LoginPage.cs" />
     <Compile Include="PageObjects\Test001\Test001CalculatorPage.cs" />
+    <None Include="PageObjects\Test002\GoogleSearchPage.cs.pp" />
+    <None Include="PageObjects\Test002\GoogleSearchResultsPage.cs.pp" />
     <Compile Include="PageObjects\Test002\GoogleSearchResultsPage.cs" />
     <Compile Include="PageObjects\Test002\GoogleSearchPage.cs" />
+    <None Include="PageObjects\Test002\ResultItemControl.cs.pp" />
     <Compile Include="PageObjects\Test002\ResultItemControl.cs" />
     <Compile Include="SpecDrillTests.cs" />
-    <Compile Include="PageObjects\SpecFlow\Features\SpecFlowFeature1.feature.cs">
+    <Compile Include="Features\GoogleSearch.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GoogleSearch.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Features\SpecFlowFeature1.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SpecFlowFeature1.feature</DependentUpon>
     </Compile>
-    <Compile Include="PageObjects\SpecFlow\Tests\SpecFlowFeature1Steps.cs" />
+    <Compile Include="Features\GoogleSearchSteps.cs" />
+    <Compile Include="Features\SpecFlowFeature1Steps.cs" />
     <Compile Include="TestBaseTests.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,9 +127,15 @@
     <Folder Include="CustomElements\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
-    <None Include="PageObjects\SpecFlow\Features\SpecFlowFeature1.feature">
+    <None Include="Features\GoogleSearch.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>GoogleSearch.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\SpecFlowFeature1.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>SpecFlowFeature1.feature.cs</LastGenOutput>
     </None>

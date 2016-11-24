@@ -158,5 +158,10 @@ namespace SpecDrill.Adapters.WebDriver
         {
             seleniumDriver.SwitchTo().Frame((seleniumFrameElement as SeleniumElement).Element);
         }
+
+        public void SetWindowSize(int initialWidth, int initialHeight)
+        {
+            seleniumDriver.Manage().Window.Size = new System.Drawing.Size(initialWidth, initialHeight);
+        }
     }
 }
