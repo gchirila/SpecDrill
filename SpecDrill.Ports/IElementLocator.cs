@@ -16,9 +16,7 @@
     {
         By LocatorType { get; }
         string LocatorValue { get; }
-
         int? Index { get; }
-
         IElementLocator Copy();
         IElementLocator CopyWithIndex(int index);
     }

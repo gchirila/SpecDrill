@@ -17,7 +17,7 @@ namespace SomeTests.PageObjects.Test000
         [Find(By.Id, "gwText")]
         public IElement LblGwText { get; private set; }
 
-        [Find(By.CssSelector, "#uList>li")]
+        [Find(By.XPath, @"//ul[@id = 'uList']/li")]
         public ListElement<WebControl> UList;
         //public Test000GatewayPage()
         //    : base(string.Empty)

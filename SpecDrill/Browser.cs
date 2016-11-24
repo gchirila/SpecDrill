@@ -315,7 +315,10 @@ namespace SpecDrill
         public SearchResult PeekElement(IElement element)
         {
             var webElement = WebElement.Create(element.Parent, element.Locator);
-            return webElement.NativeElementSearchResult;
+            using (ImplicitTimeout(TimeSpan.FromSeconds(.5d)))
+            {
+                return webElement.NativeElementSearchResult;
+            }
         }
 
         public void Exit()

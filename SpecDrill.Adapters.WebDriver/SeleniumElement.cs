@@ -261,7 +261,7 @@ namespace SpecDrill.Adapters.WebDriver
                 try
                 {
                     var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
-                    if (elementToSearch.Locator.Index > elements.Count)
+                    if ((elementToSearch.Locator.Index??0) > elements.Count)
                     {
                         throw new Exception($"SpecDrill: SeleniumElement.NativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
                     }

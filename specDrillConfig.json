@@ -38,6 +38,11 @@
       "pageObjectType": "DashboardPage",
       "url": "http://ap-gda01-cihrp:8080/",
       "isFileSystemPath": false
+    },
+    {
+      "pageObjectType": "AlertPage",
+      "url": "../../../WebsiteMocks/Alerts/alert.html",
+      "isFileSystemPath": true
     }
   ]
 }

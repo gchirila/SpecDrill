@@ -60,7 +60,6 @@
     <Compile Include="SeleniumSelectElement.cs" />
     <Compile Include="SeleniumElement.cs" />
     <Compile Include="SeleniumElementLocator.cs" />
-    <Compile Include="SeleniumExtensions\ReadOnlyIWebElementCollectionExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpecDrill.Infrastructure\SpecDrill.Infrastructure.csproj">

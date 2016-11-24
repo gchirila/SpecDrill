@@ -30,7 +30,7 @@ namespace SomeTests.Features
         public void ThenYouShouldGetAEntryInSearchResults(string textToMatch)
         {
             var resultsPage = ScenarioContext.Current["resultsPage"] as GoogleSearchResultsPage;
-            var wikiResult = resultsPage.SearchResults.FirstOrDefault(r => r.Link.Text.Contains(textToMatch));
+            var wikiResult = resultsPage.SearchResults.GetElementByText(textToMatch);
             wikiResult.Should().NotBeNull();
         }
 

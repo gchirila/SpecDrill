@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SpecDrill;
 using System.Diagnostics;
+using FluentAssertions;
 
 namespace SomeTests
 {
@@ -50,7 +51,7 @@ namespace SomeTests
                 Wait.NoMoreThan(maxWait).Until(() => stopwatch.Elapsed >= timeUntilConditionIsTrue);
             
             stopwatch.Stop();
-            Assert.IsTrue(stopwatch.Elapsed.IsAround(timeUntilConditionIsTrue));
+            stopwatch.Elapsed.Should().BeCloseTo(timeUntilConditionIsTrue, 50);
         }
 
         [TestMethod]
@@ -102,7 +103,7 @@ namespace SomeTests
                 
             }
 
-            Assert.IsTrue(stopwatch.Elapsed.IsAround(timeUntilConditionBecomesTrue));
+            stopwatch.Elapsed.Should().BeCloseTo(timeUntilConditionBecomesTrue, 50);
         }
 
         [TestMethod]
@@ -116,24 +117,6 @@ namespace SomeTests
             Wait.WithRetry(retryCount, retryInterval).Doing(() => retriesDone++).Until(() => retriesDone == 2);
             
             Assert.IsTrue(retriesDone == 2, "Retries Count is different than expected");
-        }
-    }
-
-
-    public static class TimeSpanExtensions
-    {
-        /// <summary>
-        /// Performs time span comparisons with approximation of +-50ms
-        /// </summary>
-        /// <param name="timespan"></param>
-        /// <param name="referenceValue"></param>
-        /// <returns></returns>
-        public static bool IsAround(this TimeSpan timespan, TimeSpan referenceValue)
-        {
-            var delta = TimeSpan.FromMilliseconds(50);
-            var lower = timespan.Subtract(delta);
-            var upper = timespan.Add(delta);
-            return (lower < referenceValue) && (referenceValue < upper);
         }
     }
 }

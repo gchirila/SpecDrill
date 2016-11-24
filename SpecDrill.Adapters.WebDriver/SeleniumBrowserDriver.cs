@@ -5,7 +5,6 @@ using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using SpecDrill.Adapters.WebDriver.ElementLocatorExtensions;
-using SpecDrill.Adapters.WebDriver.SeleniumExtensions;
 using SpecDrill.Infrastructure.Logging;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.Infrastructure.Logging.Interfaces;

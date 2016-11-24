@@ -8,6 +8,9 @@ using SomeTests.PageObjects.Test000;
 using SpecDrill;
 using SpecDrill.MsTest;
 using FluentAssertions;
+using SpecDrill.AutomationScopes;
+using SomeTests.PageObjects.Alerts;
+using SpecDrill.SecondaryPorts.AutomationFramework;
 
 namespace SomeTests
 {
@@ -30,12 +33,12 @@ namespace SomeTests
 
             virtualStoreLoginPage.DdlCity.SelectByText("Chisinau");
             Assert.AreEqual("Chisinau", virtualStoreLoginPage.DdlCity.SelectedOptionText);
-            
+
             virtualStoreLoginPage.DdlCountry.SelectByIndex(1);
             Assert.AreEqual("Romania", virtualStoreLoginPage.DdlCountry.SelectedOptionText);
-            
+
             var homePage = virtualStoreLoginPage.BtnLogin.Click();
-            
+
             Assert.AreEqual("Virtual Store - Home", homePage.Title);
 
             Assert.AreEqual("Cosmin", homePage.LblUserName.Text);
@@ -95,6 +98,60 @@ namespace SomeTests
 
             gatewayPage.UList[1].Text.Should().Be("O1");
             gatewayPage.UList[2].Text.Should().Be("O2");
+        }
+
+        [TestMethod]
+        public void Issue_11_ShouldNoBlockForLongerThanSpecifiedWhenCallingWaitForNoMoreThan()
+        {
+            var gatewayPage = Browser.Open<Test000GatewayPage>();
+            var nonExistingElement = WebElement.Create(null, ElementLocator.Create(SpecDrill.SecondaryPorts.AutomationFramework.By.CssSelector, ".abc-xyz"));
+
+            using (var wait = Browser.ImplicitTimeout(TimeSpan.FromSeconds(3)))
+            using (var benchmark = new BenchmarkScope("timing Wait.NoMoreThan(...)"))
+            {
+                var twoSeconds = TimeSpan.FromSeconds(1);
+                Wait.NoMoreThan(twoSeconds).Until(() => nonExistingElement.IsAvailable, throwException: false);
+                benchmark.Elapsed.Should().BeCloseTo(twoSeconds, 300);
+            }
+        }
+
+        [TestMethod]
+        public void ShouldWaitForAlertAndAccept()
+        {
+            var alertPage = Browser.Open<AlertPage>();
+            Browser.Click(WebElement.Create(null, ElementLocator.Create(By.ClassName, "alert")));
+            var twoSeconds = TimeSpan.FromSeconds(2);
+            Wait.NoMoreThan(twoSeconds).Until(() => Browser.IsAlertPresent);
+            Browser.IsAlertPresent.Should().BeTrue();
+            Browser.Alert.Text.Should().Contain("Servus");
+            Browser.Alert.Accept();
+            Browser.IsAlertPresent.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void ShouldWaitForConfirmAndAccept()
+        {
+            var alertPage = Browser.Open<AlertPage>();
+            Browser.Click(WebElement.Create(null, ElementLocator.Create(By.LinkText, "Confirm")));
+            var twoSeconds = TimeSpan.FromSeconds(2);
+            Wait.NoMoreThan(twoSeconds).Until(() => Browser.IsAlertPresent);
+            Browser.IsAlertPresent.Should().BeTrue();
+            Browser.Alert.Text.Should().Contain("Sunny");
+            Browser.Alert.Accept();
+            Browser.IsAlertPresent.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void ShouldWaitForConfirmAndDismiss()
+        {
+            var alertPage = Browser.Open<AlertPage>();
+            Browser.Click(WebElement.Create(null, ElementLocator.Create(By.LinkText, "Confirm")));
+            var twoSeconds = TimeSpan.FromSeconds(2);
+            Wait.NoMoreThan(twoSeconds).Until(() => Browser.IsAlertPresent);
+            Browser.IsAlertPresent.Should().BeTrue();
+            Browser.Alert.Text.Should().Contain("Sunny");
+            Browser.Alert.Dismiss();
+            Browser.IsAlertPresent.Should().BeFalse();
         }
     }
 }
