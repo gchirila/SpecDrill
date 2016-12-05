@@ -53,7 +53,7 @@ namespace SpecDrill
             }
         }
 
-        public string Text
+        public virtual string Text
         {
             get
             {

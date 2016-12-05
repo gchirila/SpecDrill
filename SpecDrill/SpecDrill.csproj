@@ -55,6 +55,7 @@
     <Compile Include="WebControls\ListElement.cs" />
     <Compile Include="WebControls\TreeControl.cs" />
     <Compile Include="WebElement.cs" />
+    <Compile Include="PdfPage.cs" />
     <Compile Include="WebPage.cs" />
   </ItemGroup>
   <ItemGroup>

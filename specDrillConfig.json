@@ -30,6 +30,11 @@
       "isFileSystemPath": true
     },
     {
+      "pageObjectType": "PdfIndexPage",
+      "url": "../../../WebsiteMocks/Pdf/pdfIndex.html", // relative url path to executing assembly's location
+      "isFileSystemPath": true
+    },
+    {
       "pageObjectType": "GoogleSearchPage",
       "url": "http://www.google.com",
       "isFileSystemPath": false

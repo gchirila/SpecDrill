@@ -33,6 +33,8 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         /// <param name="seleniumFrameElement"></param>
         void SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement) where T : class, IPage;
 
+        void SwitchToWindow<T>(IWindowElement<T> seleniumWindowElement) where T : class, IPage;
+
         /// <summary>
         /// Returns instance of element if present or null if not available.
         /// </summary>
@@ -65,5 +67,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         bool IsAlertPresent { get; }
 
         void SwitchToDocument();
+        void CloseLastWindow();
+        string GetPdfText();
     }
 }

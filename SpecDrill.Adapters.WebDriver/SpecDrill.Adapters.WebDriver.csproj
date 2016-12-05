@@ -31,9 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PdfExtract, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdf-extract.1.0.1.0\lib\net45\PdfExtract.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +60,7 @@
     <Compile Include="SeleniumBrowserDriver.cs" />
     <Compile Include="SeleniumBrowserFactory.cs" />
     <Compile Include="SeleniumElementLocatorExtensions.cs" />
+    <Compile Include="SeleniumWindowElement.cs" />
     <Compile Include="SeleniumFrameElement.cs" />
     <Compile Include="SeleniumNavigationElement.cs" />
     <Compile Include="SeleniumSelectElement.cs" />
@@ -72,7 +78,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

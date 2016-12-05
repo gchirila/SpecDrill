@@ -61,5 +61,9 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         void SwitchToFrame(IElement seleniumFrameElement);
 
         void SetWindowSize(int initialWidth, int initialHeight);
+
+        void SwitchToWindow<T>(IWindowElement<T> seleniumWindowElement) where T:IPage;
+        void CloseLastWindow();
+        string GetPdfText();
     }
 }

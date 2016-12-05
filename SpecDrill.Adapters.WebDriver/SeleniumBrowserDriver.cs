@@ -8,6 +8,10 @@ using SpecDrill.Adapters.WebDriver.ElementLocatorExtensions;
 using SpecDrill.Infrastructure.Logging;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.Infrastructure.Logging.Interfaces;
+using System.Net;
+using System.Text;
+using System.Net.Http;
+using System.IO;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -161,6 +165,57 @@ namespace SpecDrill.Adapters.WebDriver
         public void SetWindowSize(int initialWidth, int initialHeight)
         {
             seleniumDriver.Manage().Window.Size = new System.Drawing.Size(initialWidth, initialHeight);
+        }
+
+        void IBrowserDriver.SwitchToWindow<T>(IWindowElement<T> seleniumWindowElement)
+        {
+            var windowCount = seleniumDriver.WindowHandles.Count();
+            Wait.WithRetry().Doing(() => seleniumWindowElement.Click()).Until(() => seleniumDriver.WindowHandles.Count() > windowCount);
+            
+            //var currentWindow = seleniumDriver.CurrentWindowHandle;
+            var mostRecentWindow = seleniumDriver.WindowHandles.LastOrDefault();
+            if (mostRecentWindow != default(string))
+            {
+                seleniumDriver.SwitchTo().Window(mostRecentWindow);
+            }
+        }
+
+        public void CloseLastWindow()
+        {
+            seleniumDriver.Close();
+        }
+        
+        public string GetPdfText()
+        {
+            StringBuilder pdfText = new StringBuilder();
+            string userAgent = (string)ExecuteJavaScript("return navigator.userAgent") ?? string.Empty;
+
+
+            var webClient = new WebClient();
+
+            var formattedCookiesString = GetFormattedCookiesString();
+
+            Uri uri = new Uri(seleniumDriver.Url);
+            webClient.Headers.Add(HttpRequestHeader.Host, uri.Host);
+            webClient.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
+            webClient.Headers.Add(HttpRequestHeader.Cookie, formattedCookiesString);
+            webClient.Headers.Add(HttpRequestHeader.Accept, "application/pdf");
+
+            using (var pdfStream = new MemoryStream(webClient.DownloadData(uri.OriginalString)))
+            using (var extractor = new PdfExtract.Extractor())
+                return extractor.ExtractToString(pdfStream);
+        }
+
+        private string GetFormattedCookiesString()
+        {
+            StringBuilder strCookies = new StringBuilder();
+            foreach (var cookie in (seleniumDriver.Manage().Cookies.AllCookies ?? new ReadOnlyCollection<OpenQA.Selenium.Cookie>(new List<OpenQA.Selenium.Cookie>())))
+            {
+                strCookies.Append($"{cookie.Name}={cookie.Value}; ");
+            }
+            if (strCookies.Length > 1) { strCookies.Remove(strCookies.Length - 2, 2); }
+
+            return strCookies.ToString();
         }
     }
 }

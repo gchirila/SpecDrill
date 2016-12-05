@@ -58,6 +58,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PageObjects\Pdf\MyPdfPage.cs" />
+    <Compile Include="PageObjects\Pdf\PdfIndexPage.cs" />
+    <Compile Include="PdfTests.cs" />
     <Compile Include="GoogleSearchTests.cs" />
     <None Include="Features\GoogleSearch.feature.cs.pp" />
     <None Include="Features\GoogleSearchSteps.cs.pp" />
@@ -121,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="WebsiteMocks\Alerts\alert.html" />
+    <Content Include="WebsiteMocks\Pdf\pdfIndex.html" />
     <Content Include="WebsiteMocks\Test000\gateway.html" />
     <Content Include="WebsiteMocks\Test000\home.html" />
     <Content Include="WebsiteMocks\Test000\login.html" />

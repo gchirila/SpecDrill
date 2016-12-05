@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill</id>
-        <version>1.0.8</version>
+        <version>1.0.10</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
@@ -10,18 +10,22 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
 	<releaseNotes>
-        v1.0.8
+            v1.0.10
+                - Fixed Issue #15 (enhancement) - Add Ability to extract pdf text
+            v1.0.9
+                - Fixed Issue #11 - Wait.ForNoMoreThan(...) is broken
+            v1.0.8
 	        - Fixed Issue #8 - log4net.config in nuget package is empty
-            - Fixed Issue #7 - Provide meaningful exception when PageObject is lacking parameterless constructor
-            - Fixed Issue #6 - ListElement is not considering indexer's index parameter
+                - Fixed Issue #7 - Provide meaningful exception when PageObject is lacking parameterless constructor
+                - Fixed Issue #6 - ListElement is not considering indexer's index parameter
 	        - Fixed Issue #1 - Startup browser window size is not configurable
 	    v1.0.7
 	        - Fixed Issue #4 - Support declarative (attribute based) way of declaring Page/Control objects
 	    v1.0.6
 	        - Refactored searching for native elements
-            - Waits are now fault tolerant
-        v1.0.5
-            - Fixed Issue #5 - Page load test fails for pages in iframe
+                - Waits are now fault tolerant
+            v1.0.5
+                - Fixed Issue #5 - Page load test fails for pages in iframe
 	</releaseNotes>
         <copyright>Copyright 2016</copyright>
         <tags>SpecDrill SpecFlow Selenium WebDriver Automation BDD ATDD</tags>
@@ -32,13 +36,14 @@
             <dependency id="log4net" version="2.0.5" />
             <dependency id="FluentAssertions" version="4.14.0" />
             <dependency id="Selenium.WebDriver.ChromeDriver" version="2.25.0.0" />
+	    <dependency id="pdf-extract" version="1.0.1.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="..\SomeTests\PageObjects\Test002\GoogleSearchPage.cs" target="content\PageObjects\GoogleSearchPage.cs" />
-        <file src="..\SomeTests\PageObjects\Test002\GoogleSearchResultsPage.cs" target="content\PageObjects\GoogleSearchResultsPage.cs" />
-        <file src="..\SomeTests\PageObjects\Test002\ResultItemControl.cs" target="content\PageObjects\ResultItemControl.cs" />
-        <file src="..\SomeTests\GoogleSearchTests.cs" target="content\GoogleSearchTests.cs" />
+        <file src="..\SpecDrill.Tests\PageObjects\Test002\GoogleSearchPage.cs.pp" target="content\PageObjects\GoogleSearchPage.cs.pp" />
+        <file src="..\SpecDrill.Tests\PageObjects\Test002\GoogleSearchResultsPage.cs.pp" target="content\PageObjects\GoogleSearchResultsPage.cs.pp" />
+        <file src="..\SpecDrill.Tests\PageObjects\Test002\ResultItemControl.cs.pp" target="content\PageObjects\ResultItemControl.cs.pp" />
+        <file src="..\SpecDrill.Tests\GoogleSearchTests.cs.pp" target="content\GoogleSearchTests.cs.pp" />
         <file src="..\SpecDrill.NuGet\content\log4net.config" target="content\log4net.config" />
         <file src="..\SpecDrill.NuGet\content\specDrillConfig.json" target="content\specDrillConfig.json" />
         <file src="..\SpecDrill.MsTest\bin\Debug\SpecDrill.Adapters.WebDriver.dll" target="lib\net461\SpecDrill.Adapters.WebDriver.dll" />

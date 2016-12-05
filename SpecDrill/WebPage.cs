@@ -12,6 +12,7 @@ using SpecDrill.Infrastructure.Logging;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill
 {
@@ -97,6 +98,8 @@ namespace SpecDrill
             }
         }
 
+        public PageContextTypes ContextType { get; set; }
+
         public void RefreshPage()
         {
             browser.RefreshPage();
@@ -110,7 +113,16 @@ namespace SpecDrill
 
         public void Dispose()
         {
-            browser.SwitchToDocument();
+            if (this.ContextType == PageContextTypes.Frame)
+            {
+                browser.SwitchToDocument();
+            }
+            else if (this.ContextType == PageContextTypes.Window)
+            {
+                browser.CloseLastWindow();
+            }
+
+
         }
 
         // TODO: Investigate how virtual IsPageLoaded can be used to sum up all kinds of wait (static, jQuery, Angular1, Angular2, etc)

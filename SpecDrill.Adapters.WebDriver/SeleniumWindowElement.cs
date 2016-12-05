@@ -8,22 +8,20 @@ using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 
 namespace SpecDrill.Adapters.WebDriver
 {
-    public class SeleniumFrameElement<T> : SeleniumElement, IFrameElement<T>
+    public class SeleniumWindowElement<T> : SeleniumElement, IWindowElement<T>
         where T: class, IPage
     {
-        public SeleniumFrameElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
+        public SeleniumWindowElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
         {
             this.browser = browser;
             this.locator = locator;
         }
-
-        public T SwitchTo() => Open();
         public T Open()
         {
             Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
-            Browser.SwitchToFrame(this);
+            Browser.SwitchToWindow(this);
             IPage targetPage = browser.CreatePage<T>();
-            targetPage.ContextType = PageContextTypes.Frame;
+            targetPage.ContextType = PageContextTypes.Window;
             Wait.Until(() => targetPage.IsLoaded);
             targetPage.WaitForSilence();
             return (T) targetPage;

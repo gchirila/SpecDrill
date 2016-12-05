@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill.SpecFlow</id>
-        <version>1.0.8</version>
+        <version>1.0.9</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
@@ -10,21 +10,22 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
         <releaseNotes>
+        v1.0.9
+         - Fixed SpecDrill Issue: #11
         v1.0.8
          - Initial Release
         </releaseNotes>
         <copyright>Copyright 2016</copyright>
         <tags>SpecDrill SpecFlow Selenium WebDriver Automation</tags>
         <dependencies>
-            <dependency id="SpecDrill" version="1.0.8" />
+            <dependency id="SpecDrill" version="1.0.9" />
             <dependency id="SpecFlow" version="2.1.0" />
             <dependency id="SpecFlow.MsTest" version="2.1.0" />
         </dependencies>
     </metadata>
     <files>
         <file src="..\SomeTests\Features\GoogleSearch.feature" target="content\Features\GoogleSearch.feature" />
-        <file src="..\SomeTests\Features\GoogleSearch.feature.cs" target="content\Features\GoogleSearch.feature.cs" />
-        <file src="..\SomeTests\Features\GoogleSearchSteps.cs" target="content\Features\GoogleSearchSteps.cs" />
+        <file src="..\SomeTests\Features\GoogleSearchSteps.cs.pp" target="content\Features\GoogleSearchSteps.cs.pp" />
         <file src="..\SomeTests\bin\Debug\SpecDrill.SpecFlow.dll" target="lib\net461\SpecDrill.SpecFlow.dll" />
         <file src="..\SomeTests\bin\Debug\SpecDrill.SpecFlow.pdb" target="lib\net461\SpecDrill.SpecFlow.pdb" />
     </files>

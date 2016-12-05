@@ -40,6 +40,12 @@ namespace SpecDrill
             return new SeleniumFrameElement<T>(Browser.Instance, parent, locator);
         }
 
+        public static IWindowElement<T> CreateWindow<T>(IElement parent, IElementLocator locator)
+            where T : class, IPage
+        {
+            return new SeleniumWindowElement<T>(Browser.Instance, parent, locator);
+        }
+
         public static T CreateControl<T>(IElement parent, IElementLocator elementLocator)
             where T : class, IElement
         {

@@ -9,9 +9,9 @@ using SpecDrill.Infrastructure.Logging.Interfaces;
 
 namespace SpecDrill.AutomationScopes
 {
-    public class BenchmarkScope : IDisposable
+    public sealed class BenchmarkScope : IDisposable
     {
-         protected readonly ILogger Log = Infrastructure.Logging.Log.Get<BenchmarkScope>();
+        private readonly ILogger Log = Infrastructure.Logging.Log.Get<BenchmarkScope>();
 
         private readonly Stopwatch stopwatch;
         private readonly string description;

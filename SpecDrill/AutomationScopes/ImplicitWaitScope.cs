@@ -6,7 +6,7 @@ using SpecDrill.SecondaryPorts.AutomationFramework;
 
 namespace SpecDrill.AutomationScopes
 {
-    public class ImplicitWaitScope : IDisposable
+    public sealed class ImplicitWaitScope : IDisposable
     {
         private ILogger Log = Infrastructure.Logging.Log.Get<ImplicitWaitScope>();
         

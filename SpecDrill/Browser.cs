@@ -17,7 +17,7 @@ using SpecDrill.WebControls;
 
 namespace SpecDrill
 {
-    public class Browser : IBrowser
+    public sealed class Browser : IBrowser
     {
         private static IBrowser browserInstance = null;
 
@@ -146,6 +146,10 @@ namespace SpecDrill
                                 else if (typeof(IFrameElement<IPage>).IsAssignableFrom(memberType))
                                 {
                                     element = InvokeFactoryMethod("CreateFrame", memberType.GenericTypeArguments, container, findAttribute);
+                                }
+                                else if (typeof(IWindowElement<IPage>).IsAssignableFrom(memberType))
+                                {
+                                    element = InvokeFactoryMethod("CreateWindow", memberType.GenericTypeArguments, container, findAttribute);
                                 }
                                 else if (typeof(WebControl).IsAssignableFrom(memberType))
                                 {
@@ -410,6 +414,21 @@ namespace SpecDrill
         void IBrowser.SwitchToFrame<T>(IFrameElement<T> seleniumFrameElement)
         {
             browserDriver.SwitchToFrame(seleniumFrameElement);
+        }
+
+        void IBrowser.SwitchToWindow<T>(IWindowElement<T> seleniumWindowElement)
+        {
+            browserDriver.SwitchToWindow(seleniumWindowElement);
+        }
+
+        public void CloseLastWindow()
+        {
+            browserDriver.CloseLastWindow();
+        }
+
+        public string GetPdfText()
+        {
+            return browserDriver.GetPdfText();
         }
     }
 }

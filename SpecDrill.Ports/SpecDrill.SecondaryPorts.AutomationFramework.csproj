@@ -47,6 +47,8 @@
     <Compile Include="ICustomElement.cs" />
     <Compile Include="IElement.cs" />
     <Compile Include="IElementLocator.cs" />
+    <Compile Include="Model\PageContextTypes.cs" />
+    <Compile Include="WindowElement.cs" />
     <Compile Include="IFrameElement.cs" />
     <Compile Include="INavigationElement.cs" />
     <Compile Include="IControl.cs" />

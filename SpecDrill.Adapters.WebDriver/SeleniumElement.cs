@@ -197,21 +197,7 @@ namespace SpecDrill.Adapters.WebDriver
         {
             get
             {
-                List<IElement> elementContainers = new List<IElement>();
-
-                IElement current = this.Parent;
-
-                if (current != null)
-                {
-                    do
-                    {
-                        if (current is IControl || current is IPage)
-                        {
-                            elementContainers.Add(current);
-                        }
-                        current = current.Parent;
-                    } while (current != null);
-                }
+                List<IElement> elementContainers = DiscoverElementContainers();
 
                 if (elementContainers.Count == 0)
                     return this.browser.FindNativeElement(this.Locator);
@@ -219,13 +205,13 @@ namespace SpecDrill.Adapters.WebDriver
                 elementContainers.Reverse();
 
                 SearchResult previousContainer = this.browser.FindNativeElement(elementContainers.First().Locator);
-                    //elementContainers.First().NativeElementSearchResult;
+                //elementContainers.First().NativeElementSearchResult;
 
                 if (!previousContainer.HasResult)
                     return SearchResult.Empty;
 
                 bool isParentAvailable = AvailabilityTest(previousContainer.NativeElement as IWebElement);
-                
+
                 Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep. Its parent is{(isParentAvailable ? string.Empty : " not")} available.");
                 Log.Info($"L01>{elementContainers.First().Locator}");
 
@@ -244,9 +230,30 @@ namespace SpecDrill.Adapters.WebDriver
                 Log.Info($"LOC>{locator}");
 
                 return SearchElementInPreviousContainer(
-                    elementToSearch: this, 
+                    elementToSearch: this,
                     previousContainer: previousContainer);
             }
+        }
+
+        private List<IElement> DiscoverElementContainers()
+        {
+            List<IElement> elementContainers = new List<IElement>();
+
+            IElement current = this.Parent;
+
+            if (current != null)
+            {
+                do
+                {
+                    if (current is IControl || current is IPage)
+                    {
+                        elementContainers.Add(current);
+                    }
+                    current = current.Parent;
+                } while (current != null);
+            }
+
+            return elementContainers;
         }
 
         private SearchResult SearchElementInPreviousContainer(IElement elementToSearch, SearchResult previousContainer, int i = -1)
