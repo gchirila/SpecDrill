@@ -2,6 +2,7 @@
 using SpecDrill.Infrastructure.Logging.Implementation;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using ILoggerFactory = SpecDrill.Infrastructure.Logging.Interfaces.ILoggerFactory;
+using System.Diagnostics;
 
 namespace SpecDrill.Infrastructure.Logging
 {
@@ -16,17 +17,24 @@ namespace SpecDrill.Infrastructure.Logging
 
         public static ILogger Get(string name)
         {
-            return loggerFactory.Get(name);
+            return GetLogger(loggerFactory.Get(name));
         }
 
         public static ILogger Get<T>()
         {
-            return loggerFactory.Get(typeof(T).Namespace);
+            return GetLogger(loggerFactory.Get(typeof(T).Namespace));
         }
 
         public static ILogger Get(Type type)
         {
-            return loggerFactory.Get(type.Namespace);
+            return GetLogger(loggerFactory.Get(type.Namespace));
         }
+        private static ILogger GetLogger(ILogger logger)
+        {
+            if (logger == null)
+                Trace.Write($"Logger is null!");
+            return logger;
+        }
+
     }
 }

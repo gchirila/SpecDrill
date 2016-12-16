@@ -5,13 +5,14 @@ using log4net;
 using log4net.Config;
 using Newtonsoft.Json;
 using SpecDrill.Configuration;
+using SpecDrill.Infrastructure.Logging;
 
 namespace SpecDrill.Infrastructure.Configuration
 {
     public class ConfigurationManager
     {
         private const string ConfigurationFileName = "specDrillConfig.json";
-        protected static ILog Log = LogManager.GetLogger(typeof(ConfigurationManager));
+        protected static Logging.Interfaces.ILogger Log = Logging.Log.Get<ConfigurationManager>();
 
         public static readonly Settings Settings;
         static ConfigurationManager()
@@ -23,9 +24,12 @@ namespace SpecDrill.Infrastructure.Configuration
         {
             if (string.IsNullOrWhiteSpace(jsonConfiguration))
             {
-                Log.InfoFormat("Searcing Configuration file {0}...", ConfigurationFileName);
+                Log.Info($"Searcing Configuration file {ConfigurationFileName}...");
                 var configurationPaths = FindConfigurationFile(AppDomain.CurrentDomain.BaseDirectory);
-                
+
+                if (configurationPaths == null)
+                    throw new FileNotFoundException("Configuration file not found");
+
                 var configurationFilePath = configurationPaths.Item1;
                 var log4netConfigFilePath = Path.Combine(configurationFilePath, "log4net.config");
 
@@ -54,7 +58,7 @@ namespace SpecDrill.Infrastructure.Configuration
         {
             while (true)
             {
-                Log.InfoFormat("Scanning {0}...", folder);
+                Log.Info($"Scanning {folder}...");
 
                 // we need at least a valid root folder path to continue
                 if (folder.Length > 2)
@@ -63,7 +67,7 @@ namespace SpecDrill.Infrastructure.Configuration
 
                     if (!string.IsNullOrWhiteSpace(result))
                     {
-                        Log.InfoFormat("Found configuration file at {0}", result);
+                        Log.Info($"Found configuration file at {result}");
                         return Tuple.Create(folder, result);
                     }
 

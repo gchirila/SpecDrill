@@ -14,6 +14,8 @@ using System.IO;
 
 using System.Reflection;
 using SpecDrill.WebControls;
+using SpecDrill.Infrastructure.Logging;
+using System.Diagnostics;
 
 namespace SpecDrill
 {
@@ -31,15 +33,17 @@ namespace SpecDrill
 
         public Browser(Settings configuration)
         {
+            Trace.Write($"Configuration = {(configuration?.ToString() ?? "(null)")}");
             this.configuration = configuration;
-
+            Log.Info("Initializing Driver...");
             var driverFactory = new SeleniumBrowserFactory(configuration);
 
             var browserName = configuration.WebDriver.BrowserDriver.ToEnum<BrowserNames>();
-
+            Log.Info($"WebDriver.BrowserDriver = {browserName}");
             browserDriver = driverFactory.Create(browserName);
 
             // configuring browser window
+            Log.Info($"BrowserWindow.IsMaximized = {configuration.BrowserWindow.IsMaximized}");
             if (configuration.BrowserWindow.IsMaximized)
             {
                 MaximizePage();
@@ -48,7 +52,8 @@ namespace SpecDrill
             {
                 SetWindowSize(configuration.BrowserWindow.InitialWidth ?? 800, configuration.BrowserWindow.InitialHeight ?? 600);
             }
-
+            long waitMilliseconds = configuration.MaxWait == 0 ? 60000 : configuration.MaxWait;
+            Log.Info($"MaxWait = {waitMilliseconds}ms");
             var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.MaxWait == 0 ? 60000 : configuration.MaxWait);
 
             // set initial browser driver timeout to configuration or 1 minute if not defined
@@ -74,14 +79,13 @@ namespace SpecDrill
             var homePage = configuration.Homepages.FirstOrDefault(homepage => homepage.PageObjectType == typeof(T).Name);
             if (homePage != null)
             {
-
+                string url = string.Format("file:///{0}{1}",
+                            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'),
+                            homePage.Url);
+                Log.Info($"Browser openins {url}");
                 Action navigateToUrl = homePage.IsFileSystemPath ?
                     (Action)(() =>
-                    this.GoToUrl(
-                        string.Format("file:///{0}{1}",
-                            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'),
-                            homePage.Url)))
-                    : () => this.GoToUrl(homePage.Url);
+                    this.GoToUrl(url)) : () => this.GoToUrl(homePage.Url);
 
                 navigateToUrl();
 
@@ -91,8 +95,9 @@ namespace SpecDrill
                 targetPage.WaitForSilence();
                 return targetPage;
             }
-
-            throw new Exception($"SpecDrill: Page ({typeof(T).Name}) cannot be found in Homepages section of settings file.");
+            string errMsg = $"SpecDrill: Page({ typeof(T).Name}) cannot be found in Homepages section of settings file.";
+            Log.Info(errMsg);
+            throw new Exception(errMsg);
         }
 
         public T CreatePage<T>() where T : IPage => CreateContainer<T>();

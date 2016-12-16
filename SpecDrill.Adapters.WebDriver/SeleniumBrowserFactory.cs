@@ -11,19 +11,23 @@ using SpecDrill.SecondaryPorts.AutomationFramework;
 //using OpenQA.Selenium.Appium.Android;
 //using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Remote;
-using SpecDrill.Infrastructure;
+using SpecDrill.Infrastructure.Logging;
+using SpecDrill.Infrastructure.Logging.Interfaces;
 //using OpenQA.Selenium.Appium.Enums;
 
 namespace SpecDrill.Adapters.WebDriver
 {
     public class SeleniumBrowserFactory : IBrowserDriverFactory
     {
+
+        private ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserFactory>();
         private readonly Dictionary<BrowserNames, Func<string, IBrowserDriver>> driverFactory;
         //private readonly Dictionary<BrowserNames>
         private readonly Settings configuration = null;
         public SeleniumBrowserFactory(Settings configuration)
         {
             var aPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            Log.Info($"Assembly path = {aPath}");
             this.configuration = configuration;
             driverFactory = new Dictionary<BrowserNames, Func<string, IBrowserDriver>>
             {
@@ -58,6 +62,7 @@ namespace SpecDrill.Adapters.WebDriver
         {
             if (configuration.WebDriver.IsRemote)
             {
+                Log.Info($"WebDriver.IsRemote = {configuration.WebDriver.IsRemote}");
                 switch (browserName)
                 {
                     case BrowserNames.chrome:

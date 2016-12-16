@@ -3,6 +3,8 @@ using SpecDrill.Infrastructure;
 using SpecDrill.Infrastructure.Configuration;
 using SpecDrill.Infrastructure.Logging.Interfaces;
 using SpecDrill.SecondaryPorts.AutomationFramework.Core;
+using System;
+using System.Diagnostics;
 
 namespace SpecDrill.MsTest
 {
@@ -12,7 +14,14 @@ namespace SpecDrill.MsTest
         protected readonly IBrowser Browser;
         public TestBase()
         {
-            Browser = new Browser(ConfigurationManager.Settings);
+            try
+            {
+                Browser = new Browser(ConfigurationManager.Settings);
+            }
+            catch (Exception e)
+            {
+                Trace.Write($"TestBase. -> {e}");
+            }
         }
 
         [TestInitialize]

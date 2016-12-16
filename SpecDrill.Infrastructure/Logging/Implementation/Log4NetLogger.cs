@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using SpecDrill.Infrastructure.Logging.Interfaces;
+using System.Diagnostics;
 
 namespace SpecDrill.Infrastructure.Logging.Implementation
 {
@@ -42,30 +43,35 @@ namespace SpecDrill.Infrastructure.Logging.Implementation
             switch (level)
             {
                 case LogLevel.Debug:
+                    Trace.WriteLine($"DEBUG - {message}, {exception?.ToString() ?? "(null)"}");
                     if (logger.IsDebugEnabled)
                     {
                         logger.Debug(message, exception);
                     }
                     return;
                 case LogLevel.Error:
+                    Trace.WriteLine($"ERROR - {message}, {exception?.ToString() ?? "(null)"}");
                     if (logger.IsErrorEnabled)
                     {
                         logger.Error(message, exception);
                     }
                     return;
                 case LogLevel.Fatal:
+                    Trace.WriteLine($"FATAL - {message}, {exception?.ToString() ?? "(null)"}");
                     if (logger.IsFatalEnabled)
                     {
                         logger.Fatal(message, exception);
                     }
                     return;
                 case LogLevel.Info:
+                    Trace.WriteLine($"INFO - {message}, {exception?.ToString() ?? "(null)"}");
                     if (logger.IsInfoEnabled)
                     {
                         logger.Info(message, exception);
                     }
                     return;
                 default:
+                    Trace.WriteLine($"WARN - {message}, {exception?.ToString() ?? "(null)"}");
                     if (logger.IsWarnEnabled)
                     {
                         logger.Warn(message, exception);
