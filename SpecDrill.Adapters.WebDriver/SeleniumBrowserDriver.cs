@@ -137,8 +137,8 @@ namespace SpecDrill.Adapters.WebDriver
         {
             //ExecuteJavaScript(string.Format(@"{0} sdDispatch(arguments[0],'mouseover');", sdDispatch), (element as SeleniumElement).Element);
             var actions = new Actions(this.seleniumDriver);
-            actions.DragAndDrop((startFromElement as SeleniumElement).Element,
-                (stopToElement as SeleniumElement).Element);
+            actions.DragAndDrop(startFromElement.NativeElementSearchResult.NativeElement as IWebElement,
+                stopToElement.NativeElementSearchResult.NativeElement as IWebElement);
             actions.Build().Perform();
         }
 
