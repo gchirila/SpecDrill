@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill</id>
-        <version>1.0.12</version>
+        <version>1.0.13</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
@@ -10,6 +10,9 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
 	<releaseNotes>
+            v1.0.13
+		- Fixed Issue #19 - Implicit wait is broken. Sometimes tests fail with Explicit wait when none is set from test code.
+		- Fixed Issue #18 - Fix hooks into MsTest lifecycle methods 
             v1.0.12
                 - Fixed Issue #17 - Fixed Drag and Drop
             v1.0.11
