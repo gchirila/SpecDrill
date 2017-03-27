@@ -298,7 +298,7 @@ namespace SpecDrill.Adapters.WebDriver
         {
             get
             {
-                Wait.NoMoreThan(TimeSpan.FromSeconds(10)).Until(() => this.IsAvailable);
+                Wait.Until(() => this.IsAvailable);
                 var nativeElement = this.NativeElementSearchResult.NativeElement as IWebElement;
                 if (nativeElement == null)
                 {

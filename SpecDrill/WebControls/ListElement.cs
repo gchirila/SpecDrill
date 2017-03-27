@@ -38,6 +38,11 @@ namespace SpecDrill.WebControls
             }
         }
 
+        public T GetElementByIndex(int index)
+        {
+            return this[index];
+        }
+
         //public int Count { get {  this.FindElements(this.locator)?.Count ?? 0; } }
 
         public new bool IsReadOnly => true;

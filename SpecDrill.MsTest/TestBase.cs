@@ -10,7 +10,7 @@ namespace SpecDrill.MsTest
 {
     public class TestBase
     {
-        protected ILogger Log =  Infrastructure.Logging.Log.Get<TestBase>();
+        protected static ILogger Log =  Infrastructure.Logging.Log.Get<TestBase>();
         protected readonly IBrowser Browser;
         public TestBase()
         {
@@ -23,12 +23,43 @@ namespace SpecDrill.MsTest
                 Trace.Write($"TestBase. -> {e}");
             }
         }
+        [ClassInitialize]
+        public static void __ClassSetUp()
+        {
+            try
+            {
+                ClassSetUp();
+            }
+            catch (Exception e)
+            {
+                Log.Log(LogLevel.Error, $"Failed in TestInitialize for {TestContext.TestName} with {e}");
+            }
+        }
+        protected static Action ClassSetUp = () => { };
+
+
+        [ClassCleanup]
+        public static void __ClassCleanup()
+        {
+            ClassCleanUp();
+        }
+        protected static Action ClassCleanUp = () => { };
+
 
         [TestInitialize]
         public void _TestSetUp()
         {
-            TestSetUp();
+            try
+            {
+                TestSetUp();
+            }
+            catch (Exception e)
+            {
+                Log.Log(LogLevel.Error, $"Failed in TestInitialize for {TestContext.TestName} with {e}");
+            }
         }
+
+        public TestContext TestContext { get; set; }
 
         [TestCleanup]
         public void _TestTearDown()

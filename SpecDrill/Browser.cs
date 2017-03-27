@@ -44,6 +44,7 @@ namespace SpecDrill
 
             // configuring browser window
             Log.Info($"BrowserWindow.IsMaximized = {configuration.BrowserWindow.IsMaximized}");
+
             if (configuration.BrowserWindow.IsMaximized)
             {
                 MaximizePage();
@@ -52,6 +53,7 @@ namespace SpecDrill
             {
                 SetWindowSize(configuration.BrowserWindow.InitialWidth ?? 800, configuration.BrowserWindow.InitialHeight ?? 600);
             }
+
             long waitMilliseconds = configuration.MaxWait == 0 ? 60000 : configuration.MaxWait;
             Log.Info($"MaxWait = {waitMilliseconds}ms");
             var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.MaxWait == 0 ? 60000 : configuration.MaxWait);
