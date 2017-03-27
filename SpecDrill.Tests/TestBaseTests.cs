@@ -17,19 +17,19 @@ namespace SomeTests
         private int methodTearDownCount = 0;
 
        
-        public override void TestSetUp()
+        public override void TestSetup()
         {
             Assert.AreEqual(0, methodInitCount);
             methodInitCount++;
             Assert.AreEqual(1, methodInitCount);
         }
 
-        public override void TestTearDown()
+        public override void TestCleanup()
         {
             Assert.AreEqual(0, methodTearDownCount);
             methodTearDownCount++;
             Assert.AreEqual(1, methodTearDownCount);
-            base.TestTearDown();
+            base.TestCleanup();
         }
 
         [TestMethod]

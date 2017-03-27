@@ -24,34 +24,34 @@ namespace SpecDrill.MsTest
             }
         }
         [ClassInitialize]
-        public static void __ClassSetUp()
+        public static void _ClassSetup()
         {
             try
             {
-                ClassSetUp();
+                ClassSetup();
             }
             catch (Exception e)
             {
-                Log.Log(LogLevel.Error, $"Failed in TestInitialize for {TestContext.TestName} with {e}");
+                Log.Log(LogLevel.Error, $"Failed in ClassInitialize with {e}");
             }
         }
-        protected static Action ClassSetUp = () => { };
+        protected static Action ClassSetup = () => { };
 
 
         [ClassCleanup]
-        public static void __ClassCleanup()
+        public static void _ClassCleanup()
         {
-            ClassCleanUp();
+            ClassCleanup();
         }
-        protected static Action ClassCleanUp = () => { };
+        protected static Action ClassCleanup = () => { };
 
 
         [TestInitialize]
-        public void _TestSetUp()
+        public void _TestSetup()
         {
             try
             {
-                TestSetUp();
+                TestSetup();
             }
             catch (Exception e)
             {
@@ -62,16 +62,16 @@ namespace SpecDrill.MsTest
         public TestContext TestContext { get; set; }
 
         [TestCleanup]
-        public void _TestTearDown()
+        public void _TestCleanup()
         {
-            TestTearDown();
+            TestCleanup();
         }
 
-        public virtual void TestSetUp()
+        public virtual void TestSetup()
         {
         }
 
-        public virtual void TestTearDown()
+        public virtual void TestCleanup()
         {
             Browser.Exit();
         }
