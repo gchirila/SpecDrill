@@ -1,7 +1,7 @@
 ﻿{
   "webdriver": {
     "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.25.0.0\\driver", //"C:\\Your Browser Drivers Path"//
+    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.29.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
     "isRemote": false,
     "seleniumServerUri": "http://localhost:5555/wd/hub"
   },

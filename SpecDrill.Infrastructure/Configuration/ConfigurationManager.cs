@@ -12,19 +12,20 @@ namespace SpecDrill.Infrastructure.Configuration
     public class ConfigurationManager
     {
         private const string ConfigurationFileName = "specDrillConfig.json";
-        protected static Logging.Interfaces.ILogger Log = Logging.Log.Get<ConfigurationManager>();
+        protected static Logging.Interfaces.ILogger Log;
 
         public static readonly Settings Settings;
         static ConfigurationManager()
         {
             Settings = Load();
+            Log = Logging.Log.Get<ConfigurationManager>();
         }
 
         public static Settings Load(string jsonConfiguration = null)
         {
             if (string.IsNullOrWhiteSpace(jsonConfiguration))
             {
-                Log.Info($"Searcing Configuration file {ConfigurationFileName}...");
+                Log.Info($"Searching Configuration file {ConfigurationFileName}...");
                 var configurationPaths = FindConfigurationFile(AppDomain.CurrentDomain.BaseDirectory);
 
                 if (configurationPaths == null)

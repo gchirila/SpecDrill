@@ -20,6 +20,7 @@ namespace SpecDrill.MsTest
             }
             catch (Exception e)
             {
+                Log.Log(LogLevel.Error, e.Message);
                 Trace.Write($"TestBase. -> {e}");
             }
         }

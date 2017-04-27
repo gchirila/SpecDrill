@@ -305,7 +305,7 @@ namespace SpecDrill.Adapters.WebDriver
                     throw new Exception("SpecDrill: Element Not Found!");
                 }
 
-                browser.ExecuteJavascript(@"arguments[0].style.border='1px solid red';", nativeElement);
+                browser.ExecuteJavascript(@"arguments[0].style.outline='1px solid red';", nativeElement);
                 
                 return nativeElement;
             }
@@ -335,7 +335,7 @@ namespace SpecDrill.Adapters.WebDriver
                 var nativeElement = this.NativeElementSearchResult.NativeElement;
                 if (nativeElement == null)
                     return 0;
-                browser.ExecuteJavascript(@"arguments[0].style.border='1px solid green';", nativeElement);
+                browser.ExecuteJavascript(@"arguments[0].style.outline='1px solid green';", nativeElement);
                 return this.NativeElementSearchResult.Count;
             }
         }

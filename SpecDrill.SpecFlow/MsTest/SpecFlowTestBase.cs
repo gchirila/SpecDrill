@@ -12,10 +12,18 @@ namespace SpecDrill.SpecFlow.MsTest
 {
     public class SpecFlowTestBase
     {
-        protected ILogger Log = Infrastructure.Logging.Log.Get<SpecFlowTestBase>();
+        protected static ILogger Log = Infrastructure.Logging.Log.Get<SpecFlowTestBase>();
         private Lazy<IBrowser> LazyBrowser = new Lazy<IBrowser>(() =>
         {
-            return new Browser(ConfigurationManager.Settings);
+            try
+            {
+                return new Browser(ConfigurationManager.Settings);
+            }
+            catch (Exception e)
+            {
+                Log.Log(LogLevel.Fatal, e.Message);
+                throw;
+            }
         });
         protected IBrowser Browser => LazyBrowser.Value;
         
