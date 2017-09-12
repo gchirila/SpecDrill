@@ -10,21 +10,35 @@ namespace SpecDrill.Adapters.WebDriver
     public class SeleniumNavigationElement<T> : SeleniumElement, INavigationElement<T>
         where T: class, IPage
     {
-        
+
         public SeleniumNavigationElement(IBrowser browser, IElement parent, IElementLocator locator) : base(browser, parent, locator)
         {
             this.browser = browser;
             this.locator = locator;
         }
 
-        public T Click()
+        private T Click(ClickType clickType)
         {
-            Wait.NoMoreThan(TimeSpan.FromSeconds(30)).Until(() => this.IsAvailable);
-            IPage targetPage = browser.CreatePage<T>();
-            Wait.WithRetry().Doing(() => this.Element.Click()).Until(() => targetPage.IsLoaded);
-            targetPage.WaitForSilence();
-            return (T) targetPage;
-        }
+            void Click()
+            {
+                switch (clickType)
+                {
+                    case ClickType.Double:
+                        this.browser.DoubleClick(this); break;
+                    case ClickType.Single:
+                    default:
+                        this.Element.Click(); break;
+                }
+            }
 
+            Wait.Until(() => this.IsAvailable);
+            IPage targetPage = browser.CreatePage<T>();
+            Wait.WithRetry().Doing(() => Click()).Until(() => targetPage.IsLoaded);
+            targetPage.WaitForSilence();
+            return (T)targetPage;
+        }
+        public T Click() => this.Click(ClickType.Single);
+
+        public T DoubleClick() => this.Click(ClickType.Double);
     }
 }

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using SpecDrill.Adapters.WebDriver.ElementLocatorExtensions;
+using SpecDrill.Adapters.WebDriver.Extensions;
 using SpecDrill.Infrastructure.Logging;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SpecDrill.Infrastructure.Logging.Interfaces;
@@ -12,11 +12,52 @@ using System.Net;
 using System.Text;
 using System.Net.Http;
 using System.IO;
+using SpecDrill.Adapters.WebDriver.Extensions;
 
 namespace SpecDrill.Adapters.WebDriver
 {
     internal class SeleniumBrowserDriver : IBrowserDriver
     {
+        #region Scripts
+        private static readonly string simulateHtml5DragAndDropScript = @"
+        (function(source, target){
+            var dnd = { simulateEvent: function(elem, options) {
+                                /*Simulating drag start*/
+                                var type = 'dragstart';
+                                var event = this.createEvent(type);
+                                this.dispatchEvent(elem, type, event);
+
+                                /*Simulating drop*/
+                                type = 'drop';
+                                var dropEvent = this.createEvent(type, {});
+                                dropEvent.dataTransfer = event.dataTransfer;
+                                this.dispatchEvent(options.dropTarget, type, dropEvent);
+
+                                /*Simulating drag end*/
+                                type = 'dragend';
+                                var dragEndEvent = this.createEvent(type, {});
+                                dragEndEvent.dataTransfer = event.dataTransfer;
+                                this.dispatchEvent(elem, type, dragEndEvent);
+                        },
+                        createEvent: function(type) {
+                                var event = document.createEvent('CustomEvent');
+                                event.initCustomEvent(type, true, true, null);
+                                event.dataTransfer = {
+                                                        data: { },
+                                                        setData: function(type, val){ this.data[type] = val; },
+                                                        getData: function(type){ return this.data[type]; }
+                                };
+                                return event;
+                        },
+                        dispatchEvent: function(elem, type, event) {
+                                if (elem.dispatchEvent) { elem.dispatchEvent(event); }
+                                else if(elem.fireEvent ) { elem.fireEvent('on'+type, event); }
+                        }
+            };
+            dnd.simulateEvent(source, { dropTarget : target });
+        })(arguments[0], arguments[1]);";
+
+        #endregion
         private IWebDriver seleniumDriver = null;
 
         private ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserDriver>();
@@ -69,7 +110,6 @@ namespace SpecDrill.Adapters.WebDriver
 
                 return new SeleniumAlert(WdAlert);
             }
-               
         }
 
         public bool IsAlertPresent => this.WdAlert != null;
@@ -118,11 +158,6 @@ namespace SpecDrill.Adapters.WebDriver
 
         public void MoveToElement(IElement element)
         {
-            //ExecuteJavaScript(string.Format(@"{0} sdDispatch(arguments[0],'mouseover');", sdDispatch), (element as SeleniumElement).Element);
-            //String javaScript = "var evObj = document.createEvent('MouseEvents');" +
-            //        "evObj.initMouseEvent(\"mouseover\",true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);" +
-            //        "arguments[0].dispatchEvent(evObj);";
-            //ExecuteJavaScript(javaScript, (element as SeleniumElement).Element);
             var actions = new Actions(this.seleniumDriver);
             actions.MoveToElement((element as SeleniumElement).Element);
             actions.Build().Perform();
@@ -133,13 +168,43 @@ namespace SpecDrill.Adapters.WebDriver
             (element as SeleniumElement).Element.Click();
         }
 
-        public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
+        public void DoubleClick(IElement element)
         {
-            //ExecuteJavaScript(string.Format(@"{0} sdDispatch(arguments[0],'mouseover');", sdDispatch), (element as SeleniumElement).Element);
             var actions = new Actions(this.seleniumDriver);
-            actions.DragAndDrop(startFromElement.NativeElementSearchResult.NativeElement as IWebElement,
-                stopToElement.NativeElementSearchResult.NativeElement as IWebElement);
+            actions.DoubleClick(element.ToWebElement());
             actions.Build().Perform();
+        }
+
+        public void DragAndDrop(IElement draggable, int offsetX, int offsetY)
+        {
+            var fromElement = draggable.ToWebElement();
+
+            var builder = new Actions(this.seleniumDriver);
+            var size = fromElement.Size;
+            
+            builder.MoveToElement(fromElement);
+            builder.ClickAndHold(fromElement);
+            builder.MoveByOffset(offsetX, offsetY);
+            builder.Release().Perform();
+        }
+
+        public void DragAndDrop(IElement draggable, IElement dropTarget)
+        {
+            var fromElement = draggable.ToWebElement();
+            var toElement = dropTarget.ToWebElement();
+
+            if (string.Compare(fromElement.GetAttribute("draggable") ?? string.Empty, "true", true) == 0)
+            {
+                ExecuteJavaScript(simulateHtml5DragAndDropScript, fromElement, toElement);
+            }
+            else
+            {
+                var builder = new Actions(this.seleniumDriver);
+                builder.MoveToElement(fromElement);
+                builder.ClickAndHold(fromElement);
+                builder.MoveToElement(toElement);
+                builder.Release().Perform();
+            }
         }
 
         public void RefreshPage()
@@ -172,7 +237,6 @@ namespace SpecDrill.Adapters.WebDriver
             var windowCount = seleniumDriver.WindowHandles.Count();
             Wait.WithRetry().Doing(() => seleniumWindowElement.Click()).Until(() => seleniumDriver.WindowHandles.Count() > windowCount);
             
-            //var currentWindow = seleniumDriver.CurrentWindowHandle;
             var mostRecentWindow = seleniumDriver.WindowHandles.LastOrDefault();
             if (mostRecentWindow != default(string))
             {

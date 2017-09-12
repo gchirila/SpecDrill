@@ -45,6 +45,22 @@ namespace SpecDrill
             }
         }
 
+        public bool IsEnabled
+        {
+            get
+            {
+                return this.rootElement.IsEnabled;
+            }
+        }
+
+        public bool IsDisplayed
+        {
+            get
+            {
+                return this.rootElement.IsDisplayed;
+            }
+        }
+
         public IBrowser Browser
         {
             get
@@ -81,10 +97,9 @@ namespace SpecDrill
             }
         }
 
-        public void Click(bool waitForSilence = false)
-        {
-            this.rootElement.Click(waitForSilence);
-        }
+        public void DoubleClick(bool waitForSilence = false) => this.rootElement.DoubleClick(waitForSilence);
+
+        public void Click(bool waitForSilence = false) => this.rootElement.Click(waitForSilence);
 
         public IElement SendKeys(string keys, bool waitForSilence = false)
         {
@@ -117,6 +132,15 @@ namespace SpecDrill
             this.rootElement.Hover(waitForSilence);
         }
 
+        public void DragAndDropTo(IElement target)
+        {
+            this.rootElement.DragAndDropTo(target);
+        }
+
+        public void DragAndDropAt(int offsetX, int offsetY)
+        {
+            this.rootElement.DragAndDropAt(offsetX, offsetY);
+        }
         #endregion
     }
 }

@@ -7,9 +7,24 @@ using SpecDrill.SecondaryPorts.AutomationFramework.Core;
 using System.Collections.Generic;
 using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 using System.Linq;
+using OpenQA.Selenium.Interactions;
+using SpecDrill.Adapters.WebDriver.Extensions;
 
 namespace SpecDrill.Adapters.WebDriver
 {
+    internal enum ClickType
+    {
+        Single,
+        Double
+    }
+
+    [Flags]
+    public enum ElementStateFlags
+    {
+        None = 0,
+        Displayed = 1,
+        Enabled = 2
+    }
     public class SeleniumElement : IElement
     {
         protected static ILogger Log = Infrastructure.Logging.Log.Get<SeleniumElement>();
@@ -31,70 +46,122 @@ namespace SpecDrill.Adapters.WebDriver
             get { return this.Element.GetAttribute("readonly") != null; }
         }
 
-        public bool IsAvailable
+        public bool IsAvailable => AvailabilityTest(this.ToWebElement());
+
+        private bool AvailabilityTest(IWebElement nativeLocatedElement)
+        => Test(nativeLocatedElement, "AvailabilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed) && state.HasFlag(ElementStateFlags.Enabled));
+
+        public bool IsDisplayed => Test(this.ToWebElement(), "VisibilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed));
+        public bool IsEnabled => Test(this.ToWebElement(), "IsEnabledTest", (state) => state.HasFlag(ElementStateFlags.Enabled));
+
+        private Tuple<ElementStateFlags?, Exception> InternalElementState
         {
+            // (null, exception) -> inconclusive - not yet present
+            // (ESF.None, exception) -> conclusive - present but invalid object type ???
+            // (ESF.None, null) -> Item statie is according to ESF flags : is not shown and not enabled
+            // (ESF.*, null) -> Item state is according to ESF flags
             get
             {
-                var searchResult = browser.PeekElement(this);
+                Exception exception = null;
+                SearchResult searchResult = null;
+                try { searchResult = browser.PeekElement(this); }
+                catch (NotFoundException nfe)
+                {
+                    exception = nfe;
+                    Log.Error(exception, "SpecDrill: Availability Test");
+                    return Tuple.Create((ElementStateFlags?)null, exception);
+                }
 
                 if (!searchResult.HasResult)
                 {
-                    Log.Info($"Element ({locator}) not found!");
-                    return false;
+                    var info = $"Element ({locator}) not found!";
+                    Log.Info(info);
+                    exception = new NotFoundException(info);
+                    return Tuple.Create((ElementStateFlags?)null, exception);
                 }
 
                 var locatedElement = searchResult.NativeElement as IWebElement;
                 if (locatedElement == null)
                 {
-                    Log.Info(string.Format("Element ({0}) is not an IWebElement!"));
-                    return false;
+                    var info = $"Element ({ searchResult.NativeElement?.GetType().ToString() ?? "(null)" }) is not an IWebElement!";
+                    Log.Info(info);
+                    return Tuple.Create((ElementStateFlags?)ElementStateFlags.None, new Exception(info, exception));
                 }
 
-                return AvailabilityTest(locatedElement);
+                return InternalStateTest(locatedElement);
             }
         }
 
-        private bool AvailabilityTest(IWebElement nativeLocatedElement)
+        private bool Test(IWebElement nativeLocatedElement, string testName, Func<ElementStateFlags, bool> test)
         {
-            bool result = false;
+            var result = InternalStateTest(nativeLocatedElement);
+
+            if (result.Item2 != null)
+            {
+                Log.Info(string.Format($"{testName} test result: false ; Reason {(result.Item2?.ToString() ?? "(null)")}"));
+                return false;
+            }
+
+            var testResult = result.Item1.HasValue && test(result.Item1.Value);
+
+            if (result.Item1.HasValue && !testResult)
+            {
+                var state = result.Item1.Value;
+                Log.Info(string.Format($"{testName} result: false > displayed:{state.HasFlag(ElementStateFlags.Displayed)}, enabled:{state.HasFlag(ElementStateFlags.Enabled)}"));
+            }
+
+            return testResult;
+        }
+
+        private Tuple<ElementStateFlags?, Exception> InternalStateTest(IWebElement nativeLocatedElement)
+        {
+            ElementStateFlags state = ElementStateFlags.None;
+            Exception exception = null;
             try
             {
-                Log.Info($"Testing Availability for { $"{nativeLocatedElement.TagName}"} -> {locator}");
-                var displayed = nativeLocatedElement.Displayed;
-                var enabled = nativeLocatedElement.Enabled;
-                result = displayed && enabled;
+                Log.Info($"Testing State for { $"{nativeLocatedElement.TagName}"} -> {locator}");
+                if (nativeLocatedElement.Displayed) state |= ElementStateFlags.Displayed;
+                if (nativeLocatedElement.Enabled) state |= ElementStateFlags.Enabled;
 
-                if (!result)
-                {
-                    Log.Info(string.Format("Availability test result = {2} > displayed:{0}, enabled:{1}", displayed, enabled, result));
-                }
-
-                return result;
+                return Tuple.Create((ElementStateFlags?)state, exception);
 
             }
             catch (StaleElementReferenceException sere)
             {
-                Log.Error(sere, "SpecDrill: Availability Test");
+                exception = sere;
+                Log.Error(exception, "SpecDrill: State Test");
+            }
+            catch (NotFoundException nfe)
+            {
+                exception = nfe;
+                Log.Error(exception, "SpecDrill: State Test");
             }
             catch (Exception e)
             {
-                Log.Error(e, "SpecDrill: Availability Test");
+                exception = e;
+                Log.Error(exception, "SpecDrill: State Test");
             }
-            
 
-            return result;
+            return Tuple.Create((ElementStateFlags?)state, exception);
         }
 
         public IBrowser Browser => this.browser;
 
-        public void Click(bool waitForSilence = false)
+        private void Click(ClickType clickType, bool waitForSilence = false)
         {
-            if (waitForSilence) {  this.ContainingPage.WaitForSilence(); }
+            if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
 
             Log.Info("Clicking {0}", this.locator);
             try
             {
-                this.Element.Click();
+                if (clickType == ClickType.Single)
+                {
+                    this.Element.Click();
+                }
+                else
+                {
+                    this.browser.DoubleClick(this);
+                }
             }
             catch (StaleElementReferenceException sere)
             {
@@ -111,6 +178,10 @@ namespace SpecDrill.Adapters.WebDriver
                 Log.Error(ioe, $"Clicking Element {this.locator} caused an InvalidOperationException!");
             }
         }
+
+        public void DoubleClick(bool waitForSilence = false) => this.Click(ClickType.Double, waitForSilence);
+
+        public void Click(bool waitForSilence = false) => this.Click(ClickType.Single, waitForSilence);
 
         public IElement SendKeys(string keys, bool waitForSilence = false)
         {
@@ -152,7 +223,7 @@ namespace SpecDrill.Adapters.WebDriver
             }
             catch (StaleElementReferenceException sere)
             {
-                Log.Error(sere, $"GetAttribute: Element {this.locator} FZE?Xis stale!");
+                Log.Error(sere, $"GetAttribute: Element {this.locator} is stale!");
             }
             catch (Exception e)
             {
@@ -168,11 +239,6 @@ namespace SpecDrill.Adapters.WebDriver
             this.browser.Hover(this);
         }
 
-        public void DragAndDrop()
-        {
-            this.browser.DragAndDropElement(this, this);
-        }
-
         public IElement Clear(bool waitForSilence = false)
         {
             if (waitForSilence) { this.ContainingPage.WaitForSilence(); }
@@ -185,15 +251,14 @@ namespace SpecDrill.Adapters.WebDriver
             if (element is IPage)
                 return element;
 
-            return (element.Parent != null) ? 
-                        SearchContainingPage(element.Parent) : 
+            return (element.Parent != null) ?
+                        SearchContainingPage(element.Parent) :
                         null;
         }
 
         public IPage ContainingPage => SearchContainingPage(this) as IPage;
 
-        public SearchResult 
-            NativeElementSearchResult
+        public SearchResult NativeElementSearchResult
         {
             get
             {
@@ -205,7 +270,6 @@ namespace SpecDrill.Adapters.WebDriver
                 elementContainers.Reverse();
 
                 SearchResult previousContainer = this.browser.FindNativeElement(elementContainers.First().Locator);
-                //elementContainers.First().NativeElementSearchResult;
 
                 if (!previousContainer.HasResult)
                     return SearchResult.Empty;
@@ -262,13 +326,13 @@ namespace SpecDrill.Adapters.WebDriver
                 return SearchResult.Empty;
 
             var previousContainerNativeElement = previousContainer.NativeElement as IWebElement;
-            
+
             if (AvailabilityTest(previousContainerNativeElement))
             {
                 try
                 {
                     var elements = previousContainerNativeElement.FindElements(elementToSearch.Locator.ToSeleniumLocator());
-                    if ((elementToSearch.Locator.Index??0) > elements.Count)
+                    if ((elementToSearch.Locator.Index ?? 0) > elements.Count)
                     {
                         throw new Exception($"SpecDrill: SeleniumElement.NativeElement : Not enough elements. You want element number {locator.Index} but only {elements.Count} were found.");
                     }
@@ -294,6 +358,16 @@ namespace SpecDrill.Adapters.WebDriver
             return previousContainer;
         }
 
+        public void DragAndDropTo(IElement target)
+        {
+            this.browser.DragAndDrop(this, target);
+        }
+
+        public void DragAndDropAt(int offsetX, int offsetY)
+        {
+            this.browser.DragAndDrop(this, offsetX, offsetY);
+        }
+
         internal IWebElement Element
         {
             get
@@ -306,7 +380,7 @@ namespace SpecDrill.Adapters.WebDriver
                 }
 
                 browser.ExecuteJavascript(@"arguments[0].style.outline='1px solid red';", nativeElement);
-                
+
                 return nativeElement;
             }
         }

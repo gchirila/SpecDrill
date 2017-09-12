@@ -44,13 +44,17 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
 
         void MoveToElement(IElement locator);
 
-        void DragAndDropElement(IElement startFromElement, IElement stopToElement);
+        void DragAndDrop(IElement startFromElement, IElement stopToElement);
+
+        void DragAndDrop(IElement startFromElement, int offsetX, int offsetY);
 
         void RefreshPage();
 
         void MaximizePage();
 
         void Click(IElement element);
+
+        void DoubleClick(IElement element);
 
         IBrowserAlert Alert { get; }
 

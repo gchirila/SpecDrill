@@ -4,5 +4,6 @@
         where T: IPage
     {
         T Click();
+        T DoubleClick();
     }
 }

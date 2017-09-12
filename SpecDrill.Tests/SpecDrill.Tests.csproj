@@ -58,6 +58,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DndTests.cs" />
+    <Compile Include="ElementStatusTests.cs" />
+    <Compile Include="HoverTests.cs" />
+    <Compile Include="PageObjects\DndJsPlumbPage.cs" />
+    <Compile Include="PageObjects\DndJQueryPage.cs" />
+    <Compile Include="PageObjects\DndHtml5Page.cs" />
+    <Compile Include="PageObjects\ElementStatusPage.cs" />
+    <Compile Include="PageObjects\HoverCssPage.cs" />
     <Compile Include="PageObjects\Pdf\MyPdfPage.cs" />
     <Compile Include="PageObjects\Pdf\PdfIndexPage.cs" />
     <Compile Include="PdfTests.cs" />
@@ -123,6 +131,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="WebsiteMocks\dnd_jquery.html" />
+    <Content Include="WebsiteMocks\dnd_html5.html" />
+    <Content Include="WebsiteMocks\hover_css.html" />
+    <Content Include="WebsiteMocks\element_status.html" />
     <Content Include="WebsiteMocks\Alerts\alert.html" />
     <Content Include="WebsiteMocks\Pdf\pdfIndex.html" />
     <Content Include="WebsiteMocks\Test000\gateway.html" />

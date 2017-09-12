@@ -1,0 +1,32 @@
+﻿<html>
+<head>
+    <title>Element Status Tests</title>
+</head>
+<body>
+    <!--<input id="willBeDisplayed" type="button" disabled="disabled" style="display:none;" />
+    <input id="willBeDisabled" type="button" />-->
+
+    <script>
+        //create buttons within 1s
+        setTimeout(function () {
+            var btn2Display = document.createElement('button');
+            btn2Display.setAttribute('id', 'willBeDisplayed');
+            btn2Display.setAttribute('style', 'display:none');
+            var btn2Disable = document.createElement('button');
+            btn2Disable.setAttribute('id', 'willBeDisabled');
+            
+            document.body.appendChild(btn2Display);
+            document.body.appendChild(btn2Disable);
+        }, 1000);
+
+        // change their statuses within 2s
+        setTimeout(function () {
+            var button = document.getElementById('willBeDisabled');
+            button.setAttribute('disabled', 'disabled');
+            var button = document.getElementById('willBeDisplayed');
+            button.style.display = 'block';
+        }, 2000);
+        
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 ﻿{
   "webdriver": {
     "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.29.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
+    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.32.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
     "isRemote": false,
     "seleniumServerUri": "http://localhost:5555/wd/hub"
   },
@@ -35,6 +35,35 @@
       "isFileSystemPath": true
     },
     {
+      "pageObjectType": "HoverCssPage",
+      "url": "../../../WebsiteMocks/hover_css.html", // relative url path to executing assembly's location
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "AlertPage",
+      "url": "../../../WebsiteMocks/Alerts/alert.html",
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "DndHtml5Page",
+      "url": "../../../WebsiteMocks/dnd_html5.html",
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "DndJQueryPage",
+      "url": "../../../WebsiteMocks/dnd_jquery.html",
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "ElementStatusPage",
+      "url": "../../../WebsiteMocks/element_status.html",
+      "isFileSystemPath": true
+    },
+    {
+      "pageObjectType": "DndJsPlumbPage",
+      "url": "https://jsplumbtoolkit.com/community/demo/flowchart/index.html"
+    },
+    {
       "pageObjectType": "GoogleSearchPage",
       "url": "http://www.google.com",
       "isFileSystemPath": false
@@ -45,9 +74,9 @@
       "isFileSystemPath": false
     },
     {
-      "pageObjectType": "AlertPage",
-      "url": "../../../WebsiteMocks/Alerts/alert.html",
-      "isFileSystemPath": true
+      "pageObjectType": "WfHomePage",
+      "url": "http://workflowt-app02.its.centric.lan:53062/WebClient/#/processen",
+      "isFileSystemPath": false
     }
   ]
 }

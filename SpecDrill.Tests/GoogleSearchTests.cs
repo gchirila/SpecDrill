@@ -20,6 +20,7 @@ namespace SomeTests
         {
             var googleSearchPage = Browser.Open<GoogleSearchPage>();
             googleSearchPage.TxtSearch.SendKeys("drill wiki");
+            googleSearchPage.TxtSearch.Blur();
             var resultsPage = googleSearchPage.BtnSearch.Click();
 
             #region Option 1: assuming it's first result

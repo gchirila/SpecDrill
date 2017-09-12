@@ -30,9 +30,12 @@ namespace SpecDrill
             int retryCount = this.RetryCount;
             while (retryCount >= 0)
             {
+                bool actionSucceeded = false;
+
                 try
                 {
                     action();
+                    actionSucceeded = true;
                 }
                 catch (Exception e)
                 {
@@ -40,23 +43,25 @@ namespace SpecDrill
                 }
 
                 retryCount--;
-
-                sw.Start();
-                while (sw.Elapsed < retryInterval)
+                if (actionSucceeded)
                 {
-                    try
+                    sw.Start();
+                    while (sw.Elapsed < retryInterval)
                     {
-                        if (waitCondition())
-                            return;
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e, "Wait with retry: retryCount={0}, retryInterval={1} / maxWait={2}", retryCount, this.RetryInterval ?? TimeSpan.FromSeconds(0), retryInterval);
-                    }
+                        try
+                        {
+                            if (waitCondition())
+                                return;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e, "Wait with retry: retryCount={0}, retryInterval={1} / maxWait={2}", retryCount, this.RetryInterval ?? TimeSpan.FromSeconds(0), retryInterval);
+                        }
 
-                    Thread.Sleep(10);
+                        Thread.Sleep(10);
+                    }
+                    sw.Reset();
                 }
-                sw.Reset();
             }
             sw.Stop();
 
@@ -74,9 +79,15 @@ namespace SpecDrill
     {
         protected static readonly ILogger Log = Infrastructure.Logging.Log.Get<MaxWaitContext>();
         public TimeSpan MaximumWait { get; set; }
-        private Func<Func<bool>, bool, bool> safeWait = (waitCondition, throwException) =>
+        private Func<Func<bool>, bool, Tuple<bool,Exception>> safeWait = (waitCondition, throwException) =>
         {
+            // exception is null =>
+            // true, null -> true
+            // false, null -> false
+            // exception is not null
+            // => exception (inconclusive)
             bool result = false;
+            Exception exception = null;
             try
             {
                 result = waitCondition();
@@ -84,32 +95,37 @@ namespace SpecDrill
             catch (Exception e)
             {
                 Log.Error(e, "Error on wait");
+                exception = e;
                 if (throwException)
                     throw;
             }
-            return result;
+            return Tuple.Create(result, exception);
         };
 
-        public void Until(Func<bool> waitCondition, bool throwException = true)
-        {
-            Func<bool> safeWaitCondition = () => safeWait(waitCondition, false); 
-            // Note: Ignoring automation framework exceptions while waiting.
-            // Always check logs on timeout to identify root cause !
-
+        public void Until(Func<bool> waitCondition/*, bool throwException = true*/)
+        {   
+            Func<Tuple<bool, Exception>> safeWaitCondition = () => safeWait(waitCondition, false);
+            bool conclusive = false;
+            Exception lastError = null;
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            while (sw.Elapsed < MaximumWait)
+            while (sw.Elapsed < MaximumWait && !conclusive)
             {
-                if (safeWaitCondition())
+                var waitResult = safeWaitCondition();
+                
+                lastError = waitResult.Item2;
+                conclusive = lastError == null && waitResult.Item1 == true;
+
+                if (conclusive)
+                {
                     return;
+                }
+                
                 Thread.Sleep(33);
             }
             sw.Stop();
 
-            if (throwException)
-            {
-                throw new TimeoutException(string.Format("Explicit Wait of {0} Timed Out !", this.MaximumWait));
-            }
+            throw new TimeoutException($"Explicit Wait of {this.MaximumWait} Timed Out ! Reason: {lastError?.ToString()??"(see logs)"}");
         }
     }
 

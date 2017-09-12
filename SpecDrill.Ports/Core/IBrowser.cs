@@ -54,13 +54,22 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
 
         void Hover(IElement element);
 
+        [Obsolete("This method is deprecated. Use IElement.DragAndDropTo(IElement) or IElement.DragAndDropAt(int,int) instead!")]
         void DragAndDropElement(IElement startFromElement, IElement stopToElement);
+        void DragAndDrop(IElement startFromElement, IElement stopToElement);
+
+        void DragAndDrop(IElement startFromElement, int offsetX, int offsetY);
+
+        bool IsJQueryDefined { get; }
+
+        //bool LoadJQuery();
 
         void MaximizePage();
 
         void RefreshPage();
 
         void Click(IElement element);
+        void DoubleClick(IElement element);
 
         IBrowserAlert Alert { get; }
         

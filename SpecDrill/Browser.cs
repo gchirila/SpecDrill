@@ -97,7 +97,7 @@ namespace SpecDrill
                 targetPage.WaitForSilence();
                 return targetPage;
             }
-            string errMsg = $"SpecDrill: Page({ typeof(T).Name}) cannot be found in Homepages section of settings file.";
+            string errMsg = $"SpecDrill: Page({ typeof(T).Name }) cannot be found in Homepages section of settings file.";
             Log.Info(errMsg);
             throw new Exception(errMsg);
         }
@@ -308,6 +308,8 @@ namespace SpecDrill
             }
         }
 
+        public bool IsJQueryDefined => (bool)ExecuteJavascript("if (window.jQuery) return true else return false;");
+
         public IDisposable ImplicitTimeout(TimeSpan timeout, string message = null)
         {
             return new ImplicitWaitScope(browserDriver, timeoutHistory, timeout, message);
@@ -326,7 +328,7 @@ namespace SpecDrill
         public SearchResult PeekElement(IElement element)
         {
             var webElement = WebElement.Create(element.Parent, element.Locator);
-            using (ImplicitTimeout(TimeSpan.FromSeconds(.5d)))
+            using (ImplicitTimeout(TimeSpan.FromSeconds(.5d))) // Wait max 500ms to conclude element is not present.
             {
                 return webElement.NativeElementSearchResult;
             }
@@ -398,9 +400,9 @@ namespace SpecDrill
         {
             browserDriver.Click(element);
         }
-        public void DragAndDropElement(IElement startFromElement, IElement stopToElement)
+        public void DragAndDrop(IElement startFromElement, IElement stopToElement)
         {
-            browserDriver.DragAndDropElement(startFromElement, stopToElement);
+            browserDriver.DragAndDrop(startFromElement, stopToElement);
         }
 
         public void RefreshPage()
@@ -437,5 +439,19 @@ namespace SpecDrill
         {
             return browserDriver.GetPdfText();
         }
+
+        public void DoubleClick(IElement element) => this.browserDriver.DoubleClick(element);
+
+        //public bool LoadJQuery()
+        //{
+        //    return (bool) this.ExecuteJavascript($"if (!window.jQuery) {{{jQueryScript} jQuery.noConflict(); return true;}} else {{return false;}}");
+        //}
+
+        public void DragAndDrop(IElement startFromElement, int offsetX, int offsetY)
+        {
+            this.browserDriver.DragAndDrop(startFromElement, offsetX, offsetY);
+        }
+
+        public void DragAndDropElement(IElement startFromElement, IElement stopToElement) => DragAndDrop(startFromElement, stopToElement);
     }
 }

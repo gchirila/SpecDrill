@@ -22,6 +22,8 @@ namespace SpecDrill.MsTest
             {
                 Log.Log(LogLevel.Error, e.Message);
                 Trace.Write($"TestBase. -> {e}");
+                if (Browser != null)
+                    Browser.Exit();
             }
         }
         [ClassInitialize]
@@ -74,7 +76,8 @@ namespace SpecDrill.MsTest
 
         public virtual void TestCleanup()
         {
-            Browser.Exit();
+            if (Browser != null)
+                Browser.Exit();
         }
     }
 }

@@ -109,9 +109,12 @@ namespace SomeTests
             using (var wait = Browser.ImplicitTimeout(TimeSpan.FromSeconds(3)))
             using (var benchmark = new BenchmarkScope("timing Wait.NoMoreThan(...)"))
             {
-                var twoSeconds = TimeSpan.FromSeconds(1);
-                Wait.NoMoreThan(twoSeconds).Until(() => nonExistingElement.IsAvailable, throwException: false);
-                benchmark.Elapsed.Should().BeCloseTo(twoSeconds, 300);
+                var timeLimit = TimeSpan.FromSeconds(1);
+                
+                Action waitForNonExistingElement = () =>
+                Wait.NoMoreThan(timeLimit).Until(() => nonExistingElement.IsAvailable);
+                waitForNonExistingElement.ShouldThrow<TimeoutException>();
+                benchmark.Elapsed.Should().BeCloseTo(timeLimit, 300);
             }
         }
 
@@ -155,3 +158,4 @@ namespace SomeTests
         }
     }
 }
+

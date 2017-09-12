@@ -14,7 +14,8 @@ namespace SomeTests.Features
         public void GivenIHaveEnteredIntoGoogleSearch(string searchTerm)
         {
             var googleSearchPage = Browser.Open<GoogleSearchPage>();
-            googleSearchPage.TxtSearch.SendKeys(searchTerm);
+            googleSearchPage.TxtSearch.SendKeys(searchTerm + "\x1B");
+            googleSearchPage.TxtSearch.Blur();
             ScenarioContext.Current.Add("googleSearchPage", googleSearchPage);
         }
 

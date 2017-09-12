@@ -24,13 +24,16 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// Checks if the element is drawn on screen and ready for interaction (shown and enabled)
         /// </summary>
         bool IsAvailable { get; }
-
+        bool IsEnabled { get; }
+        bool IsDisplayed { get; }
+       
         /// <summary>
         /// Underlying Browser object responsible with browser interaction
         /// </summary>
         IBrowser Browser { get; }
 
         void Click(bool waitForSilence = false);
+        void DoubleClick(bool waitForSilence = false);
 
         /// <summary>
         /// Sends text to input
@@ -63,6 +66,10 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         string GetCssValue(string cssValueName);
 
         void Hover(bool waitForSilence = false);
+
+        void DragAndDropTo(IElement target);
+
+        void DragAndDropAt(int offsetX, int offsetY);
 
         IElement Parent { get; }
 
