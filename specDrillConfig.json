@@ -96,16 +96,6 @@
       "pageObjectType": "GoogleSearchPage",
       "url": "http://www.google.com",
       "isFileSystemPath": false
-    },
-    {
-      "pageObjectType": "DashboardPage",
-      "url": "http://ap-gda01-cihrp:8080/",
-      "isFileSystemPath": false
-    },
-    {
-      "pageObjectType": "WfHomePage",
-      "url": "http://workflowt-app02.its.centric.lan:53062/WebClient/#/processen",
-      "isFileSystemPath": false
     }
   ]
 }
