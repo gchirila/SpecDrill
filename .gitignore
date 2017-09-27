@@ -30,3 +30,4 @@ _ReSharper.*
 *.sln.ide
 node_modules
 **/[Cc]ompiler/[Rr]esources/**/*.js
+sonarcloud-scan.bat
