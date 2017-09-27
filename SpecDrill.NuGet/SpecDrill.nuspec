@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill</id>
-        <version>1.0.14</version>
+        <version>1.0.19</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
@@ -10,13 +10,29 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
 	<releaseNotes>
-
+            v1.0.19
+                - added javascript workaround for geckodriver doubleclick bug
+                - updated sample tests
+            v1.0.18
+                - added minimal support for Appium. Supported capabilities:
+                > automationName, platformName, deviceName, browserName, udid, orientation
+            v1.0.17
+                - revised element status check exception throwing behavior: element.IsAvailable (no); element.IsEnabled (yes); element.IsDisplayed(yes)
+                - fixed bug in wait logic due to throwing exception behavior changes
+            v1.0.16
+                - fixed Wait with time limit unable to prevent throwing exception regression
+            v1.0.15
+                - added doubleclick support
+                - added hover support
+                - improved drag and drop support and API
+                - added locator information to some exceptions
+                - fixed some bugs related to browser windows not being closed after test teardown 
             v1.0.14
                 - Fixed Issue #20 - Current element indicator breaks layout
                 - Fixed Issue #21 - SpecDrill is not logging
             v1.0.13
-		- Fixed Issue #19 - Implicit wait is broken. Sometimes tests fail with Explicit wait when none is set from test code.
-		- Fixed Issue #18 - Fix hooks into MsTest lifecycle methods 
+                - Fixed Issue #19 - Implicit wait is broken. Sometimes tests fail with Explicit wait when none is set from test code.
+                - Fixed Issue #18 - Fix hooks into MsTest lifecycle methods 
             v1.0.12
                 - Fixed Issue #17 - Fixed Drag and Drop
             v1.0.11
@@ -38,16 +54,17 @@
             v1.0.5
                 - Fixed Issue #5 - Page load test fails for pages in iframe
 	</releaseNotes>
-        <copyright>Copyright 2016</copyright>
+        <copyright>Copyright 2017</copyright>
         <tags>SpecDrill SpecFlow Selenium WebDriver Automation BDD ATDD</tags>
         <dependencies>
-            <dependency id="Newtonsoft.Json" version="8.0.3" />
-            <dependency id="Selenium.WebDriver" version="3.4.0" />
-            <dependency id="Selenium.Support" version="3.4.0" />
+            <dependency id="Newtonsoft.Json" version="10.0.3" />
+            <dependency id="Selenium.WebDriver" version="3.5.1" />
+            <dependency id="Selenium.Support" version="3.5.1" />
             <dependency id="log4net" version="2.0.5" />
             <dependency id="FluentAssertions" version="4.14.0" />
-            <dependency id="Selenium.WebDriver.ChromeDriver" version="2.29.0" />
+            <dependency id="Selenium.WebDriver.ChromeDriver" version="2.32.0" />
 	    <dependency id="pdf-extract" version="1.0.1.0" />
+	    <dependency id="Appium.WebDriver" version="3.0.0.2" />
         </dependencies>
     </metadata>
     <files>

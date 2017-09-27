@@ -1,0 +1,31 @@
+Product projects
+---------------------------------------
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Adapters.WebDriver\SpecDrill.Adapters.WebDriver.csproj
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\SpecDrill.Infrastructure.csproj
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\SpecDrill.SecondaryPorts.AutomationFramework.csproj
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.SpecFlow\SpecDrill.SpecFlow.csproj
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\SpecDrill.csproj
+
+
+Test projects
+---------------------------------------
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.MsTest\SpecDrill.MsTest.csproj
+D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Tests\SpecDrill.Tests.csproj
+
+
+Invalid projects
+---------------------------------------
+{none}
+{none}
+
+
+Skipped projects
+---------------------------------------
+{none}
+
+
+Excluded projects
+---------------------------------------
+{none}
+
+

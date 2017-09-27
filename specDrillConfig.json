@@ -1,18 +1,47 @@
 ﻿{
   "webdriver": {
-    "browserDriver": "chrome", // chrome, ie, firefox, opera, safari
-    "browserDriversPath": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.32.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
-    "isRemote": false,
-    "seleniumServerUri": "http://localhost:5555/wd/hub"
+    "mode": "browser", // master switch:  browser, appium
+    "maxWait": 60000,
+    "waitPollingFrequency": 200,
+    "browser": { // settings for browser mode -> targets browser drivers or selenium server
+      "engine": "webdriver", // webdriver, watin (not supported for now) ...
+      "browserName": "firefox", // targeted browser name : chrome, ie, firefox, opera, safari
+      "isRemote": false, // when true, seleniumServerUri must be set
+      "seleniumServerUri": "http://localhost:5555/wd/hub",
+      "drivers": {
+        "chrome": {
+          "path": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.32.0\\driver\\win32" //"C:\\Your Browser Drivers Path"//
+        },
+        "ie": { "path": "" },
+        "firefox": {
+          "path": "..\\..\\..\\packages\\Selenium.WebDriver.GeckoDriver.Win64.0.19.0\\driver", 
+          "browserBinaryPath": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
+        },
+        "opera": { "path": "" },
+        "safari": { "path": "" }
+      },
+      "window": {
+        "isMaximized": false, // if true, remaining browserWindow properties will be ignored
+        "initialWidth": 1280, // defaults to 800
+        "initialHeight": 800 // defaults to 600
+      }
+    },
+    "appium": { // settings for appium mode -> targets Appium server
+      "serverUri": "http://127.0.0.1:4723/wd/hub",
+      "capabilities": {
+        "automationName": "Appium", // Appium, Selendroid
+        "platformName": "Android", // Android, iOS, FirefoxOS
+        "deviceName": "192.168.166.101:5555",
+        "browserName": "Chrome",
+        "udid": "192.168.166.101:5555",
+        "orientation": "PORTRAIT", // LANDSCAPE, PORTRAIT
+        // platform-specific capabilities : not implemented !
+        //"android": {}, 
+        //"iOS": {},
+        //"firefoxOS": {}
+      }
+    }
   },
-  "browserWindow": {
-    "isMaximized": false, // if true, remaining browserWindow properties will be ignored
-    "initialWidth": 1280, // defaults to 800
-    "initialHeight": 800 // defaults to 600
-  },
-  "maxWait": 60000,
-  "waitPollingFrequency": 200,
-  "engine": "webdriver", // webdriver, watin (not supported for now) ...
   "homepages": [
     {
       "pageObjectType": "Test000LoginPage",

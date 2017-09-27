@@ -1,0 +1,17 @@
+|
+sD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Configuration\BrowserWindowConfiguration.csutf-8v
+mD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Configuration\ConfigurationManager.csutf-8j
+aD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Configuration\Homepage.csutf-8w
+nD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Configuration\SeleniumConfiguration.csutf-8j
+aD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Configuration\Settings.csutf-8^
+UD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Converters.csutf-8f
+]D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Enums\BrowserNames.csutf-8[
+RD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Globals.csutf-8n
+eD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\Interfaces\ILogger.csutf-8y
+pD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\Implementation\Log4NetFactory.csutf-8x
+oD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\Implementation\Log4NetLogger.csutf-8u
+lD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\Interfaces\ILoggerFactory.csutf-8_
+VD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\Log.csutf-8l
+cD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Logging\LoggerExtensions.csutf-8k
+bD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Properties\AssemblyInfo.csutf-8X
+OD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Infrastructure\Wait.csutf-8

@@ -102,21 +102,25 @@ namespace SpecDrill
             return Tuple.Create(result, exception);
         };
 
-        public void Until(Func<bool> waitCondition/*, bool throwException = true*/)
+        public void Until(Func<bool> waitCondition, bool throwExceptionOnTimeout = true)
         {   
             Func<Tuple<bool, Exception>> safeWaitCondition = () => safeWait(waitCondition, false);
             bool conclusive = false;
+            bool conditionMet = false;
             Exception lastError = null;
+
             Stopwatch sw = new Stopwatch();
+
             sw.Start();
-            while (sw.Elapsed < MaximumWait && !conclusive)
+            while (sw.Elapsed < MaximumWait)
             {
                 var waitResult = safeWaitCondition();
                 
                 lastError = waitResult.Item2;
-                conclusive = lastError == null && waitResult.Item1 == true;
-
-                if (conclusive)
+                conclusive = lastError == null;
+                conditionMet = waitResult.Item1;
+                Log.Info($"c = {conclusive}, cm={conditionMet}, maxWait = {MaximumWait}");
+                if (conclusive && conditionMet)
                 {
                     return;
                 }
@@ -125,7 +129,10 @@ namespace SpecDrill
             }
             sw.Stop();
 
-            throw new TimeoutException($"Explicit Wait of {this.MaximumWait} Timed Out ! Reason: {lastError?.ToString()??"(see logs)"}");
+            if (!conditionMet && throwExceptionOnTimeout)
+            {
+                throw new TimeoutException($"Explicit Wait of {this.MaximumWait} Timed Out ! Reason: {lastError?.ToString() ?? "(see logs)"}");
+            }
         }
     }
 
@@ -151,7 +158,7 @@ namespace SpecDrill
         {
             new MaxWaitContext
             {
-                MaximumWait = TimeSpan.FromMilliseconds(Globals.Configuration.MaxWait)
+                MaximumWait = TimeSpan.FromMilliseconds(Globals.Configuration.WebDriver.MaxWait)
             }.Until(waitCondition);
         }
     }

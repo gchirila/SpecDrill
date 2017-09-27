@@ -14,7 +14,7 @@ namespace $rootnamespace$.PageObjects
         [Find(By.CssSelector, "input#lst-ib")]
         public IElement TxtSearch { get; private set; }
 
-        [Find(By.CssSelector, "button>span.sbico")]
+        [Find(By.CssSelector, "#tsf > div.tsf-p > div.jsb > center > input[type='submit']:nth-child(1)")]
         public INavigationElement<GoogleSearchResultsPage> BtnSearch { get; private set; }
     }
 }

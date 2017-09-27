@@ -12,7 +12,7 @@ namespace $rootnamespace$.PageObjects
 {
     public class GoogleSearchResultsPage : GoogleSearchPage
     {
-        [Find(By.CssSelector, "div.content div.mw div.g")]
+        [Find(By.CssSelector, "div#search div.g")]
         public ListElement<SearchResultItemControl> SearchResults { get; private set; }
     }
 }

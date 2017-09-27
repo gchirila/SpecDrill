@@ -59,29 +59,32 @@ namespace SpecDrill
                 this.Browser.ExecuteJavascript(@"
                     if (document.readyState !== 'complete') {
                         return false;
-                    }
-                    if ((!document.jQuery) || (document.jQuery.active || (document.jQuery.ajax && document.jQuery.ajax.active))) {
-                        return false;
-                    } 
-				    if (document.angular) {
-                        if (!window.specDrill) {
-                            window.specDrill = { silence : false };
-                        }
-                        var injector = window.angular.element('body').injector();
-                        var $rootScope = injector.get('$rootScope');
-                        var $http = injector.get('$http');
-                        var $timeout = injector.get('$timeout');
-                         
-                        if ($rootScope.$$phase === '$apply' || $rootScope.$$phase === '$digest' || $http.pendingRequests.length != 0) {
-                            window.specDrill.silence = false;
-                            return false;
-                        }
 
-                        if (!window.specDrill.silence) {
-                            $timeout(function () { window.specDrill.silence = true; }, 0);
+                        if ((document.jQuery) && (document.jQuery.active || (document.jQuery.ajax && document.jQuery.ajax.active))) {
                             return false;
+                        } 
+
+				        if (document.angular) {
+                            if (!window.specDrill) {
+                                window.specDrill = { silence : false };
+                            }
+                            var injector = window.angular.element('body').injector();
+                            var $rootScope = injector.get('$rootScope');
+                            var $http = injector.get('$http');
+                            var $timeout = injector.get('$timeout');
+                         
+                            if ($rootScope.$$phase === '$apply' || $rootScope.$$phase === '$digest' || $http.pendingRequests.length != 0) {
+                                window.specDrill.silence = false;
+                                return false;
+                            }
+
+                            if (!window.specDrill.silence) {
+                                $timeout(function () { window.specDrill.silence = true; }, 0);
+                                return false;
+                            }
                         }
                     }
+                   
                     return true;
                 ");
 

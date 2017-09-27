@@ -13,6 +13,9 @@ using System.Text;
 using System.Net.Http;
 using System.IO;
 using SpecDrill.Adapters.WebDriver.Extensions;
+using SpecDrill.Configuration;
+using SpecDrill.Infrastructure.Enums;
+using SpecDrill.Infrastructure;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -62,14 +65,17 @@ namespace SpecDrill.Adapters.WebDriver
 
         private ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserDriver>();
 
-        public SeleniumBrowserDriver(IWebDriver seleniumDriver)
+        private readonly Settings configuration;
+
+        public SeleniumBrowserDriver(IWebDriver seleniumDriver, Settings configuration)
         {
             this.seleniumDriver = seleniumDriver;
+            this.configuration = configuration;
         }
 
-        public static IBrowserDriver Create(IWebDriver seleniumDriver)
+        public static IBrowserDriver Create(IWebDriver seleniumDriver, Settings configuration)
         {
-            return new SeleniumBrowserDriver(seleniumDriver);
+            return new SeleniumBrowserDriver(seleniumDriver, configuration);
         }
 
         public void GoToUrl(string url)
@@ -141,7 +147,7 @@ namespace SpecDrill.Adapters.WebDriver
 
             if (javaScriptExecutor == null)
             {
-                //TODO: Log reason
+                Log.Error($" {nameof(seleniumDriver)} is not of type {nameof(IJavaScriptExecutor)}");
                 return false;
             }
 
@@ -170,9 +176,31 @@ namespace SpecDrill.Adapters.WebDriver
 
         public void DoubleClick(IElement element)
         {
-            var actions = new Actions(this.seleniumDriver);
-            actions.DoubleClick(element.ToWebElement());
-            actions.Build().Perform();
+            var mode = configuration.WebDriver.Mode.ToEnum<Modes>();
+            var browserName = configuration.WebDriver.Browser.BrowserName.ToEnum<BrowserNames>();
+
+            if (mode == Modes.browser && browserName == BrowserNames.firefox)
+            {
+                this.DoubleClickJs(element);
+            }
+            else
+            {
+                var actions = new Actions(this.seleniumDriver);
+                actions.DoubleClick(element.ToWebElement());
+                actions.Build().Perform();
+            }
+        }
+
+        private void DoubleClickJs(IElement element)
+        {
+            var jsDoubleClick = 
+                @"var event = new MouseEvent('dblclick', {
+                            'view': window,
+                            'bubbles': true,
+                            'cancelable': true
+                          });
+                  arguments[0].dispatchEvent(event);";
+            this.ExecuteJavaScript(jsDoubleClick, element.ToWebElement());
         }
 
         public void DragAndDrop(IElement draggable, int offsetX, int offsetY)
@@ -255,19 +283,20 @@ namespace SpecDrill.Adapters.WebDriver
             string userAgent = (string)ExecuteJavaScript("return navigator.userAgent") ?? string.Empty;
 
 
-            var webClient = new WebClient();
+            using (var webClient = new WebClient())
+            {
+                var formattedCookiesString = GetFormattedCookiesString();
 
-            var formattedCookiesString = GetFormattedCookiesString();
+                Uri uri = new Uri(seleniumDriver.Url);
+                webClient.Headers.Add(HttpRequestHeader.Host, uri.Host);
+                webClient.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
+                webClient.Headers.Add(HttpRequestHeader.Cookie, formattedCookiesString);
+                webClient.Headers.Add(HttpRequestHeader.Accept, "application/pdf");
 
-            Uri uri = new Uri(seleniumDriver.Url);
-            webClient.Headers.Add(HttpRequestHeader.Host, uri.Host);
-            webClient.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-            webClient.Headers.Add(HttpRequestHeader.Cookie, formattedCookiesString);
-            webClient.Headers.Add(HttpRequestHeader.Accept, "application/pdf");
-
-            using (var pdfStream = new MemoryStream(webClient.DownloadData(uri.OriginalString)))
-            using (var extractor = new PdfExtract.Extractor())
-                return extractor.ExtractToString(pdfStream);
+                using (var pdfStream = new MemoryStream(webClient.DownloadData(uri.OriginalString)))
+                using (var extractor = new PdfExtract.Extractor())
+                    return extractor.ExtractToString(pdfStream);
+            }
         }
 
         private string GetFormattedCookiesString()

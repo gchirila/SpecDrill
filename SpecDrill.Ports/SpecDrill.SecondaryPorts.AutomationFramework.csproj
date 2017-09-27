@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\IBrowser.cs" />
+    <Compile Include="Exceptions\ElementNotFoundException.cs" />
     <Compile Include="IBrowserAlert.cs" />
     <Compile Include="IBrowserDriverFactory.cs" />
     <Compile Include="IBrowserDriver.cs" />

@@ -1,0 +1,7 @@
+organization=cosminsontu-github
+projectKey=CosminSontu:SpecDrill
+serverUrl=https://sonarcloud.io
+serverVersion=6.6.0.30224
+dashboardUrl=https://sonarcloud.io/dashboard/index/CosminSontu:SpecDrill
+ceTaskId=AV6adeo0idf0SozqgnZ5
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AV6adeo0idf0SozqgnZ5

@@ -118,5 +118,33 @@ namespace SomeTests
             
             Assert.IsTrue(retriesDone == 2, "Retries Count is different than expected");
         }
+
+        [TestMethod]
+        public void ShouldThrowAsSoonAsSpecifiedLimitIntervalHasPassed()
+        {
+            var timeLimit = TimeSpan.FromSeconds(1);
+            var stopwatch = new Stopwatch();
+
+            //stopwatch.Start();
+            Action wait = () =>
+            Wait.NoMoreThan(TimeSpan.FromSeconds(1.0d)).Until(() => false);
+            //stopwatch.Stop();
+            wait.ShouldThrow<TimeoutException>();
+            //stopwatch.Elapsed.Should().BeCloseTo(timeLimit, 50);
+        }
+
+
+        [TestMethod]
+        public void ShouldReturnAsSoonAsSpecifiedLimitIntervalHasPassed()
+        {
+            var timeLimit = TimeSpan.FromSeconds(1);
+            var stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+            Wait.NoMoreThan(TimeSpan.FromSeconds(1.0d)).Until(() => false, throwExceptionOnTimeout: false);
+            stopwatch.Stop();
+            
+            stopwatch.Elapsed.Should().BeCloseTo(timeLimit, 50);
+        }
     }
 }

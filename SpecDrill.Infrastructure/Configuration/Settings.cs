@@ -1,4 +1,7 @@
-﻿using SpecDrill.Infrastructure.Configuration;
+﻿using SpecDrill.Configuration.WebDriver;
+using SpecDrill.Configuration.Homepages;
+using SpecDrill.Infrastructure.Configuration;
+using SpecDrill.Infrastructure.Configuration.WebDriver.Browser.Window;
 
 namespace SpecDrill.Configuration
 {
@@ -6,12 +9,6 @@ namespace SpecDrill.Configuration
     {
         public WebDriverConfiguration WebDriver { get; set; }
 
-        public BrowserWindowConfiguration BrowserWindow { get; set; }
-
-        public int MaxWait { get; set; }
-
-        public int WaitPollingFrequency { get; set; }
-
-        public Homepage[] Homepages { get; set; }
+        public HomepageConfiguration[] Homepages { get; set; }
     }
 }

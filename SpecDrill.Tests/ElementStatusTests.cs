@@ -12,6 +12,7 @@ using SpecDrill.AutomationScopes;
 using SomeTests.PageObjects.Alerts;
 using SpecDrill.SecondaryPorts.AutomationFramework;
 using SomeTests.PageObjects;
+using SpecDrill.SecondaryPorts.AutomationFramework.Exceptions;
 
 namespace SomeTests
 {
@@ -27,6 +28,7 @@ namespace SomeTests
 
             using (var benchmark = new BenchmarkScope("Time Until Disable"))
             {
+                //Wait.NoMoreThan(TimeSpan.FromSeconds(2)).Until(() => disablingElement.IsAvailable);
                 Wait.NoMoreThan(TimeSpan.FromSeconds(3)).Until(() => !disablingElement.IsEnabled);
                 benchmark.Elapsed.Should().BeCloseTo(TimeSpan.FromSeconds(2), 300);
             }
@@ -44,6 +46,39 @@ namespace SomeTests
                 Wait.NoMoreThan(TimeSpan.FromSeconds(3)).Until(() => disablingElement.IsDisplayed);
                 benchmark.Elapsed.Should().BeCloseTo(TimeSpan.FromSeconds(2), 300);
             }
+        }
+
+        [TestMethod]
+        public void ShouldNotCrashIfElementNotAvailable()
+        {
+            var elStatusPage = Browser.Open<ElementStatusPage>();
+
+            var unrealElement = WebElement.Create(null, ElementLocator.Create(By.Id, "doesNotExist"));
+
+            Assert.IsFalse(unrealElement.IsAvailable);
+        }
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenTestingDisplayedAndElementNotPresent()
+        {
+            var elStatusPage = Browser.Open<ElementStatusPage>();
+            var unrealElement = WebElement.Create(null, ElementLocator.Create(By.Id, "doesNotExist"));
+
+            Action checkDisplayed = () => { var displayed = unrealElement.IsDisplayed; };
+
+            checkDisplayed.ShouldThrow<ElementNotFoundException>();
+        }
+
+
+        [TestMethod]
+        public void ShouldThrowExceptionWhenTestingEnabledAndElementNotPresent()
+        {
+            var elStatusPage = Browser.Open<ElementStatusPage>();
+            var unrealElement = WebElement.Create(null, ElementLocator.Create(By.Id, "doesNotExist"));
+
+            Action checkDisplayed = () => { var displayed = unrealElement.IsEnabled; };
+
+            checkDisplayed.ShouldThrow<ElementNotFoundException>();
         }
     }
 }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>SpecDrill.MsTest</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Test</ProjectType>
+  <ProjectGuid>405307ed-862c-4a6f-97a8-67edfc9f3d0f</ProjectGuid>
+  <FullPath>D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.MsTest\SpecDrill.MsTest.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResults>
+    <AnalysisResult Id="FilesToAnalyze" Location="D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\.sonarqube\out\\SpecDrill.MsTest_1735\FilesToAnalyze.txt" />
+  </AnalysisResults>
+  <AnalysisSettings>
+    <Property Name="sonar.stylecop.projectFilePath">D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.MsTest\SpecDrill.MsTest.csproj</Property>
+  </AnalysisSettings>
+</ProjectInfo>

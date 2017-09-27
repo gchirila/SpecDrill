@@ -9,6 +9,7 @@ using SpecDrill.SecondaryPorts.AutomationFramework.Model;
 using System.Linq;
 using OpenQA.Selenium.Interactions;
 using SpecDrill.Adapters.WebDriver.Extensions;
+using SpecDrill.SecondaryPorts.AutomationFramework.Exceptions;
 
 namespace SpecDrill.Adapters.WebDriver
 {
@@ -46,19 +47,19 @@ namespace SpecDrill.Adapters.WebDriver
             get { return this.Element.GetAttribute("readonly") != null; }
         }
 
-        public bool IsAvailable => AvailabilityTest(this.ToWebElement());
+        public bool IsAvailable => AvailabilityTest(() => this.ToWebElement());
 
-        private bool AvailabilityTest(IWebElement nativeLocatedElement)
-        => Test(nativeLocatedElement, "AvailabilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed) && state.HasFlag(ElementStateFlags.Enabled));
+        private bool AvailabilityTest(Func<IWebElement> locateElement)
+        => Test(locateElement, "AvailabilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed) && state.HasFlag(ElementStateFlags.Enabled)).Evaluate();
 
-        public bool IsDisplayed => Test(this.ToWebElement(), "VisibilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed));
-        public bool IsEnabled => Test(this.ToWebElement(), "IsEnabledTest", (state) => state.HasFlag(ElementStateFlags.Enabled));
+        public bool IsDisplayed => Test(() => this.ToWebElement(), "VisibilityTest", (state) => state.HasFlag(ElementStateFlags.Displayed)).Evaluate(throwException : true);
+        public bool IsEnabled => Test(() => this.ToWebElement(), "IsEnabledTest", (state) => state.HasFlag(ElementStateFlags.Enabled)).Evaluate(throwException : true);
 
-        private Tuple<ElementStateFlags?, Exception> InternalElementState
+        private Tuple<ElementStateFlags, Exception> InternalElementState
         {
-            // (null, exception) -> inconclusive - not yet present
-            // (ESF.None, exception) -> conclusive - present but invalid object type ???
-            // (ESF.None, null) -> Item statie is according to ESF flags : is not shown and not enabled
+
+            // (ESF.None, exception) -> inconclusive - present but invalid object type ??? or not present
+            // (ESF.None, null) -> Item state is according to ESF flags : is not shown and not enabled
             // (ESF.*, null) -> Item state is according to ESF flags
             get
             {
@@ -69,7 +70,7 @@ namespace SpecDrill.Adapters.WebDriver
                 {
                     exception = nfe;
                     Log.Error(exception, "SpecDrill: Availability Test");
-                    return Tuple.Create((ElementStateFlags?)null, exception);
+                    return Tuple.Create(ElementStateFlags.None, exception);
                 }
 
                 if (!searchResult.HasResult)
@@ -77,7 +78,7 @@ namespace SpecDrill.Adapters.WebDriver
                     var info = $"Element ({locator}) not found!";
                     Log.Info(info);
                     exception = new NotFoundException(info);
-                    return Tuple.Create((ElementStateFlags?)null, exception);
+                    return Tuple.Create(ElementStateFlags.None, exception);
                 }
 
                 var locatedElement = searchResult.NativeElement as IWebElement;
@@ -85,46 +86,46 @@ namespace SpecDrill.Adapters.WebDriver
                 {
                     var info = $"Element ({ searchResult.NativeElement?.GetType().ToString() ?? "(null)" }) is not an IWebElement!";
                     Log.Info(info);
-                    return Tuple.Create((ElementStateFlags?)ElementStateFlags.None, new Exception(info, exception));
+                    return Tuple.Create(ElementStateFlags.None, new Exception(info, exception));
                 }
 
-                return InternalStateTest(locatedElement);
+                return InternalStateTest(() => locatedElement);
             }
         }
 
-        private bool Test(IWebElement nativeLocatedElement, string testName, Func<ElementStateFlags, bool> test)
+        private Tuple<bool, Exception> Test(Func<IWebElement> locateElement, string testName, Func<ElementStateFlags, bool> test)
         {
-            var result = InternalStateTest(nativeLocatedElement);
-
+            var result = InternalStateTest(locateElement);
+            bool testResult;
             if (result.Item2 != null)
             {
                 Log.Info(string.Format($"{testName} test result: false ; Reason {(result.Item2?.ToString() ?? "(null)")}"));
-                return false;
+                testResult = false;
             }
 
-            var testResult = result.Item1.HasValue && test(result.Item1.Value);
+            testResult = test(result.Item1);
 
-            if (result.Item1.HasValue && !testResult)
+            if (!testResult)
             {
-                var state = result.Item1.Value;
+                var state = result.Item1;
                 Log.Info(string.Format($"{testName} result: false > displayed:{state.HasFlag(ElementStateFlags.Displayed)}, enabled:{state.HasFlag(ElementStateFlags.Enabled)}"));
             }
 
-            return testResult;
+            return Tuple.Create(testResult, result.Item2);
         }
 
-        private Tuple<ElementStateFlags?, Exception> InternalStateTest(IWebElement nativeLocatedElement)
+        private Tuple<ElementStateFlags, Exception> InternalStateTest(Func<IWebElement> locateElement)
         {
             ElementStateFlags state = ElementStateFlags.None;
             Exception exception = null;
             try
             {
+                var nativeLocatedElement = locateElement();  // throws Exception if not present
                 Log.Info($"Testing State for { $"{nativeLocatedElement.TagName}"} -> {locator}");
                 if (nativeLocatedElement.Displayed) state |= ElementStateFlags.Displayed;
                 if (nativeLocatedElement.Enabled) state |= ElementStateFlags.Enabled;
-
-                return Tuple.Create((ElementStateFlags?)state, exception);
-
+                Log.Info($"state = {state}");
+                return Tuple.Create(state, exception);
             }
             catch (StaleElementReferenceException sere)
             {
@@ -136,13 +137,18 @@ namespace SpecDrill.Adapters.WebDriver
                 exception = nfe;
                 Log.Error(exception, "SpecDrill: State Test");
             }
+            catch (ElementNotFoundException enfe)
+            {
+                exception = enfe;
+                Log.Error(exception, "SpecDrill: State Test");
+            }
             catch (Exception e)
             {
                 exception = e;
                 Log.Error(exception, "SpecDrill: State Test");
             }
 
-            return Tuple.Create((ElementStateFlags?)state, exception);
+            return Tuple.Create(state, exception);
         }
 
         public IBrowser Browser => this.browser;
@@ -274,7 +280,7 @@ namespace SpecDrill.Adapters.WebDriver
                 if (!previousContainer.HasResult)
                     return SearchResult.Empty;
 
-                bool isParentAvailable = AvailabilityTest(previousContainer.NativeElement as IWebElement);
+                bool isParentAvailable = AvailabilityTest(() => previousContainer.NativeElement as IWebElement);
 
                 Log.Info($"Finding element {locator} which is nested {elementContainers.Count} level(s) deep. Its parent is{(isParentAvailable ? string.Empty : " not")} available.");
                 Log.Info($"L01>{elementContainers.First().Locator}");
@@ -327,7 +333,7 @@ namespace SpecDrill.Adapters.WebDriver
 
             var previousContainerNativeElement = previousContainer.NativeElement as IWebElement;
 
-            if (AvailabilityTest(previousContainerNativeElement))
+            if (AvailabilityTest(() => previousContainerNativeElement))
             {
                 try
                 {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecDrill.Configuration
+namespace SpecDrill.Configuration.Homepages
 {
-    public class Homepage
+    public class HomepageConfiguration
     {
         public string PageObjectType { get; set; }
 

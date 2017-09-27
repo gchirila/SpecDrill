@@ -39,9 +39,8 @@
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,10 +51,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\BrowserWindowConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Appium\AppiumConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Appium\Capabilities\Android\AndroidCapabilitiesConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Appium\Capabilities\CapabilitiesConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Appium\Capabilities\FirefoxOS\FirefoxCapabilitiesConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Appium\Capabilities\IOS\IosCapabilitiesConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\BrowserConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\DriversConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Chrome\ChromeConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\DriverConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Firefox\FirefoxConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Ie\IeConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Opera\OperaConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Safari\SafariConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Window\WindowConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
-    <Compile Include="Configuration\Homepage.cs" />
-    <Compile Include="Configuration\SeleniumConfiguration.cs" />
+    <Compile Include="Configuration\Homepages\Homepage.cs" />
+    <Compile Include="Configuration\WebDriver\WebdriverConfiguration.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="Enums\BrowserNames.cs" />
@@ -72,6 +84,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

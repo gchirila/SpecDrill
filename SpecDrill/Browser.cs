@@ -21,7 +21,7 @@ namespace SpecDrill
 {
     public sealed class Browser : IBrowser
     {
-        private static IBrowser browserInstance = null;
+        private static IBrowser browserInstance;
 
         private readonly Settings configuration;
 
@@ -34,29 +34,35 @@ namespace SpecDrill
         public Browser(Settings configuration)
         {
             Trace.Write($"Configuration = {(configuration?.ToString() ?? "(null)")}");
+            if (configuration == null)
+                throw new Exception("Configuration is missing!");
+
             this.configuration = configuration;
             Log.Info("Initializing Driver...");
             var driverFactory = new SeleniumBrowserFactory(configuration);
 
-            var browserName = configuration.WebDriver.BrowserDriver.ToEnum<BrowserNames>();
-            Log.Info($"WebDriver.BrowserDriver = {browserName}");
+            var browserName = this.configuration.WebDriver.Browser.BrowserName.ToEnum<BrowserNames>();
+            Log.Info($"WebDriver.BrowserDriver = {(browserName)}");
             browserDriver = driverFactory.Create(browserName);
 
-            // configuring browser window
-            Log.Info($"BrowserWindow.IsMaximized = {configuration.BrowserWindow.IsMaximized}");
-
-            if (configuration.BrowserWindow.IsMaximized)
+            if (configuration.WebDriver.Mode.ToEnum<Modes>() == Modes.browser)
             {
-                MaximizePage();
-            }
-            else
-            {
-                SetWindowSize(configuration.BrowserWindow.InitialWidth ?? 800, configuration.BrowserWindow.InitialHeight ?? 600);
+                // configuring browser window
+                Log.Info($"BrowserWindow.IsMaximized = {configuration.WebDriver.Browser.Window.IsMaximized}");
+
+                if (configuration.WebDriver.Browser.Window.IsMaximized)
+                {
+                    MaximizePage();
+                }
+                else
+                {
+                    SetWindowSize(configuration.WebDriver.Browser.Window.InitialWidth ?? 800, configuration.WebDriver.Browser.Window.InitialHeight ?? 600);
+                }
             }
 
-            long waitMilliseconds = configuration.MaxWait == 0 ? 60000 : configuration.MaxWait;
+            long waitMilliseconds = configuration.WebDriver.MaxWait == 0 ? 60000 : configuration.WebDriver.MaxWait;
             Log.Info($"MaxWait = {waitMilliseconds}ms");
-            var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.MaxWait == 0 ? 60000 : configuration.MaxWait);
+            var cfgMaxWait = TimeSpan.FromMilliseconds(configuration.WebDriver.MaxWait == 0 ? 60000 : configuration.WebDriver.MaxWait);
 
             // set initial browser driver timeout to configuration or 1 minute if not defined
             lock (timeoutHistory)
@@ -84,7 +90,7 @@ namespace SpecDrill
                 string url = string.Format("file:///{0}{1}",
                             Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace('\\', '/'),
                             homePage.Url);
-                Log.Info($"Browser openins {url}");
+                Log.Info($"Browser opening {url}");
                 Action navigateToUrl = homePage.IsFileSystemPath ?
                     (Action)(() =>
                     this.GoToUrl(url)) : () => this.GoToUrl(homePage.Url);

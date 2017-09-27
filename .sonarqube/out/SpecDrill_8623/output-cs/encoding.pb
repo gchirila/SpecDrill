@@ -1,0 +1,14 @@
+R
+ID:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\FindAttribute.csutf-8d
+[D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\AutomationScopes\BenchmarkScope.csutf-8g
+^D:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\AutomationScopes\ImplicitWaitScope.csutf-8L
+CD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\Browser.csutf-8P
+GD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\ElementBase.csutf-8L
+CD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\Locator.csutf-8\
+SD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\Properties\AssemblyInfo.csutf-8O
+FD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\WebControl.csutf-8\
+SD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\WebControls\ListElement.csutf-8\
+SD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\WebControls\TreeControl.csutf-8O
+FD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\WebElement.csutf-8L
+CD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\PdfPage.csutf-8L
+CD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill\WebPage.csutf-8

@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using SpecDrill.SecondaryPorts.AutomationFramework;
+using SpecDrill.SecondaryPorts.AutomationFramework.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace SpecDrill.Adapters.WebDriver.Extensions
 
                 if (webElement == null)
                 {
-                    throw new Exception($"SpecDrill: Element ({element.Locator}) Not Found!");
+                    throw new ElementNotFoundException($"SpecDrill: Element ({element.Locator}) Not Found!");
                 }
 
                 return webElement;

@@ -1,0 +1,17 @@
+X
+OD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\Core\IBrowser.csutf-8X
+OD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IBrowserAlert.csutf-8`
+WD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IBrowserDriverFactory.csutf-8Y
+PD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IBrowserDriver.csutf-8Y
+PD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\ICustomElement.csutf-8S
+JD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IElement.csutf-8Z
+QD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IElementLocator.csutf-8a
+XD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\Model\PageContextTypes.csutf-8X
+OD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\WindowElement.csutf-8X
+OD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IFrameElement.csutf-8]
+TD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\INavigationElement.csutf-8S
+JD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IControl.csutf-8Y
+PD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\ISelectElement.csutf-8P
+GD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\IPage.csutf-8]
+TD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\Model\SearchResult.csutf-8b
+YD:\_cloud\Dropbox\Projects\SpecDrill\SpecDrill\SpecDrill.Ports\Properties\AssemblyInfo.csutf-8
