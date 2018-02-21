@@ -40,13 +40,13 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         /// <returns></returns>
         //object FindElement(IElementLocator locator);
 
-        object ExecuteJavaScript(string js, params object[] elements);
+        object ExecuteJavaScript(string js, params object[] arguments);
 
-        void MoveToElement(IElement locator);
+        void MoveToElement(IElement element);
 
-        void DragAndDrop(IElement startFromElement, IElement stopToElement);
+        void DragAndDrop(IElement draggable, IElement dropTarget);
 
-        void DragAndDrop(IElement startFromElement, int offsetX, int offsetY);
+        void DragAndDrop(IElement draggable, int offsetX, int offsetY);
 
         void RefreshPage();
 
@@ -69,5 +69,6 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         void SwitchToWindow<T>(IWindowElement<T> seleniumWindowElement) where T:IPage;
         void CloseLastWindow();
         string GetPdfText();
+        void SaveScreenshot(string fileName);
     }
 }

@@ -18,6 +18,7 @@ using SpecDrill.Infrastructure;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.iOS;
+using OpenQA.Selenium.Edge;
 //using OpenQA.Selenium.Appium.Enums;
 
 namespace SpecDrill.Adapters.WebDriver
@@ -73,35 +74,31 @@ namespace SpecDrill.Adapters.WebDriver
             driverFactory = new Dictionary<BrowserNames, Func<IBrowserDriver>>
             {
                 { BrowserNames.chrome, () =>
-                //TODO: extract window parameters in specDrillConfig.json
                 {
                     var bdp = GetBrowserDriversPath(configuration.WebDriver.Browser.Drivers.Chrome.Path);
-                    var chromeOptions = new ChromeOptions();
-                    chromeOptions.AddArgument($"window-size={configuration.WebDriver.Browser.Window.InitialWidth},{configuration.WebDriver.Browser.Window.InitialHeight}");
-                    return SeleniumBrowserDriver.Create(new ChromeDriver(bdp, chromeOptions), this.configuration);
+                    return SeleniumBrowserDriver.Create(new ChromeDriver(bdp, BuildChromeOptions()), this.configuration);
                 }},
-                { BrowserNames.ie, () => SeleniumBrowserDriver.Create(new InternetExplorerDriver(GetBrowserDriversPath(configuration.WebDriver.Browser.Drivers.Ie.Path)), this.configuration) },
+                { BrowserNames.ie, () =>
+                {
+                    return SeleniumBrowserDriver.Create(new InternetExplorerDriver(GetBrowserDriversPath(configuration.WebDriver.Browser.Drivers.Ie.Path), BuildInternetExplorerOptions()), this.configuration);
+                    } },
                 { BrowserNames.firefox, () =>
                     {
                         var binPath = configuration.WebDriver.Browser.Drivers.Firefox.BrowserBinaryPath;
                         var fds = FirefoxDriverService.CreateDefaultService(configuration.WebDriver.Browser.Drivers.Firefox.Path);
-                        var ffOptions = new FirefoxOptions();
-                        var fp = ffOptions.Profile ?? new FirefoxProfile();
-                        fp.AcceptUntrustedCertificates = true;
-                        fp.AssumeUntrustedCertificateIssuer = false;
-                        ffOptions.Profile = fp;
-                        
+
                         if (!string.IsNullOrWhiteSpace(binPath))
                         {
                             fds.FirefoxBinaryPath = binPath;
-                            ffOptions.BrowserExecutableLocation = binPath;
                         }
 
                         //Environment.SetEnvironmentVariable("webdriver.gecko.driver", configuration.WebDriver.Browser.Drivers.Firefox.Path);
-                        return SeleniumBrowserDriver.Create(new FirefoxDriver(fds, ffOptions, TimeSpan.FromSeconds(60)), this.configuration);
+                        return SeleniumBrowserDriver.Create(new FirefoxDriver(fds, BuildFirefoxOptions(), TimeSpan.FromSeconds(60)), this.configuration);
                     } },
-                { BrowserNames.opera, () => SeleniumBrowserDriver.Create(new OperaDriver(configuration.WebDriver.Browser.Drivers.Opera.Path), this.configuration) },
-                { BrowserNames.safari, () => SeleniumBrowserDriver.Create(new SafariDriver(configuration.WebDriver.Browser.Drivers.Safari.Path), this.configuration) }
+                { BrowserNames.opera, () => {
+                    return SeleniumBrowserDriver.Create(new OperaDriver(configuration.WebDriver.Browser.Drivers.Opera.Path, BuildOperaOptions()), this.configuration);
+                } },
+                { BrowserNames.safari, () => SeleniumBrowserDriver.Create(new SafariDriver(configuration.WebDriver.Browser.Drivers.Safari.Path, BuildSafariOptions()), this.configuration) }
             };
         }
 
@@ -118,15 +115,35 @@ namespace SpecDrill.Adapters.WebDriver
                         switch (browserName)
                         {
                             case BrowserNames.chrome:
-                                return CreateRemoteWebDriver(DesiredCapabilities.Chrome());
+                                {
+                                    ChromeOptions chromeOptions = BuildChromeOptions();
+                                    return CreateRemoteWebDriver(chromeOptions.ToCapabilities());
+                                }
                             case BrowserNames.firefox:
-                                return CreateRemoteWebDriver(DesiredCapabilities.Firefox());
+                                {
+                                    FirefoxOptions firefoxOptions = BuildFirefoxOptions();
+                                    return CreateRemoteWebDriver(firefoxOptions.ToCapabilities());
+                                }
                             case BrowserNames.opera:
-                                return CreateRemoteWebDriver(DesiredCapabilities.Opera());
+                                {
+                                    OperaOptions options = BuildOperaOptions();
+                                    return CreateRemoteWebDriver(options.ToCapabilities());
+                                }
                             case BrowserNames.safari:
-                                return CreateRemoteWebDriver(DesiredCapabilities.Safari());
+                                {
+                                    SafariOptions safariOptions = BuildSafariOptions();
+                                    return CreateRemoteWebDriver(safariOptions.ToCapabilities());
+                                }
                             case BrowserNames.ie:
-                                return CreateRemoteWebDriver(DesiredCapabilities.InternetExplorer());
+                                {
+                                    InternetExplorerOptions ieOptions = BuildInternetExplorerOptions();
+                                    return CreateRemoteWebDriver(ieOptions.ToCapabilities());
+                                }
+                            case BrowserNames.edge:
+                                {
+                                    EdgeOptions edgeOptions = BuildEdgeOptions();
+                                    return CreateRemoteWebDriver(edgeOptions.ToCapabilities());
+                                }
                             default:
                                 throw new ArgumentOutOfRangeException($"SpecDrill: Value Not Supported `{browserName}`!");
                         }
@@ -166,6 +183,56 @@ namespace SpecDrill.Adapters.WebDriver
             }
             return result;
         }
+
+        private static SafariOptions BuildSafariOptions()
+        {
+            return new SafariOptions();
+        }
+
+        private static EdgeOptions BuildEdgeOptions()
+        {
+            return new EdgeOptions();
+        }
+
+        private InternetExplorerOptions BuildInternetExplorerOptions()
+        {
+            var ieOptions = new InternetExplorerOptions();
+            ieOptions.BrowserCommandLineArguments = string.Join(" ", configuration.WebDriver.Browser.Drivers.Ie.Arguments ?? new List<string>());
+            ieOptions.ForceCreateProcessApi = !string.IsNullOrWhiteSpace(ieOptions.BrowserCommandLineArguments);
+            return ieOptions;
+        }
+
+        private OperaOptions BuildOperaOptions()
+        {
+            var options = new OperaOptions();
+            options.AddArguments(configuration.WebDriver.Browser.Drivers.Opera.Arguments ?? new List<string>());
+            return options;
+        }
+
+        private FirefoxOptions BuildFirefoxOptions()
+        {
+            var ffOptions = new FirefoxOptions();
+            ffOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Firefox.Arguments ?? new List<string>());
+            var fp = ffOptions.Profile ?? new FirefoxProfile();
+            fp.AcceptUntrustedCertificates = true;
+            fp.AssumeUntrustedCertificateIssuer = false;
+            ffOptions.Profile = fp;
+            var binPath = configuration.WebDriver.Browser.Drivers.Firefox.BrowserBinaryPath;
+            if (!string.IsNullOrWhiteSpace(binPath))
+            {
+                ffOptions.BrowserExecutableLocation = binPath;
+            }
+            return ffOptions;
+        }
+
+        private ChromeOptions BuildChromeOptions()
+        {
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Chrome.Arguments ?? new List<string>());
+            chromeOptions.AddArgument($"window-size={configuration.WebDriver.Browser.Window.InitialWidth},{configuration.WebDriver.Browser.Window.InitialHeight}");
+            return chromeOptions;
+        }
+
         private string GetBrowserDriversPath(string driverPath)
         {
             if (!driverPath.Contains(":\\"))
@@ -177,7 +244,7 @@ namespace SpecDrill.Adapters.WebDriver
             return driverPath;
         }
 
-        public IBrowserDriver CreateRemoteWebDriver(DesiredCapabilities desiredCapabilities)
+        public IBrowserDriver CreateRemoteWebDriver(ICapabilities desiredCapabilities)
         {
             return SeleniumBrowserDriver.Create(
                             new RemoteWebDriver(

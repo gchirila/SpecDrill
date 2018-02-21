@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptions\AlertNotFoundException.cs" />
+    <Compile Include="Exceptions\DynamicMemberInitializationException.cs" />
+    <Compile Include="Exceptions\InvalidAttributeTargetException.cs" />
+    <Compile Include="Exceptions\MissingConfigurationException.cs" />
+    <Compile Include="Exceptions\MissingEmptyConstructorException.cs" />
+    <Compile Include="Exceptions\MissingHomepageConfigEntryException.cs" />
     <Compile Include="FindAttribute.cs" />
     <Compile Include="AutomationScopes\BenchmarkScope.cs" />
     <Compile Include="AutomationScopes\ImplicitWaitScope.cs" />

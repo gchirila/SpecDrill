@@ -1,5 +1,6 @@
 ﻿using SpecDrill.Infrastructure.Configuration.WebDriver.Appium;
 using SpecDrill.Infrastructure.Configuration.WebDriver.Browser;
+using SpecDrill.Infrastructure.Configuration.WebDriver.Screenshots;
 
 namespace SpecDrill.Configuration.WebDriver
 {
@@ -11,6 +12,7 @@ namespace SpecDrill.Configuration.WebDriver
 
         public int WaitPollingFrequency { get; set; }
 
+        public ScreenshotsConfiguration Screenshots { get; set; }
         public BrowserConfiguration Browser { get; set; }
         public AppiumConfiguration Appium { get; set; }
     }

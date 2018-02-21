@@ -14,7 +14,11 @@ namespace SpecDrill.Adapters.WebDriver.Extensions
             {
                 if (throwException)
                 {
-                    throw testResult.Item2 ?? new Exception($"{nameof(testResult)} is (null)");
+                    throw testResult?.Item2 ?? new Exception($"{nameof(testResult)} is (null)");
+                }
+                else
+                {
+                    return false;
                 }
             }
 

@@ -67,6 +67,7 @@
     <Compile Include="Configuration\WebDriver\Browser\Window\WindowConfiguration.cs" />
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Configuration\Homepages\Homepage.cs" />
+    <Compile Include="Configuration\WebDriver\Screenshots\ScreenshotsConfiguration.cs" />
     <Compile Include="Configuration\WebDriver\WebdriverConfiguration.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Converters.cs" />

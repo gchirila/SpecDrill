@@ -12,7 +12,7 @@ namespace SpecDrill.SpecFlow.MsTest
 {
     public class SpecFlowTestBase
     {
-        protected static ILogger Log = Infrastructure.Logging.Log.Get<SpecFlowTestBase>();
+        protected static readonly ILogger Log = Infrastructure.Logging.Log.Get<SpecFlowTestBase>();
         private Lazy<IBrowser> LazyBrowser = new Lazy<IBrowser>(() =>
         {
             try
@@ -30,6 +30,7 @@ namespace SpecDrill.SpecFlow.MsTest
         [BeforeScenario]
         public void ScenarioSetUp()
         {
+            // No use yet.
         }
 
         [AfterScenario]

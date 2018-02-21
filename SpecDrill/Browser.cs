@@ -16,6 +16,7 @@ using System.Reflection;
 using SpecDrill.WebControls;
 using SpecDrill.Infrastructure.Logging;
 using System.Diagnostics;
+using SpecDrill.Exceptions;
 
 namespace SpecDrill
 {
@@ -25,7 +26,7 @@ namespace SpecDrill
 
         private readonly Settings configuration;
 
-        private ILogger Log = Infrastructure.Logging.Log.Get<Browser>();
+        private readonly ILogger Log = Infrastructure.Logging.Log.Get<Browser>();
 
         private readonly IBrowserDriver browserDriver;
 
@@ -35,7 +36,7 @@ namespace SpecDrill
         {
             Trace.Write($"Configuration = {(configuration?.ToString() ?? "(null)")}");
             if (configuration == null)
-                throw new Exception("Configuration is missing!");
+                throw new MissingConfigurationException("Configuration is missing!");
 
             this.configuration = configuration;
             Log.Info("Initializing Driver...");
@@ -105,7 +106,7 @@ namespace SpecDrill
             }
             string errMsg = $"SpecDrill: Page({ typeof(T).Name }) cannot be found in Homepages section of settings file.";
             Log.Info(errMsg);
-            throw new Exception(errMsg);
+            throw new MissingHomepageConfigEntryException(errMsg);
         }
 
         public T CreatePage<T>() where T : IPage => CreateContainer<T>();
@@ -140,41 +141,7 @@ namespace SpecDrill
                         (
                             findAttribute =>
                             {
-                                object element = null;
-
-                                if (memberType == typeof(IElement))
-                                {
-                                    element = WebElement.Create(findAttribute.Nested ? container : default(T),
-                                        ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
-                                }
-                                else if (memberType == typeof(ISelectElement))
-                                {
-                                    element = WebElement.CreateSelect(findAttribute.Nested ? container : default(T),
-                                        ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
-                                }
-                                else if (typeof(INavigationElement<IPage>).IsAssignableFrom(memberType))
-                                {
-                                    element = InvokeFactoryMethod("CreateNavigation", memberType.GenericTypeArguments, container, findAttribute);
-                                }
-                                else if (typeof(IFrameElement<IPage>).IsAssignableFrom(memberType))
-                                {
-                                    element = InvokeFactoryMethod("CreateFrame", memberType.GenericTypeArguments, container, findAttribute);
-                                }
-                                else if (typeof(IWindowElement<IPage>).IsAssignableFrom(memberType))
-                                {
-                                    element = InvokeFactoryMethod("CreateWindow", memberType.GenericTypeArguments, container, findAttribute);
-                                }
-                                else if (typeof(WebControl).IsAssignableFrom(memberType))
-                                {
-                                    if (memberType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IListElement<>)))
-                                    {
-                                        element = InvokeFactoryMethod("CreateList", memberType.GenericTypeArguments, container, findAttribute);
-                                    }
-                                    else
-                                    {
-                                        element = InvokeFactoryMethod("CreateControl", new Type[] { memberType }, container, findAttribute);
-                                    }
-                                }
+                                object element = InstantiateMember<T>(findAttribute, container, memberType);
 
                                 SetValue(containerType, member, instance: container, value: element);
                             }
@@ -182,6 +149,46 @@ namespace SpecDrill
                     }
                 });
             return (T)container;
+        }
+
+        private static object InstantiateMember<T>(FindAttribute findAttribute, IElement container, Type memberType) where T : IElement
+        {
+            object element = null;
+            if (memberType == typeof(IElement))
+            {
+                element = WebElement.Create(findAttribute.Nested ? container : default(T),
+                    ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
+            }
+            else if (memberType == typeof(ISelectElement))
+            {
+                element = WebElement.CreateSelect(findAttribute.Nested ? container : default(T),
+                    ElementLocator.Create(findAttribute.SelectorType, findAttribute.SelectorValue));
+            }
+            else if (typeof(INavigationElement<IPage>).IsAssignableFrom(memberType))
+            {
+                element = InvokeFactoryMethod("CreateNavigation", memberType.GenericTypeArguments, container, findAttribute);
+            }
+            else if (typeof(IFrameElement<IPage>).IsAssignableFrom(memberType))
+            {
+                element = InvokeFactoryMethod("CreateFrame", memberType.GenericTypeArguments, container, findAttribute);
+            }
+            else if (typeof(IWindowElement<IPage>).IsAssignableFrom(memberType))
+            {
+                element = InvokeFactoryMethod("CreateWindow", memberType.GenericTypeArguments, container, findAttribute);
+            }
+            else if (typeof(WebControl).IsAssignableFrom(memberType))
+            {
+                if (memberType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IListElement<>)))
+                {
+                    element = InvokeFactoryMethod("CreateList", memberType.GenericTypeArguments, container, findAttribute);
+                }
+                else
+                {
+                    element = InvokeFactoryMethod("CreateControl", new Type[] { memberType }, container, findAttribute);
+                }
+            }
+
+            return element;
         }
 
         private IElement EnsureContainerInstance<T>(T containerInstance) where T : IElement
@@ -192,7 +199,7 @@ namespace SpecDrill
             }
             catch (MissingMethodException mme)
             {
-                throw new Exception($"SpecDrill: Page ({typeof(T).Name}) does not have a prameterless constructor. This error happens when you define at least one constructor with parameters. Possible Solution: Explicitly declare a parameterless constructor.", mme);
+                throw new MissingEmptyConstructorException($"SpecDrill: Page ({typeof(T).Name}) does not have a prameterless constructor. This error happens when you define at least one constructor with parameters. Possible Solution: Explicitly declare a parameterless constructor.", mme);
             }
         }
 
@@ -256,7 +263,7 @@ namespace SpecDrill
             }
             else
             {
-                throw new Exception($"SpecDrill: Could not set {propertyName}");
+                throw new DynamicMemberInitializationException($"SpecDrill: Could not set {propertyName}");
             }
         }
 
@@ -277,7 +284,7 @@ namespace SpecDrill
             }
             else
             {
-                throw new Exception($"SpecDrill: Could not set {fieldName}");
+                throw new DynamicMemberInitializationException($"SpecDrill: Could not set {fieldName}");
             }
         }
         private Type GetMemberType(MemberInfo member)
@@ -287,7 +294,7 @@ namespace SpecDrill
             FieldInfo field = member as FieldInfo;
             if (field != null) return field.FieldType;
 
-            throw new Exception($"SpecDrill - Browser: Find attribute cannot be applied to members of type {member.GetType().FullName}");
+            throw new InvalidAttributeTargetException($"SpecDrill - Browser: Find attribute cannot be applied to members of type {member.GetType().FullName}");
 
         }
 
@@ -309,16 +316,16 @@ namespace SpecDrill
             {
                 var alert = this.browserDriver.Alert;
                 if (alert == null)
-                    throw new Exception("SpecDrill: No alert present!");
+                    throw new AlertNotFoundException("SpecDrill: No alert present!");
                 return alert;
             }
         }
 
         public bool IsJQueryDefined => (bool)ExecuteJavascript("if (window.jQuery) return true else return false;");
 
-        public IDisposable ImplicitTimeout(TimeSpan timeout, string message = null)
+        public IDisposable ImplicitTimeout(TimeSpan implicitTimeout, string message = null)
         {
-            return new ImplicitWaitScope(browserDriver, timeoutHistory, timeout, message);
+            return new ImplicitWaitScope(browserDriver, timeoutHistory, implicitTimeout, message);
         }
 
         //public IElement PeekElement(IElementLocator locator)
@@ -392,9 +399,9 @@ namespace SpecDrill
             return SearchResult.Create(elements.Count > 0 ? elements[index] : null, elements.Count);
         }
 
-        public object ExecuteJavascript(string js, params object[] arguments)
+        public object ExecuteJavascript(string script, params object[] arguments)
         {
-            return browserDriver.ExecuteJavaScript(js, arguments);
+            return browserDriver.ExecuteJavaScript(script, arguments);
         }
 
         public void Hover(IElement element)
@@ -459,5 +466,25 @@ namespace SpecDrill
         }
 
         public void DragAndDropElement(IElement startFromElement, IElement stopToElement) => DragAndDrop(startFromElement, stopToElement);
+
+        public void SaveScreenshot(string testClassName, string testMethodName)
+        {
+            string fileName = null;
+            string screenshotsPath = null;
+            try
+            {
+                screenshotsPath = this.configuration.WebDriver.Screenshots.Path ?? "C:\\";
+                var now = DateTime.Now;
+                fileName = string.Format("{0}\\{1}_{2:00}_{3:00}_{4:0000}_{5:00}_{6:00}_{7:00}_{8:000}.png",
+                                         screenshotsPath, 
+                                         string.Format($"{testClassName}_{testMethodName}"),
+                                         now.Day, now.Month, now.Year, now.Hour, now.Minute, now.Second, now.Millisecond);
+                this.browserDriver.SaveScreenshot(fileName);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, $"Could not save Screenshot `{fileName}`.");
+            }
+        }
     }
 }

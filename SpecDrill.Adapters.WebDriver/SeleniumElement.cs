@@ -28,7 +28,7 @@ namespace SpecDrill.Adapters.WebDriver
     }
     public class SeleniumElement : IElement
     {
-        protected static ILogger Log = Infrastructure.Logging.Log.Get<SeleniumElement>();
+        protected static readonly ILogger Log = Infrastructure.Logging.Log.Get<SeleniumElement>();
 
         protected IBrowser browser;
         protected IElementLocator locator;

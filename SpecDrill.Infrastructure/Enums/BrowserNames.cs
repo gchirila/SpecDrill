@@ -8,7 +8,8 @@
         opera,
         safari,
         appium,
-        seleniumServer
+        seleniumServer,
+        edge
     }
 
     public enum Modes

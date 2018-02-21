@@ -15,5 +15,7 @@ namespace SpecDrill.Infrastructure.Configuration.WebDriver.Browser
         public string SeleniumServerUri { get; set; }
         public DriversConfiguration Drivers { get; set; }
         public WindowConfiguration Window { get; set; }
+
+
     }
 }

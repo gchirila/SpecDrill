@@ -51,6 +51,7 @@ namespace SomeTests
             hoverPage.DivDropTarget.GetAttribute("class").Should().Contain("jtk-endpoint-connected");
         }
 
+        [Ignore]
         [TestMethod]
         public void WfDnDTest()
         {

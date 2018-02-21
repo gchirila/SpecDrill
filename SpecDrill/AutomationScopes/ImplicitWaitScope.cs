@@ -8,11 +8,11 @@ namespace SpecDrill.AutomationScopes
 {
     public sealed class ImplicitWaitScope : IDisposable
     {
-        private ILogger Log = Infrastructure.Logging.Log.Get<ImplicitWaitScope>();
+        private readonly ILogger Log = Infrastructure.Logging.Log.Get<ImplicitWaitScope>();
         
-        private string message = null;
-        private IBrowserDriver browser = null;
-        private Stack<TimeSpan> timeoutHistory = null;
+        private readonly string message = null;
+        private readonly IBrowserDriver browser = null;
+        private readonly Stack<TimeSpan> timeoutHistory = null;
         public ImplicitWaitScope(IBrowserDriver browser, Stack<TimeSpan> timeoutHistory, TimeSpan timeout, string message = null)
         {
             this.message = message;

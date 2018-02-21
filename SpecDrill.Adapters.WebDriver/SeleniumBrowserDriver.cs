@@ -12,7 +12,6 @@ using System.Net;
 using System.Text;
 using System.Net.Http;
 using System.IO;
-using SpecDrill.Adapters.WebDriver.Extensions;
 using SpecDrill.Configuration;
 using SpecDrill.Infrastructure.Enums;
 using SpecDrill.Infrastructure;
@@ -63,7 +62,7 @@ namespace SpecDrill.Adapters.WebDriver
         #endregion
         private IWebDriver seleniumDriver = null;
 
-        private ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserDriver>();
+        private readonly ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserDriver>();
 
         private readonly Settings configuration;
 
@@ -91,8 +90,6 @@ namespace SpecDrill.Adapters.WebDriver
         public string Title
         {
             get { return seleniumDriver.Title; }
-            set { }
-
         }
 
         private Func<IAlert> WdAlert => () =>
@@ -122,7 +119,7 @@ namespace SpecDrill.Adapters.WebDriver
 
         public void ChangeBrowserDriverTimeout(TimeSpan timeout)
         {
-            this.seleniumDriver.Manage().Timeouts().ImplicitlyWait(timeout);
+            this.seleniumDriver.Manage().Timeouts().ImplicitWait = timeout;
         }
 
         public ReadOnlyCollection<object> FindElements(IElementLocator locator)
@@ -309,6 +306,37 @@ namespace SpecDrill.Adapters.WebDriver
             if (strCookies.Length > 1) { strCookies.Remove(strCookies.Length - 2, 2); }
 
             return strCookies.ToString();
+        }
+
+        public void SaveScreenshot(string fileName)
+        {
+            var attemptNo = 0;
+            bool succeeded = false;
+            do
+            {
+                succeeded = this.SaveScreeshotInternal(fileName);
+                attemptNo++;
+                Log.Error($"Saving Screenshot `{fileName}`. Attempt #{attemptNo}");
+            } while (!succeeded && attemptNo < 3);
+            if (!succeeded)
+            {
+                Log.Error($"Make sure the configured folder specified in `webdriver.screenshotsPath` exists!");
+            }
+        }
+
+        private bool SaveScreeshotInternal(string fileName)
+        {
+            try
+            {
+                Screenshot screenshot = ((ITakesScreenshot)seleniumDriver).GetScreenshot();
+                screenshot.SaveAsFile(fileName);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.Error(string.Format("Error when saving screenshot `{0}`", fileName), e);
+            }
+            return false;
         }
     }
 }

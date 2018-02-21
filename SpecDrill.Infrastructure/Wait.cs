@@ -30,17 +30,7 @@ namespace SpecDrill
             int retryCount = this.RetryCount;
             while (retryCount >= 0)
             {
-                bool actionSucceeded = false;
-
-                try
-                {
-                    action();
-                    actionSucceeded = true;
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, $"TryingAction: retryCount={retryCount}");
-                }
+                bool actionSucceeded = SafelyPerform(action, retryCount);
 
                 retryCount--;
                 if (actionSucceeded)
@@ -48,16 +38,9 @@ namespace SpecDrill
                     sw.Start();
                     while (sw.Elapsed < retryInterval)
                     {
-                        try
-                        {
-                            if (waitCondition())
-                                return;
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error(e, "Wait with retry: retryCount={0}, retryInterval={1} / maxWait={2}", retryCount, this.RetryInterval ?? TimeSpan.FromSeconds(0), retryInterval);
-                        }
-
+                        var conditionMet = SafelyEvaluate(waitCondition, retryInterval, retryCount);
+                        if (conditionMet)
+                            return;
                         Thread.Sleep(10);
                     }
                     sw.Reset();
@@ -66,6 +49,32 @@ namespace SpecDrill
             sw.Stop();
 
             throw new TimeoutException(string.Format("Explicit Wait with Retry of (1+{0})*{1} Timed Out!", this.RetryCount, retryInterval));
+        }
+        private bool SafelyPerform(Action action, int retryCount)
+        {
+            try
+            {
+                action();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, $"TryingAction: retryCount={retryCount}");
+            }
+            return false;
+        }
+        private bool SafelyEvaluate(Func<bool> waitCondition, TimeSpan retryInterval, int retryCount)
+        {
+            try
+            {
+                if (waitCondition())
+                    return true;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Wait with retry: retryCount={0}, retryInterval={1} / maxWait={2}", retryCount, this.RetryInterval ?? TimeSpan.FromSeconds(0), retryInterval);
+            }
+            return false;
         }
 
         public RetryWaitContext Doing(Action action)

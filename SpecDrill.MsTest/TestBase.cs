@@ -67,7 +67,23 @@ namespace SpecDrill.MsTest
         [TestCleanup]
         public void _TestCleanup()
         {
-            TestCleanup();
+            try
+            {
+                if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed && 
+                    ConfigurationManager.Settings.WebDriver.Screenshots.Auto)
+                {
+                    SaveScreenshot();
+                }
+
+                TestCleanup();
+            }
+            catch (Exception e)
+            {
+                Log.Log(LogLevel.Error, $"Failed in TestCleanup for {TestContext.TestName} with {e}");
+            }
+
+            if (Browser != null)
+                Browser.Exit();
         }
 
         public virtual void TestSetup()
@@ -76,8 +92,8 @@ namespace SpecDrill.MsTest
 
         public virtual void TestCleanup()
         {
-            if (Browser != null)
-                Browser.Exit();
         }
+
+        public void SaveScreenshot() => Browser.SaveScreenshot(this.GetType().Name, TestContext.TestName);
     }
 }

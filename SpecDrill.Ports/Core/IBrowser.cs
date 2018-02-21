@@ -40,7 +40,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         /// </summary>
         /// <param name="locator"></param>
         /// <returns></returns>
-        SearchResult PeekElement(IElement locator);
+        SearchResult PeekElement(IElement element);
 
         void Exit();
 
@@ -78,5 +78,6 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         void SwitchToDocument();
         void CloseLastWindow();
         string GetPdfText();
+        void SaveScreenshot(string testClassName, string testMethodName);
     }
 }

@@ -14,8 +14,7 @@
       "seleniumServerUri": "http://localhost:5555/wd/hub",
       "drivers": {
         "chrome": {
-          "path": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.32.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
-          "arguments": ["--incognito"]
+          "path": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.32.0\\driver\\win32" //"C:\\Your Browser Drivers Path"//
         },
         "ie": { "path": "" },
         "firefox": {

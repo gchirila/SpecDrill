@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>SpecDrill</id>
-        <version>1.0.19</version>
+        <version>1.0.26</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
@@ -10,6 +10,26 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>SpecDrill - An opinionated automated testing framework based on Selenium WebDriver</description>
 	<releaseNotes>
+.
+            v1.0.26
+                - Added arguments support for browser driver (local runs)
+            v1.0.25
+                - Upgraded to Webdriver 3.7
+                - Added arguments parameter (string array) in configuration e.g. browser.drivers.chrome.arguments (remote runs)
+            v1.0.24
+                - Reverted to MsTest framework due to difficulties with running MsTestv2 in CI environments.
+                - You need to start with a MsTest test project before adding SpecDrill NuGetPackage
+                  otherwise you have to add reference to your local version of MsTest:
+                      >Add Reference > Extensions > select Microsoft.VisualStudio.QualityTools.UnitTestFramework > OK.
+            v1.0.23
+                - Added automatic screenshot on test failure setting switch. Setting: webdriver.screenshots.auto : (bool).
+            v1.0.22
+                - Added screenshot capability. Call SaveScreenshot from your TestCleanup method if screenshot needed.
+            v1.0.21
+                - Added MsTest.TestAdaptor package needed to run tests with MsTest.TestFramework v2
+            v1.0.20
+                - Fixed Issue #24: Browser should close even if the TestCleanup method has cleanup errors
+                - Switched from Visual Studio extensions to v2 Nuget packages for MsTest framework
             v1.0.19
                 - added javascript workaround for geckodriver doubleclick bug
                 - updated sample tests
@@ -58,13 +78,16 @@
         <tags>SpecDrill SpecFlow Selenium WebDriver Automation BDD ATDD</tags>
         <dependencies>
             <dependency id="Newtonsoft.Json" version="10.0.3" />
-            <dependency id="Selenium.WebDriver" version="3.5.1" />
-            <dependency id="Selenium.Support" version="3.5.1" />
+            <dependency id="Selenium.WebDriver" version="3.7.0" />
+            <dependency id="Selenium.Support" version="3.7.0" />
             <dependency id="log4net" version="2.0.5" />
             <dependency id="FluentAssertions" version="4.14.0" />
-            <dependency id="Selenium.WebDriver.ChromeDriver" version="2.32.0" />
+            <dependency id="Selenium.WebDriver.ChromeDriver" version="2.33.0" />
+            <dependency id="Selenium.WebDriver.GeckoDriver.Win64" version="0.19.1" />
 	    <dependency id="pdf-extract" version="1.0.1.0" />
 	    <dependency id="Appium.WebDriver" version="3.0.0.2" />
+            <!--dependency id="MSTest.TestAdapter" version="1.2.0" /-->
+            <!--dependency id="MSTest.TestFramework" version="1.2.0" /-->
         </dependencies>
     </metadata>
     <files>
