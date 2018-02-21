@@ -7,6 +7,7 @@ SpecDrill.NuGet.*/
 packages/
 artifacts/
 .vs/
+.sonarqube/
 **/wwwroot/lib/
 debugSettings.json
 project.lock.json
@@ -30,3 +31,4 @@ _ReSharper.*
 *.sln.ide
 node_modules
 **/[Cc]ompiler/[Rr]esources/**/*.js
+sonarcloud-scan.bat
