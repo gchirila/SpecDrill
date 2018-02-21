@@ -102,16 +102,6 @@
       "pageObjectType": "GoogleSearchPage",
       "url": "http://www.google.com",
       "isFileSystemPath": false
-    },
-    {
-      "pageObjectType": "DashboardPage",
-      "url": "http://ap-gda01-cihrp:8080/",
-      "isFileSystemPath": false
-    },
-    {
-      "pageObjectType": "WfHomePage",
-      "url": "http://127.0.0.1/WebClient/#/processen",
-      "isFileSystemPath": false
     }
   ]
 }
