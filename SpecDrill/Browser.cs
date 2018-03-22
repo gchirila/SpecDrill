@@ -323,6 +323,8 @@ namespace SpecDrill
 
         public bool IsJQueryDefined => (bool)ExecuteJavascript("if (window.jQuery) return true else return false;");
 
+        public Uri Url => browserDriver.Url;
+
         public IDisposable ImplicitTimeout(TimeSpan implicitTimeout, string message = null)
         {
             return new ImplicitWaitScope(browserDriver, timeoutHistory, implicitTimeout, message);
@@ -486,5 +488,9 @@ namespace SpecDrill
                 Log.Error(e, $"Could not save Screenshot `{fileName}`.");
             }
         }
+
+        public Dictionary<string, object> GetCapabilities()
+            =>  this.browserDriver.GetCapabilities();
+        
     }
 }

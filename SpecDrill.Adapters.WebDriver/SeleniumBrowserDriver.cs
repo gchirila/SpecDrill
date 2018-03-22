@@ -117,6 +117,8 @@ namespace SpecDrill.Adapters.WebDriver
 
         public bool IsAlertPresent => this.WdAlert != null;
 
+        public Uri Url => new Uri(this.seleniumDriver.Url);
+
         public void ChangeBrowserDriverTimeout(TimeSpan timeout)
         {
             this.seleniumDriver.Manage().Timeouts().ImplicitWait = timeout;
@@ -337,6 +339,20 @@ namespace SpecDrill.Adapters.WebDriver
                 Log.Error(string.Format("Error when saving screenshot `{0}`", fileName), e);
             }
             return false;
+        }
+
+        public Dictionary<string, object> GetCapabilities()
+        {
+            var capabilities = configuration.WebDriver.Browser.Capabilities;
+            var remoteDriver = (this.seleniumDriver as OpenQA.Selenium.Remote.RemoteWebDriver);
+            if (remoteDriver != null)
+            {
+                capabilities["browserName"] = remoteDriver.Capabilities.BrowserName;
+                capabilities["platform"] = remoteDriver.Capabilities.Platform;
+                capabilities["version"] = remoteDriver.Capabilities.Version;
+            }
+            
+            return capabilities;
         }
     }
 }

@@ -53,7 +53,8 @@
   <ItemGroup>
     <Compile Include="Configuration\WebDriver\Appium\AppiumConfiguration.cs" />
     <Compile Include="Configuration\WebDriver\Appium\Capabilities\Android\AndroidCapabilitiesConfiguration.cs" />
-    <Compile Include="Configuration\WebDriver\Appium\Capabilities\CapabilitiesConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\Browser\Drivers\Edge\EdgeConfiguration.cs" />
+    <Compile Include="Configuration\WebDriver\CapabilitiesConfiguration.cs" />
     <Compile Include="Configuration\WebDriver\Appium\Capabilities\FirefoxOS\FirefoxCapabilitiesConfiguration.cs" />
     <Compile Include="Configuration\WebDriver\Appium\Capabilities\IOS\IosCapabilitiesConfiguration.cs" />
     <Compile Include="Configuration\WebDriver\Browser\BrowserConfiguration.cs" />

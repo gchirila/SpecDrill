@@ -12,5 +12,6 @@ namespace SpecDrill.Infrastructure.Configuration.WebDriver.Browser
         public OperaConfiguration Opera { get; set; }
         public FirefoxConfiguration Firefox { get; set; }
         public SafariConfiguration Safari { get; set; }
+        public EdgeConfiguration Edge { get; set; }
     }
 }

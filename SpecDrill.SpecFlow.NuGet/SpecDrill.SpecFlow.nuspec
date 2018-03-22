@@ -5,6 +5,7 @@
         <version>1.0.26</version>
         <authors>Cosmin Sontu</authors>
         <owners>Cosmin Sontu</owners>
+        <iconUrl>https://raw.githubusercontent.com/CosminSontu/SpecDrill/master/specdrill.ico</iconUrl>
         <licenseUrl>https://github.com/CosminSontu/SpecDrill/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/CosminSontu/SpecDrill</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>

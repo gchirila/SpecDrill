@@ -15,11 +15,11 @@
       "drivers": {
         "chrome": {
           "path": "..\\..\\..\\packages\\Selenium.WebDriver.ChromeDriver.2.33.0\\driver\\win32", //"C:\\Your Browser Drivers Path"//
-          "arguments": ["--incognito"]
+          "arguments": [ "--incognito" ]
         },
         "ie": { "path": "" },
         "firefox": {
-          "path": "..\\..\\..\\packages\\Selenium.WebDriver.GeckoDriver.Win64.0.19.1\\driver", 
+          "path": "..\\..\\..\\packages\\Selenium.WebDriver.GeckoDriver.Win64.0.19.1\\driver",
           "browserBinaryPath": "C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe"
         },
         "opera": { "path": "" },
@@ -30,7 +30,10 @@
         "initialWidth": 1280, // defaults to 800
         "initialHeight": 800 // defaults to 600
       },
-      "screenshots":  { "path" :  "D:\\" }
+      "screenshots": { "path": "D:\\" },
+      "capabilities": {
+          "enableVNC":  false
+      }
     },
     "appium": { // settings for appium mode -> targets Appium server
       "serverUri": "http://127.0.0.1:4723/wd/hub",
@@ -40,7 +43,7 @@
         "deviceName": "192.168.166.101:5555",
         "browserName": "Chrome",
         "udid": "192.168.166.101:5555",
-        "orientation": "PORTRAIT", // LANDSCAPE, PORTRAIT
+        "orientation": "PORTRAIT" // LANDSCAPE, PORTRAIT
         // platform-specific capabilities : not implemented !
         //"android": {}, 
         //"iOS": {},
@@ -102,6 +105,11 @@
       "pageObjectType": "GoogleSearchPage",
       "url": "http://www.google.com",
       "isFileSystemPath": false
+    },
+    {
+      "pageObjectType": "HomeWindowPage",
+      "url": "../../../WebsiteMocks/Windows/home_window.html",
+      "isFileSystemPath":  true
     }
   ]
 }

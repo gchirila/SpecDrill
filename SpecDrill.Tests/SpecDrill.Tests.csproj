@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrowserTests.cs" />
     <Compile Include="IncognitoTests.cs" />
     <Compile Include="DndTests.cs" />
     <Compile Include="ElementStatusTests.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="PageObjects\HoverCssPage.cs" />
     <Compile Include="PageObjects\Pdf\MyPdfPage.cs" />
     <Compile Include="PageObjects\Pdf\PdfIndexPage.cs" />
+    <Compile Include="PageObjects\Windows\HomeWindowPage.cs" />
     <Compile Include="PdfTests.cs" />
     <Compile Include="GoogleSearchTests.cs" />
     <Compile Include="ScreenshotTests.cs" />
@@ -143,6 +145,9 @@
     <Content Include="WebsiteMocks\Test000\home.html" />
     <Content Include="WebsiteMocks\Test000\login.html" />
     <Content Include="WebsiteMocks\Test001\calculator.html" />
+    <Content Include="WebsiteMocks\Windows\second_window.html" />
+    <Content Include="WebsiteMocks\Windows\first_window.html" />
+    <Content Include="WebsiteMocks\Windows\home_window.html" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CustomElements\" />

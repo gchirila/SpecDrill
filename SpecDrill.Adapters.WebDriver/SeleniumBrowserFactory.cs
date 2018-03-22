@@ -26,45 +26,60 @@ namespace SpecDrill.Adapters.WebDriver
     public static class DesiredCapabilitiesExtensions
     {
         private static ILogger Log = Infrastructure.Logging.Log.Get("DesiredCapabilitiesExtensions");
-        public static DesiredCapabilities AddCapability(this DesiredCapabilities capabilities, string key, object value, Type enumType = null)
+
+        public static bool ValidateCapability(string key, object value, Type enumType = null)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
                 Log.Info($"Cannot Add Capability (key is null or whitespace)");
-                return capabilities;
+                return false;
             }
             if (value == null)
             {
                 Log.Info($"Cannot add capability {key}. Its value is null.");
-                return capabilities;
+                return false;
             }
 
             var stringValue = (string)value;
             if (stringValue != null && string.IsNullOrWhiteSpace(stringValue))
             {
                 Log.Info($"Cannot add capability {key}. Its value is empty.");
-                return capabilities;
+                return false;
             }
 
-            if (stringValue!= null && enumType != null)
+            if (stringValue != null && enumType != null)
             {
                 if (!stringValue.OfEnum(enumType))
                 {
                     Log.Info($"Cannot add capability {key}. Its value is not in [{string.Join(", ", Enum.GetNames(enumType))}].");
-                    return capabilities;
+                    return false;
                 }
             }
-
-            capabilities.SetCapability(key, value);
+            return true;
+        }
+        public static DesiredCapabilities AddCapability(this DesiredCapabilities capabilities, string key, object value, Type enumType = null)
+        {
+            if (ValidateCapability(key, value, enumType))
+            {
+                capabilities.SetCapability(key, value);
+            }
             return capabilities;
+        }
+
+        public static DriverOptions AddCapability(this DriverOptions driverOptions, string key, object value, Type enumType = null)
+        {
+            if (ValidateCapability(key, value, enumType))
+            {
+                driverOptions.AddAdditionalCapability(key, value);
+            }
+            return driverOptions;
         }
     }
     public class SeleniumBrowserFactory : IBrowserDriverFactory
     {
-
         private static ILogger Log = Infrastructure.Logging.Log.Get<SeleniumBrowserFactory>();
         private readonly Dictionary<BrowserNames, Func<IBrowserDriver>> driverFactory;
-        //private readonly Dictionary<BrowserNames>
+
         private readonly Settings configuration = null;
         public SeleniumBrowserFactory(Settings configuration)
         {
@@ -81,6 +96,10 @@ namespace SpecDrill.Adapters.WebDriver
                 { BrowserNames.ie, () =>
                 {
                     return SeleniumBrowserDriver.Create(new InternetExplorerDriver(GetBrowserDriversPath(configuration.WebDriver.Browser.Drivers.Ie.Path), BuildInternetExplorerOptions()), this.configuration);
+                    } },
+                { BrowserNames.edge, () =>
+                {
+                    return SeleniumBrowserDriver.Create(new EdgeDriver(GetBrowserDriversPath(configuration.WebDriver.Browser.Drivers.Edge.Path), BuildEdgeOptions()), this.configuration);
                     } },
                 { BrowserNames.firefox, () =>
                     {
@@ -126,8 +145,8 @@ namespace SpecDrill.Adapters.WebDriver
                                 }
                             case BrowserNames.opera:
                                 {
-                                    OperaOptions options = BuildOperaOptions();
-                                    return CreateRemoteWebDriver(options.ToCapabilities());
+                                    OperaOptions operaOptions = BuildOperaOptions();
+                                    return CreateRemoteWebDriver(operaOptions.ToCapabilities());
                                 }
                             case BrowserNames.safari:
                                 {
@@ -153,18 +172,15 @@ namespace SpecDrill.Adapters.WebDriver
                 case Modes.appium:
                     
                     DesiredCapabilities capabilities = new DesiredCapabilities();
-                    
-                    capabilities
-                        .AddCapability("automationName", configuration.WebDriver.Appium.Capabilities.AutomationName)
-                        .AddCapability("platformName", configuration.WebDriver.Appium.Capabilities.PlatformName)
-                        .AddCapability("deviceName", configuration.WebDriver.Appium.Capabilities.DeviceName)
-                        .AddCapability("browserName", configuration.WebDriver.Appium.Capabilities.BrowserName)
-                        .AddCapability("udid", configuration.WebDriver.Appium.Capabilities.UdId)
-                        .AddCapability("orientation", configuration.WebDriver.Appium.Capabilities.Orientation, typeof(ScreenOrientations));
-
+                    ExtendCapabilities((k,v) => capabilities.AddCapability(k, v), 
+                        configuration.WebDriver.Appium.Capabilities);
 
                     IWebDriver driver;
-                    switch (configuration.WebDriver.Appium.Capabilities.PlatformName.ToEnum<PlatformNames>())
+                    var configCapabilities = configuration.WebDriver.Appium.Capabilities;
+                    const string PLATFORM_NAME = "platformName";
+                    EnsureCapabilityIsConfigured(configCapabilities, PLATFORM_NAME);
+
+                    switch (configuration.WebDriver.Appium.Capabilities[PLATFORM_NAME].ToString().ToEnum<PlatformNames>())
                     {
                         case PlatformNames.Android:
                             driver = new AndroidDriver<AndroidElement>(new Uri(configuration.WebDriver.Appium.ServerUri), capabilities);
@@ -184,55 +200,6 @@ namespace SpecDrill.Adapters.WebDriver
             return result;
         }
 
-        private static SafariOptions BuildSafariOptions()
-        {
-            return new SafariOptions();
-        }
-
-        private static EdgeOptions BuildEdgeOptions()
-        {
-            return new EdgeOptions();
-        }
-
-        private InternetExplorerOptions BuildInternetExplorerOptions()
-        {
-            var ieOptions = new InternetExplorerOptions();
-            ieOptions.BrowserCommandLineArguments = string.Join(" ", configuration.WebDriver.Browser.Drivers.Ie.Arguments ?? new List<string>());
-            ieOptions.ForceCreateProcessApi = !string.IsNullOrWhiteSpace(ieOptions.BrowserCommandLineArguments);
-            return ieOptions;
-        }
-
-        private OperaOptions BuildOperaOptions()
-        {
-            var options = new OperaOptions();
-            options.AddArguments(configuration.WebDriver.Browser.Drivers.Opera.Arguments ?? new List<string>());
-            return options;
-        }
-
-        private FirefoxOptions BuildFirefoxOptions()
-        {
-            var ffOptions = new FirefoxOptions();
-            ffOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Firefox.Arguments ?? new List<string>());
-            var fp = ffOptions.Profile ?? new FirefoxProfile();
-            fp.AcceptUntrustedCertificates = true;
-            fp.AssumeUntrustedCertificateIssuer = false;
-            ffOptions.Profile = fp;
-            var binPath = configuration.WebDriver.Browser.Drivers.Firefox.BrowserBinaryPath;
-            if (!string.IsNullOrWhiteSpace(binPath))
-            {
-                ffOptions.BrowserExecutableLocation = binPath;
-            }
-            return ffOptions;
-        }
-
-        private ChromeOptions BuildChromeOptions()
-        {
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Chrome.Arguments ?? new List<string>());
-            chromeOptions.AddArgument($"window-size={configuration.WebDriver.Browser.Window.InitialWidth},{configuration.WebDriver.Browser.Window.InitialHeight}");
-            return chromeOptions;
-        }
-
         private string GetBrowserDriversPath(string driverPath)
         {
             if (!driverPath.Contains(":\\"))
@@ -250,5 +217,104 @@ namespace SpecDrill.Adapters.WebDriver
                             new RemoteWebDriver(
                                 new Uri(configuration.WebDriver.Browser.SeleniumServerUri), desiredCapabilities), this.configuration);
         }
+
+        #region Capabilities Utility Methods
+        private void EnsureCapabilityIsConfigured(Dictionary<string, object> configCapabilities, string CAPABILITY_NAME)
+        {
+            if (!configCapabilities.ContainsKey(CAPABILITY_NAME) || configCapabilities[CAPABILITY_NAME] == null || string.IsNullOrEmpty(configCapabilities[CAPABILITY_NAME].ToString()))
+                throw new MissingMemberException($"SpecDrill: Value Not Present `{CAPABILITY_NAME}`!");
+        }
+
+        private void ExtendCapabilities(Action<string, object> addCapability, Dictionary<string, object> configuredCapabilities)
+        {
+            foreach (var kvp in configuredCapabilities)
+            {
+                try
+                {
+                    addCapability(kvp.Key, kvp.Value);
+                }
+                catch (ArgumentException)
+                {
+                    Log.Info($"Key {kvp.Key} already exists. Dropping version with value {kvp.Value}");
+                }
+                catch (Exception)
+                {
+                    Log.Info($"Error adding Key {kvp.Key} with value {kvp.Value}");
+                }
+            }
+        }
+        #endregion
+
+        #region Option Builders
+        private SafariOptions BuildSafariOptions()
+        {
+            var safariOptions = new SafariOptions();
+            ExtendCapabilities((key, value) => safariOptions.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return safariOptions;
+        }
+
+        private EdgeOptions BuildEdgeOptions()
+        {
+            var edgeOptions = new EdgeOptions();
+            var edgeCommandLineArguments = configuration.WebDriver.Browser.Drivers.Edge.Arguments;
+            if (edgeCommandLineArguments != null && edgeCommandLineArguments.Count > 0)
+            {
+                Log.Warning($"Specified command line argument(s) for Edge were igonred !");
+            }
+            edgeOptions.AcceptInsecureCertificates = true;
+            ExtendCapabilities((key, value) => edgeOptions.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return edgeOptions;
+        }
+
+        private InternetExplorerOptions BuildInternetExplorerOptions()
+        {
+            var ieOptions = new InternetExplorerOptions();
+            ieOptions.BrowserCommandLineArguments = string.Join(" ", configuration.WebDriver.Browser.Drivers.Ie.Arguments ?? new List<string>());
+            ieOptions.ForceCreateProcessApi = !string.IsNullOrWhiteSpace(ieOptions.BrowserCommandLineArguments);
+            ieOptions.AcceptInsecureCertificates = true;
+            ExtendCapabilities((key, value) => ieOptions.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return ieOptions;
+        }
+
+        private OperaOptions BuildOperaOptions()
+        {
+            var options = new OperaOptions();
+            options.AddArguments(configuration.WebDriver.Browser.Drivers.Opera.Arguments ?? new List<string>());
+            ExtendCapabilities((key, value) => options.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return options;
+        }
+
+        private FirefoxOptions BuildFirefoxOptions()
+        {
+            var ffOptions = new FirefoxOptions();
+            ffOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Firefox.Arguments ?? new List<string>());
+            var fp = ffOptions.Profile ?? new FirefoxProfile();
+            fp.AcceptUntrustedCertificates = true;
+            fp.AssumeUntrustedCertificateIssuer = false;
+            ffOptions.Profile = fp;
+            var binPath = configuration.WebDriver.Browser.Drivers.Firefox.BrowserBinaryPath;
+            if (!string.IsNullOrWhiteSpace(binPath))
+            {
+                ffOptions.BrowserExecutableLocation = binPath;
+            }
+            ExtendCapabilities((key, value) => ffOptions.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return ffOptions;
+        }
+
+        private ChromeOptions BuildChromeOptions()
+        {
+            var chromeOptions = new ChromeOptions();
+            chromeOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Chrome.Arguments ?? new List<string>());
+            chromeOptions.AddArgument($"window-size={configuration.WebDriver.Browser.Window.InitialWidth},{configuration.WebDriver.Browser.Window.InitialHeight}");
+            ExtendCapabilities((key, value) => chromeOptions.AddCapability(key, value),
+                                        configuration.WebDriver.Browser.Capabilities);
+            return chromeOptions;
+        }
+        #endregion
     }
 }

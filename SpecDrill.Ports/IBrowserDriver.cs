@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SpecDrill.SecondaryPorts.AutomationFramework
 {
@@ -59,6 +61,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         IBrowserAlert Alert { get; }
 
         bool IsAlertPresent { get; }
+        Uri Url { get; }
 
         void SwitchToDocument();
 
@@ -70,5 +73,6 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework
         void CloseLastWindow();
         string GetPdfText();
         void SaveScreenshot(string fileName);
+        Dictionary<string, object> GetCapabilities();
     }
 }

@@ -18,6 +18,8 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
 
         string PageTitle { get; }
 
+        Dictionary<string, object> GetCapabilities();
+
         /// <summary>
         /// returns an IDisposable that changes browser driver's timeout and restores it to previous value at end of using scope/when disposed
         /// </summary>
@@ -74,6 +76,7 @@ namespace SpecDrill.SecondaryPorts.AutomationFramework.Core
         IBrowserAlert Alert { get; }
         
         bool IsAlertPresent { get; }
+        Uri Url { get; }
 
         void SwitchToDocument();
         void CloseLastWindow();
