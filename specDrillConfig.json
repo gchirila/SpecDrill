@@ -32,7 +32,7 @@
       },
       "screenshots": { "path": "D:\\" },
       "capabilities": {
-          "enableVNC":  false
+
       }
     },
     "appium": { // settings for appium mode -> targets Appium server

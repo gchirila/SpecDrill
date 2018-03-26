@@ -40,7 +40,8 @@ namespace SpecDrill.Adapters.WebDriver
                 return false;
             }
 
-            var stringValue = (string)value;
+            var stringValue = value as string;
+
             if (stringValue != null && string.IsNullOrWhiteSpace(stringValue))
             {
                 Log.Info($"Cannot add capability {key}. Its value is empty.");
@@ -227,6 +228,11 @@ namespace SpecDrill.Adapters.WebDriver
 
         private void ExtendCapabilities(Action<string, object> addCapability, Dictionary<string, object> configuredCapabilities)
         {
+            if (configuredCapabilities == null)
+            {
+                Log.Warning($"Configuration section webdriver/browser/capabilities is missing from specDrillConfig.json !");
+                return;
+            }
             foreach (var kvp in configuredCapabilities)
             {
                 try
@@ -240,6 +246,7 @@ namespace SpecDrill.Adapters.WebDriver
                 catch (Exception)
                 {
                     Log.Info($"Error adding Key {kvp.Key} with value {kvp.Value}");
+                    throw;
                 }
             }
         }
@@ -311,8 +318,10 @@ namespace SpecDrill.Adapters.WebDriver
             var chromeOptions = new ChromeOptions();
             chromeOptions.AddArguments(configuration.WebDriver.Browser.Drivers.Chrome.Arguments ?? new List<string>());
             chromeOptions.AddArgument($"window-size={configuration.WebDriver.Browser.Window.InitialWidth},{configuration.WebDriver.Browser.Window.InitialHeight}");
+            
             ExtendCapabilities((key, value) => chromeOptions.AddCapability(key, value),
                                         configuration.WebDriver.Browser.Capabilities);
+
             return chromeOptions;
         }
         #endregion

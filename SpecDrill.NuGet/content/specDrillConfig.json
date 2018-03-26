@@ -29,6 +29,8 @@
         "isMaximized": false, // if true, remaining browserWindow properties will be ignored
         "initialWidth": 1280, // defaults to 800
         "initialHeight": 800 // defaults to 600
+      },
+      "capabilities": {
       }
     },
     "appium": { // settings for appium mode -> targets Appium server

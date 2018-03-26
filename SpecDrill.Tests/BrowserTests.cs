@@ -19,12 +19,11 @@ namespace SomeTests
     public class BrowserTests : TestBase
     {
         [TestMethod]
-        public void ShouldConfirmEnableVncCapabilityIsSet()
+        public void ShouldConfirmAcceptSslCertsIsSet()
         {
             var capabilities = Browser.GetCapabilities();
-            capabilities.ContainsKey("enableVNC").Should().BeTrue();
-            (capabilities["enableVNC"] is bool).Should().BeTrue();
-            ((bool)capabilities["enableVNC"]).Should().BeFalse();
+            capabilities.ContainsKey("platform").Should().BeTrue();
+            capabilities["platform"].Should().NotBeNull();
         }
 
         [TestMethod]
