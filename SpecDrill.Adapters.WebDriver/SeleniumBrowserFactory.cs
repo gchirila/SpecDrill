@@ -280,7 +280,6 @@ namespace SpecDrill.Adapters.WebDriver
             var ieOptions = new InternetExplorerOptions();
             ieOptions.BrowserCommandLineArguments = string.Join(" ", configuration.WebDriver.Browser.Drivers.Ie.Arguments ?? new List<string>());
             ieOptions.ForceCreateProcessApi = !string.IsNullOrWhiteSpace(ieOptions.BrowserCommandLineArguments);
-            ieOptions.AcceptInsecureCertificates = true;
             ExtendCapabilities((key, value) => ieOptions.AddCapability(key, value),
                                         configuration.WebDriver.Browser.Capabilities);
             return ieOptions;
